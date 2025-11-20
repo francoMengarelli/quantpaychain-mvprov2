@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd apps/web && yarn build",
-  "devCommand": "cd apps/web && yarn dev",
+  "buildCommand": "yarn workspace @quantpaychain/web build",
   "installCommand": "yarn install",
   "framework": null,
   "outputDirectory": "apps/web/.next"
