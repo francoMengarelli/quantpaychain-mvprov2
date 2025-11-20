@@ -1,0 +1,34 @@
+{
+  "name": "quantpaychain",
+  "version": "2.0.0",
+  "private": true,
+  "description": "QuantPay Chain - Post-Quantum RWA Tokenization Platform",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "db:generate": "cd packages/database && npx prisma generate",
+    "db:push": "cd packages/database && npx prisma db push",
+    "db:studio": "cd packages/database && npx prisma studio"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "author": "Franco Mengarelli",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/francoMengarelli/quantpaychain-mvpro.git"
+  }
+}

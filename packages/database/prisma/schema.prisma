@@ -1,0 +1,114 @@
+// Supabase PostgreSQL Schema for QuantPay Chain
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Users table
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  picture   String?
+  role      String   @default("user")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  assets        RWAAsset[]
+  transactions  Transaction[] @relation("buyer")
+  sales         Transaction[] @relation("seller")
+  reports       ISOReport[]
+
+  @@map("users")
+}
+
+// RWA Assets
+model RWAAsset {
+  id                String   @id @default(uuid())
+  name              String
+  assetType         String   @map("asset_type")
+  description       String
+  valueUsd          Float    @map("value_usd")
+  ownerId           String   @map("owner_id")
+  status            String   @default("active")
+  blockchainNetwork String?  @map("blockchain_network")
+  metadata          Json     @default("{}")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  owner  User    @relation(fields: [ownerId], references: [id])
+  tokens Token[]
+
+  @@map("rwa_assets")
+}
+
+// Tokens
+model Token {
+  id                String   @id @default(uuid())
+  assetId           String   @map("asset_id")
+  tokenSymbol       String   @map("token_symbol")
+  totalSupply       Int      @map("total_supply")
+  availableSupply   Int      @map("available_supply")
+  pricePerToken     Float    @map("price_per_token")
+  blockchainNetwork String   @map("blockchain_network")
+  contractAddress   String   @map("contract_address")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  asset        RWAAsset      @relation(fields: [assetId], references: [id])
+  transactions Transaction[]
+
+  @@map("tokens")
+}
+
+// Transactions
+model Transaction {
+  id                 String   @id @default(uuid())
+  transactionType    String   @map("transaction_type")
+  buyerId            String?  @map("buyer_id")
+  sellerId           String?  @map("seller_id")
+  tokenId            String   @map("token_id")
+  quantity           Int
+  totalAmount        Float    @map("total_amount")
+  status             String   @default("pending")
+  paymentSessionId   String?  @map("payment_session_id")
+  blockchainTxHash   String   @map("blockchain_tx_hash")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  buyer  User?  @relation("buyer", fields: [buyerId], references: [id])
+  seller User?  @relation("seller", fields: [sellerId], references: [id])
+  token  Token  @relation(fields: [tokenId], references: [id])
+
+  @@map("transactions")
+}
+
+// Payment Transactions
+model PaymentTransaction {
+  id            String   @id @default(uuid())
+  sessionId     String   @unique @map("session_id")
+  userId        String?  @map("user_id")
+  amount        Float
+  currency      String
+  status        String   @default("pending")
+  paymentStatus String   @map("payment_status") @default("pending")
+  metadata      Json     @default("{}")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("payment_transactions")
+}
+
+// ISO Reports
+model ISOReport {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  reportType  String   @map("report_type")
+  data        Json
+  generatedAt DateTime @default(now()) @map("generated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("iso_reports")
+}
