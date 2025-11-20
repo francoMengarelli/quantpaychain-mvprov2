@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd apps/web && yarn build",
-  "installCommand": "yarn global add turbo && yarn install",
-  "outputDirectory": "apps/web/.next"
-}
