@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Navbar } from "@/components/navbar";
 import { 
   ArrowRight, Shield, Zap, Globe, TrendingUp, Network, Coins, Building2,
   CheckCircle2, ShieldCheck, Atom, Award, BarChart3, Sparkles, ChevronRight
@@ -80,7 +81,9 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Animated Background */}
@@ -228,5 +231,6 @@ export default function HomePage() {
         </div>
       </footer>
     </main>
+    </>
   );
 }

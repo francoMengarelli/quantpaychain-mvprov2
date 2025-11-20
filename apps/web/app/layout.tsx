@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "../styles/globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
 import { Toaster } from "sonner";
+import { Web3Provider } from "@/providers/web3-provider";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -41,7 +43,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
-        {children}
+        <Web3Provider>
+          {children}
+        </Web3Provider>
         <Toaster position="top-right" richColors />
       </body>
     </html>
