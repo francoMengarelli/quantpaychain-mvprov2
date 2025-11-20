@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Navbar } from "@/components/navbar";
 import { 
   ArrowRight, Shield, Zap, Globe, TrendingUp, Network, Coins, Building2,
   CheckCircle2, ShieldCheck, Atom, Award, BarChart3, Sparkles, ChevronRight
