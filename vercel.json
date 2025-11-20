@@ -1,17 +1,13 @@
 {
-  "buildCommand": "cd apps/web && npm run build",
-  "installCommand": "cd apps/web && npm install",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "yarn turbo run build --filter=web",
   "outputDirectory": "apps/web/.next",
-  "framework": "nextjs",
+  "installCommand": "yarn install",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./apps/web ./packages",
   "rewrites": [
     {
       "source": "/api/:path*",
       "destination": "/api/index"
     }
-  ],
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.9"
-    }
-  }
+  ]
 }
