@@ -1,11 +1,14 @@
 """Vercel serverless function entry point for FastAPI backend"""
 import sys
 import os
+from pathlib import Path
 
 # Add the apps/api directory to the Python path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'apps', 'api'))
+api_dir = Path(__file__).parent.parent / "apps" / "api"
+sys.path.insert(0, str(api_dir))
 
+from mangum import Mangum
 from main import app
 
-# Export the FastAPI app for Vercel
-handler = app
+# Export handler for Vercel
+handler = Mangum(app, lifespan="off")
