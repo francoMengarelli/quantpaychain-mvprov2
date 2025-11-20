@@ -9,7 +9,7 @@
 
 **Tokeniza activos del mundo real en múltiples blockchains con IA y pagos reales**
 
-[Demo](https://rwa-blockchain-poc.preview.emergentagent.com) • [Documentación](#-documentación) • [API](#-api-endpoints)
+[Demo](https://asset-chain.preview.emergentagent.com) • [Documentación](#-documentación) • [API](#-api-endpoints)
 
 </div>
 
@@ -152,7 +152,7 @@ yarn install
 
 **Configurar .env:**
 ```env
-REACT_APP_BACKEND_URL=https://tu-app.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://asset-chain.preview.emergentagent.com
 WDS_SOCKET_PORT=443
 REACT_APP_ENABLE_VISUAL_EDITS=false
 ENABLE_HEALTH_CHECK=false
