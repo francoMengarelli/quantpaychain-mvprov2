@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Package, TrendingUp, Activity, ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
@@ -13,6 +14,43 @@ export default function DashboardPage() {
     transactions_count: 0,
     available_tokens: 0
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
+    try {
+      // Count RWA assets
+      const { count: assetsCount } = await supabase
+        .from('rwa_assets')
+        .select('*', { count: 'exact', head: true });
+
+      // Count available tokens
+      const { count: tokensCount } = await supabase
+        .from('tokens')
+        .select('*', { count: 'exact', head: true })
+        .gt('available_supply', 0);
+
+      // Count transactions
+      const { count: transactionsCount } = await supabase
+        .from('transactions')
+        .select('*', { count: 'exact', head: true });
+
+      setStats({
+        my_assets: assetsCount || 0,
+        total_invested: 0,
+        transactions_count: transactionsCount || 0,
+        available_tokens: tokensCount || 0
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+      toast.error('Error loading dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
@@ -26,55 +64,67 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card className="glass-effect border-purple-500/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center text-sm font-medium text-gray-400">
-                <Package className="mr-2 text-blue-400" size={18} />
-                My Assets
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-white">{stats.my_assets}</div>
-            </CardContent>
-          </Card>
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[1, 2, 3, 4].map(i => (
+              <Card key={i} className="glass-effect border-purple-500/20 animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-20 bg-purple-500/10 rounded"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <Card className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center text-sm font-medium text-gray-400">
+                  <Package className="mr-2 text-blue-400" size={18} />
+                  My Assets
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white">{stats.my_assets}</div>
+              </CardContent>
+            </Card>
 
-          <Card className="glass-effect border-purple-500/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center text-sm font-medium text-gray-400">
-                <TrendingUp className="mr-2 text-emerald-400" size={18} />
-                Total Invested
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-white">${stats.total_invested.toFixed(2)}</div>
-            </CardContent>
-          </Card>
+            <Card className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center text-sm font-medium text-gray-400">
+                  <TrendingUp className="mr-2 text-emerald-400" size={18} />
+                  Total Invested
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white">${stats.total_invested.toFixed(2)}</div>
+              </CardContent>
+            </Card>
 
-          <Card className="glass-effect border-purple-500/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center text-sm font-medium text-gray-400">
-                <Activity className="mr-2 text-blue-400" size={18} />
-                Transactions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-white">{stats.transactions_count}</div>
-            </CardContent>
-          </Card>
+            <Card className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center text-sm font-medium text-gray-400">
+                  <Activity className="mr-2 text-blue-400" size={18} />
+                  Transactions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white">{stats.transactions_count}</div>
+              </CardContent>
+            </Card>
 
-          <Card className="glass-effect border-purple-500/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center text-sm font-medium text-gray-400">
-                <ShoppingCart className="mr-2 text-emerald-400" size={18} />
-                Available Tokens
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-white">{stats.available_tokens}</div>
-            </CardContent>
-          </Card>
-        </div>
+            <Card className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center text-sm font-medium text-gray-400">
+                  <ShoppingCart className="mr-2 text-emerald-400" size={18} />
+                  Available Tokens
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white">{stats.available_tokens}</div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Quick Actions */}
         <Card className="glass-effect border-purple-500/20">
