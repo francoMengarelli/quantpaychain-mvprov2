@@ -3,12 +3,53 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageLayout } from "@/components/page-layout";
 import Link from "next/link";
+
+const technicalDocuments = [
+  {
+    id: "whitepaper",
+    title: "Platform Whitepaper",
+    description: "Complete technical overview of QuantPay Chain architecture",
+    icon: FileText,
+    color: "purple",
+    action: "View Online",
+    link: "/whitepaper"
+  },
+  {
+    id: "pqc-spec",
+    title: "Post-Quantum Security",
+    description: "Implementation details of NIST-approved algorithms",
+    icon: FileText,
+    color: "blue",
+    action: "View Online",
+    link: "/docs/pqc"
+  },
+  {
+    id: "iso-compliance",
+    title: "ISO 20022 Compliance",
+    description: "Standards compliance and integration guide",
+    icon: FileText,
+    color: "emerald",
+    action: "View Online",
+    link: "/docs/iso20022"
+  },
+  {
+    id: "api-docs",
+    title: "API Documentation",
+    description: "Interactive API reference and examples",
+    icon: FileText,
+    color: "orange",
+    action: "View Online",
+    link: "/api-docs"
+  }
+];
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
-      <div className="container mx-auto px-4 py-8">
+    <PageLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+        <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">
