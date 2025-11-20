@@ -5,11 +5,25 @@ const nextConfig = {
   images: {
     domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    // Ignore optional peer dependencies and problematic modules
+    config.externals.push({
+      'porto/internal': 'commonjs porto/internal',
+    });
+    
     config.resolve.fallback = {
       ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+
+    // Ignore specific wagmi connectors that cause issues
+    config.resolve.alias = {
+      ...config.resolve.alias,
       'porto/internal': false,
     };
+
     return config;
   },
   async rewrites() {
