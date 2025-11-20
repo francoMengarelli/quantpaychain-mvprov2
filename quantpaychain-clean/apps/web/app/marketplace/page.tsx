@@ -1,34 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Search } from "lucide-react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export default function MarketplacePage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [tokens, setTokens] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data
-  const tokens = [
-    {
-      id: "1",
-      token_symbol: "NYC-RE1",
-      price_per_token: 50,
-      available_supply: 75000,
-      total_supply: 100000,
-      blockchain_network: "ethereum"
-    },
-    {
-      id: "2",
-      token_symbol: "GOLD-C1",
-      price_per_token: 100,
-      available_supply: 50000,
-      total_supply: 50000,
-      blockchain_network: "polygon"
+  useEffect(() => {
+    loadTokens();
+  }, []);
+
+  const loadTokens = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('tokens')
+        .select('*')
+        .gt('available_supply', 0);
+
+      if (error) throw error;
+      setTokens(data || []);
+    } catch (error) {
+      console.error('Error loading tokens:', error);
+      toast.error('Error loading tokens');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const filteredTokens = tokens.filter(token =>
+    token.token_symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
@@ -56,44 +65,62 @@ export default function MarketplacePage() {
         </Card>
 
         {/* Tokens Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tokens.map((token) => (
-            <Card key={token.id} className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all group cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-2xl font-bold qpc-gradient-text">
-                    {token.token_symbol}
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <Card key={i} className="glass-effect border-purple-500/20 animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-48 bg-purple-500/10 rounded"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredTokens.length === 0 ? (
+          <Card className="glass-effect border-purple-500/20">
+            <CardContent className="p-12 text-center">
+              <p className="text-gray-400 text-lg">No tokens found</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTokens.map((token) => (
+              <Card key={token.id} className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all group cursor-pointer">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-2xl font-bold qpc-gradient-text">
+                      {token.token_symbol}
+                    </div>
+                    <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                      {token.blockchain_network}
+                    </Badge>
                   </div>
-                  <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-                    {token.blockchain_network}
-                  </Badge>
-                </div>
 
-                <div className="space-y-2 mb-6">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Price per Token:</span>
-                    <span className="font-semibold text-white">${token.price_per_token.toFixed(2)}</span>
+                  <div className="space-y-2 mb-6">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">Price per Token:</span>
+                      <span className="font-semibold text-white">${token.price_per_token?.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">Available:</span>
+                      <span className="font-semibold text-white">{token.available_supply?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">Total Supply:</span>
+                      <span className="font-semibold text-white">{token.total_supply?.toLocaleString()}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Available:</span>
-                    <span className="font-semibold text-white">{token.available_supply.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Total Supply:</span>
-                    <span className="font-semibold text-white">{token.total_supply.toLocaleString()}</span>
-                  </div>
-                </div>
 
-                <Link href={`/token/${token.id}`}>
-                  <Button className="w-full qpc-gradient text-white">
-                    <TrendingUp className="mr-2" size={18} />
-                    View Details
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  <Link href={`/token/${token.id}`}>
+                    <Button className="w-full qpc-gradient text-white">
+                      <TrendingUp className="mr-2" size={18} />
+                      View Details
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
