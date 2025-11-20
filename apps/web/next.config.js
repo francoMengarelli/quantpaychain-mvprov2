@@ -5,6 +5,13 @@ const nextConfig = {
   images: {
     domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
   },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'porto/internal': false,
+    };
+    return config;
+  },
   async rewrites() {
     return [
       {
