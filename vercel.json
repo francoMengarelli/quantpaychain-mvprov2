@@ -1,12 +1,5 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd apps/web && yarn install && yarn build",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "yarn install",
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/index"
-    }
-  ]
+  "buildCommand": "cd apps/web && yarn build",
+  "installCommand": "yarn global add turbo && yarn install",
+  "outputDirectory": "apps/web/.next"
 }
