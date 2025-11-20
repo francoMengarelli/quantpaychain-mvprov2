@@ -9,9 +9,21 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
+interface Token {
+  id: string;
+  asset_id: string;
+  token_symbol: string;
+  total_supply: number;
+  available_supply: number;
+  price_per_token: number;
+  blockchain_network: string;
+  contract_address?: string;
+  created_at: string;
+}
+
 export default function MarketplacePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [tokens, setTokens] = useState([]);
+  const [tokens, setTokens] = useState<Token[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

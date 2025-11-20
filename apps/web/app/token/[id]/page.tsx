@@ -10,6 +10,18 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
+interface Token {
+  id: string;
+  asset_id: string;
+  token_symbol: string;
+  total_supply: number;
+  available_supply: number;
+  price_per_token: number;
+  blockchain_network: string;
+  contract_address?: string;
+  created_at: string;
+}
+
 interface TokenDetailsProps {
   params: {
     id: string;
@@ -18,7 +30,7 @@ interface TokenDetailsProps {
 
 export default function TokenDetailsPage({ params }: TokenDetailsProps) {
   const router = useRouter();
-  const [token, setToken] = useState<any>(null);
+  const [token, setToken] = useState<Token | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
