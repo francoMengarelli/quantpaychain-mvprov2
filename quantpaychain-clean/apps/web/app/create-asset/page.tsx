@@ -247,5 +247,6 @@ export default function CreateAssetPage() {
         </div>
       </div>
     </div>
+    </PageLayout>
   );
 }
