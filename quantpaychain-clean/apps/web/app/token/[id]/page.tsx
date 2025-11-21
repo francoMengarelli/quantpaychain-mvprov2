@@ -235,5 +235,6 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
         </div>
       </div>
     </div>
+    </PageLayout>
   );
 }
