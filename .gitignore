@@ -103,3 +103,5 @@ quantpaychain-clean/node_modules/@next/swc-linux-arm64-musl/next-swc.linux-arm64
 # Environment files
 *.env
 *.env.*
+quantpaychain-clean/apps/web/.next/cache/webpack/server-production/0.pack
+quantpaychain-clean/apps/web/.next/cache/webpack/client-production/0.pack

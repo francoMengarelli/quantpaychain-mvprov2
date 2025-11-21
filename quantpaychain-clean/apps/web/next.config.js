@@ -5,18 +5,25 @@ const nextConfig = {
   images: {
     domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
   },
+  experimental: {
+    esmExternals: 'loose',
+  },
   webpack: (config, { isServer }) => {
     // Ignore optional peer dependencies and problematic modules
     config.externals.push({
       'porto/internal': 'commonjs porto/internal',
+      'pino-pretty': 'pino-pretty',
     });
     
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      net: false,
-      tls: false,
-    };
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
+    }
 
     // Ignore specific wagmi connectors that cause issues
     config.resolve.alias = {
