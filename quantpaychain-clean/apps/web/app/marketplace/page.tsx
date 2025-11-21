@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageLayout } from "@/components/page-layout";
 import { TrendingUp, Search } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -35,7 +36,7 @@ export default function MarketplacePage() {
       const { data, error } = await supabase
         .from('tokens')
         .select('*')
-        .gt('available_supply', 0);
+        .limit(10);
 
       if (error) throw error;
       setTokens(data || []);
@@ -52,88 +53,81 @@ export default function MarketplacePage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Marketplace</h1>
-          <p className="text-gray-400">Explore and purchase tokenized real-world assets</p>
-        </div>
+    <PageLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-white mb-2">Marketplace</h1>
+            <p className="text-gray-400">Explore and purchase tokenized real-world assets</p>
+          </div>
 
-        {/* Search */}
-        <Card className="glass-effect border-purple-500/20 mb-8">
-          <CardContent className="p-6">
-            <div className="relative">
+          {/* Search */}
+          <div className="mb-8">
+            <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
                 placeholder="Search tokens..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-purple-500/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/40"
+                className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-purple-500/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500/40"
               />
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Tokens Grid */}
-        {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-              <Card key={i} className="glass-effect border-purple-500/20 animate-pulse">
-                <CardContent className="p-6">
-                  <div className="h-48 bg-purple-500/10 rounded"></div>
-                </CardContent>
-              </Card>
-            ))}
           </div>
-        ) : filteredTokens.length === 0 ? (
-          <Card className="glass-effect border-purple-500/20">
-            <CardContent className="p-12 text-center">
-              <p className="text-gray-400 text-lg">No tokens found</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTokens.map((token) => (
-              <Card key={token.id} className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all group cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-2xl font-bold qpc-gradient-text">
-                      {token.token_symbol}
-                    </div>
-                    <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-                      {token.blockchain_network}
-                    </Badge>
-                  </div>
 
-                  <div className="space-y-2 mb-6">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Price per Token:</span>
-                      <span className="font-semibold text-white">${token.price_per_token?.toFixed(2)}</span>
+          {/* Tokens Grid */}
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+              <p className="text-gray-400 mt-4">Loading tokens...</p>
+            </div>
+          ) : filteredTokens.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTokens.map((token) => (
+                <Card key={token.id} className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-2xl font-bold qpc-gradient-text">{token.token_symbol}</h3>
+                      <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                        {token.blockchain_network}
+                      </Badge>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Available:</span>
-                      <span className="font-semibold text-white">{token.available_supply?.toLocaleString()}</span>
+                    
+                    <div className="space-y-3 mb-6">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Price</span>
+                        <span className="text-white font-semibold">${token.price_per_token?.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Available</span>
+                        <span className="text-white font-semibold">{token.available_supply?.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Total Supply</span>
+                        <span className="text-white">{token.total_supply?.toLocaleString()}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Total Supply:</span>
-                      <span className="font-semibold text-white">{token.total_supply?.toLocaleString()}</span>
-                    </div>
-                  </div>
 
-                  <Link href={`/token/${token.id}`}>
-                    <Button className="w-full qpc-gradient text-white">
-                      <TrendingUp className="mr-2" size={18} />
-                      View Details
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                    <Link href={`/token/${token.id}`}>
+                      <Button className="w-full qpc-gradient text-white">
+                        <TrendingUp className="mr-2" size={18} />
+                        View Details
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="glass-effect border-purple-500/20">
+              <CardContent className="p-12 text-center">
+                <p className="text-gray-400 text-lg">No tokens found</p>
+                <p className="text-gray-500 text-sm mt-2">Try a different search term</p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
