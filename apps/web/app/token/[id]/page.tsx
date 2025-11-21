@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageLayout } from "@/components/page-layout";
 import { ArrowLeft, TrendingUp, ShoppingCart, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -63,15 +64,18 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
+      <PageLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 flex items-center justify-center">
+          <div className="text-white text-xl">Loading...</div>
+        </div>
+      </PageLayout>
     );
   }
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+      <PageLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="container mx-auto px-4 py-8">
           <Card className="glass-effect border-purple-500/20">
             <CardContent className="p-12 text-center">
@@ -86,13 +90,15 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
           </Card>
         </div>
       </div>
+      </PageLayout>
     );
   }
 
   const totalPrice = (token.price_per_token || 0) * quantity;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+    <PageLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Link href="/marketplace">
@@ -229,5 +235,6 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
         </div>
       </div>
     </div>
+    </PageLayout>
   );
 }
