@@ -64,15 +64,18 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
+      <PageLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 flex items-center justify-center">
+          <div className="text-white text-xl">Loading...</div>
+        </div>
+      </PageLayout>
     );
   }
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+      <PageLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="container mx-auto px-4 py-8">
           <Card className="glass-effect border-purple-500/20">
             <CardContent className="p-12 text-center">
