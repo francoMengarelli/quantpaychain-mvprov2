@@ -90,13 +90,15 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
           </Card>
         </div>
       </div>
+      </PageLayout>
     );
   }
 
   const totalPrice = (token.price_per_token || 0) * quantity;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+    <PageLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Link href="/marketplace">
