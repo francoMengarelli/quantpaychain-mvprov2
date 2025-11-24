@@ -93,6 +93,29 @@ function NavbarComponent() {
             <Link href="/docs" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
               Docs
             </Link>
+            
+            {isAuthenticated ? (
+              <>
+                <div className="px-4 py-2 text-gray-300 text-sm flex items-center gap-2">
+                  <User size={16} />
+                  <span>{user?.email?.split('@')[0]}</span>
+                </div>
+                <button 
+                  onClick={handleSignOut}
+                  className="w-full text-left px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded flex items-center gap-2"
+                >
+                  <LogOut size={16} />
+                  Salir
+                </button>
+              </>
+            ) : (
+              <Link href="/login" className="block px-4 py-2">
+                <Button className="w-full qpc-gradient text-white">
+                  Iniciar Sesión
+                </Button>
+              </Link>
+            )}
+            
             <div className="px-4 py-2">
               <WalletButton />
             </div>
