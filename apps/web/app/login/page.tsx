@@ -31,7 +31,11 @@ export default function LoginPage() {
       if (error) throw error;
 
       if (data.user) {
-        router.push("/dashboard");
+        // Get redirect URL from query params or default to dashboard
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirectTo = searchParams.get('redirectTo') || '/dashboard';
+        router.push(redirectTo);
+        router.refresh();
       }
     } catch (error: any) {
       setError(error.message || "Error al iniciar sesión");

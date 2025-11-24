@@ -1,17 +1,34 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/page-layout";
-import { TrendingUp, Wallet, FileText, Activity } from "lucide-react";
+import { TrendingUp, Wallet, FileText, Activity, Plus, User } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+
   return (
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
-            <p className="text-gray-400">Your portfolio and investment overview</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-2">
+                  Bienvenido, {user?.user_metadata?.name || user?.email?.split('@')[0]}
+                </h1>
+                <p className="text-gray-400">Tu portafolio y resumen de inversiones</p>
+              </div>
+              <Link href="/create-asset">
+                <Button className="qpc-gradient text-white">
+                  <Plus className="mr-2" size={18} />
+                  Crear Asset
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Stats Grid */}
@@ -61,12 +78,72 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          {/* Empty State */}
+          {/* User Info Card */}
+          <Card className="glass-effect border-purple-500/20 mb-8">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Información de la Cuenta
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-gray-400">Email</p>
+                  <p className="text-white">{user?.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Estado de la cuenta</p>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400">
+                    Verificada
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Miembro desde</p>
+                  <p className="text-white">{new Date(user?.created_at || '').toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Getting Started */}
           <Card className="glass-effect border-purple-500/20">
-            <CardContent className="p-12 text-center">
-              <Wallet className="w-16 h-16 mx-auto mb-4 text-purple-400 opacity-50" />
-              <h3 className="text-xl font-semibold text-white mb-2">Connect Your Wallet</h3>
-              <p className="text-gray-400 mb-6">Connect your wallet to view your portfolio and start investing in tokenized assets</p>
+            <CardHeader>
+              <CardTitle className="text-white">Comienza a Tokenizar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-400 mb-6">
+                ¿Listo para tokenizar tus primeros activos del mundo real? Empieza creando tu primer asset.
+              </p>
+              <div className="grid md:grid-cols-3 gap-4">
+                <Link href="/create-asset" className="block">
+                  <Card className="glass-effect border-purple-500/10 hover:border-purple-500/30 transition-colors cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <FileText className="h-8 w-8 text-purple-400 mb-3" />
+                      <h4 className="text-white font-semibold mb-2">Crear Asset</h4>
+                      <p className="text-sm text-gray-400">Tokeniza un activo del mundo real</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+                <Link href="/marketplace" className="block">
+                  <Card className="glass-effect border-purple-500/10 hover:border-purple-500/30 transition-colors cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <Activity className="h-8 w-8 text-blue-400 mb-3" />
+                      <h4 className="text-white font-semibold mb-2">Explorar Marketplace</h4>
+                      <p className="text-sm text-gray-400">Descubre assets disponibles</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+                <Link href="/docs" className="block">
+                  <Card className="glass-effect border-purple-500/10 hover:border-purple-500/30 transition-colors cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <FileText className="h-8 w-8 text-green-400 mb-3" />
+                      <h4 className="text-white font-semibold mb-2">Documentación</h4>
+                      <p className="text-sm text-gray-400">Aprende cómo funciona</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
