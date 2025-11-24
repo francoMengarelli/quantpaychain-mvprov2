@@ -307,5 +307,6 @@ export default function CreateAssetPage() {
       </div>
     </div>
     </PageLayout>
+    </ProtectedRoute>
   );
 }
