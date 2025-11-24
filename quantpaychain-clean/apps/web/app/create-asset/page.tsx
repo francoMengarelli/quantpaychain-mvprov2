@@ -289,7 +289,7 @@ export default function CreateAssetPage() {
                     className="qpc-gradient text-white flex-1"
                   >
                     {loading && <Loader2 className="mr-2 animate-spin" size={18} />}
-                    Create Asset
+                    {loading ? "Creando..." : "Crear Asset"}
                   </Button>
                   <Button
                     type="button"
@@ -297,7 +297,7 @@ export default function CreateAssetPage() {
                     onClick={() => router.push("/dashboard")}
                     className="border-purple-500/30 text-white hover:bg-purple-500/10"
                   >
-                    Cancel
+                    Cancelar
                   </Button>
                 </div>
               </form>
