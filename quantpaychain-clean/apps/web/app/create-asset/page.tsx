@@ -8,12 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageLayout } from "@/components/page-layout";
+import { ProtectedRoute } from "@/components/protected-route";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/hooks/useAuth";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function CreateAssetPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -33,13 +38,56 @@ export default function CreateAssetPage() {
     setLoading(true);
 
     try {
-      // TODO: Integrate with backend API when deployed
-      toast.info("Backend API integration pending");
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast.success("Asset creation feature coming soon!");
+      if (!user) {
+        toast.error("Debes iniciar sesión para crear un asset");
+        return;
+      }
+
+      // Crear el asset en Supabase
+      const assetId = uuidv4();
+      const { data: asset, error: assetError } = await supabase
+        .from('rwa_assets')
+        .insert([
+          {
+            id: assetId,
+            name: formData.name,
+            asset_type: formData.asset_type,
+            description: formData.description,
+            value_usd: parseFloat(formData.value_usd),
+            location: formData.location,
+            legal_documents: formData.legal_documents || null,
+            status: 'pending',
+            owner_id: user.id,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }
+        ])
+        .select();
+
+      if (assetError) throw assetError;
+
+      // Crear el token asociado
+      const tokenId = uuidv4();
+      const { data: token, error: tokenError } = await supabase
+        .from('tokens')
+        .insert([
+          {
+            id: tokenId,
+            asset_id: assetId,
+            token_symbol: formData.token_symbol.toUpperCase(),
+            total_supply: parseInt(formData.total_supply),
+            available_supply: parseInt(formData.total_supply),
+            price_per_token: parseFloat(formData.price_per_token),
+            blockchain_network: formData.blockchain,
+            contract_address: null, // Se generará después
+            created_at: new Date().toISOString(),
+          }
+        ])
+        .select();
+
+      if (tokenError) throw tokenError;
+
+      toast.success("¡Asset creado exitosamente!");
       
       // Reset form
       setFormData({
@@ -54,8 +102,15 @@ export default function CreateAssetPage() {
         price_per_token: "",
         blockchain: "ethereum"
       });
-    } catch (error) {
-      toast.error("Error creating asset");
+
+      // Redirect to dashboard after 1 second
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
+      
+    } catch (error: any) {
+      console.error('Error creating asset:', error);
+      toast.error(error.message || "Error al crear el asset");
     } finally {
       setLoading(false);
     }
