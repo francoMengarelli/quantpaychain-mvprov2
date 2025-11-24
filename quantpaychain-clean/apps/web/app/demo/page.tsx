@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/page-layout";
@@ -8,14 +8,34 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 
 export default function DemoPage() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <PageLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+          <div className="container mx-auto px-4 py-8">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-white mb-2">Demostración de la Plataforma</h1>
+              <p className="text-gray-400">Cargando...</p>
+            </div>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Platform Demo</h1>
-            <p className="text-gray-400">See QuantPay Chain in action</p>
+            <h1 className="text-4xl font-bold text-white mb-2">Demostración de la Plataforma</h1>
+            <p className="text-gray-400">Vea QuantPay Chain en acción</p>
           </div>
 
           <Card className="glass-effect border-purple-500/20 mb-8">
