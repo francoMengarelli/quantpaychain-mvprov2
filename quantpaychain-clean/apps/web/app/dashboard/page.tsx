@@ -78,12 +78,72 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          {/* Empty State */}
+          {/* User Info Card */}
+          <Card className="glass-effect border-purple-500/20 mb-8">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Información de la Cuenta
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-gray-400">Email</p>
+                  <p className="text-white">{user?.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Estado de la cuenta</p>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400">
+                    Verificada
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Miembro desde</p>
+                  <p className="text-white">{new Date(user?.created_at || '').toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Getting Started */}
           <Card className="glass-effect border-purple-500/20">
-            <CardContent className="p-12 text-center">
-              <Wallet className="w-16 h-16 mx-auto mb-4 text-purple-400 opacity-50" />
-              <h3 className="text-xl font-semibold text-white mb-2">Connect Your Wallet</h3>
-              <p className="text-gray-400 mb-6">Connect your wallet to view your portfolio and start investing in tokenized assets</p>
+            <CardHeader>
+              <CardTitle className="text-white">Comienza a Tokenizar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-400 mb-6">
+                ¿Listo para tokenizar tus primeros activos del mundo real? Empieza creando tu primer asset.
+              </p>
+              <div className="grid md:grid-cols-3 gap-4">
+                <Link href="/create-asset" className="block">
+                  <Card className="glass-effect border-purple-500/10 hover:border-purple-500/30 transition-colors cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <FileText className="h-8 w-8 text-purple-400 mb-3" />
+                      <h4 className="text-white font-semibold mb-2">Crear Asset</h4>
+                      <p className="text-sm text-gray-400">Tokeniza un activo del mundo real</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+                <Link href="/marketplace" className="block">
+                  <Card className="glass-effect border-purple-500/10 hover:border-purple-500/30 transition-colors cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <Activity className="h-8 w-8 text-blue-400 mb-3" />
+                      <h4 className="text-white font-semibold mb-2">Explorar Marketplace</h4>
+                      <p className="text-sm text-gray-400">Descubre assets disponibles</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+                <Link href="/docs" className="block">
+                  <Card className="glass-effect border-purple-500/10 hover:border-purple-500/30 transition-colors cursor-pointer h-full">
+                    <CardContent className="p-6">
+                      <FileText className="h-8 w-8 text-green-400 mb-3" />
+                      <h4 className="text-white font-semibold mb-2">Documentación</h4>
+                      <p className="text-sm text-gray-400">Aprende cómo funciona</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
