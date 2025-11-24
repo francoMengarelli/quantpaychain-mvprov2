@@ -131,5 +131,6 @@ export default function MarketplacePage() {
         </div>
       </div>
     </PageLayout>
+    </ProtectedRoute>
   );
 }
