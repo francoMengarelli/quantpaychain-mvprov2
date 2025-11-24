@@ -2,7 +2,26 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { PageLayout } from "@/components/page-layout";
-import { DemoPlayer } from "@/components/demo-player";
+import dynamic from "next/dynamic";
+
+const DemoPlayer = dynamic(
+  () => import("@/components/demo-player").then((mod) => ({ default: mod.DemoPlayer })),
+  { 
+    ssr: false,
+    loading: () => (
+      <Card className="glass-effect border-purple-500/20 mb-8">
+        <CardContent className="p-8">
+          <div className="aspect-video bg-slate-900/50 rounded-lg flex items-center justify-center border border-purple-500/20">
+            <div className="text-center">
+              <div className="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse" />
+              <p className="text-gray-400">Cargando demo...</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+);
 
 export default function DemoPage() {
   return (
