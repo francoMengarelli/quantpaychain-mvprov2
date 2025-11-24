@@ -4,9 +4,9 @@ import Link from "next/link";
 import { WalletButton } from "./wallet-button";
 import { Button } from "./ui/button";
 import { Network, Menu } from "lucide-react";
-import { useState } from "react";
+import { useState, memo } from "react";
 
-export function Navbar() {
+function NavbarComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -69,3 +69,5 @@ export function Navbar() {
     </nav>
   );
 }
+
+export const Navbar = memo(NavbarComponent);

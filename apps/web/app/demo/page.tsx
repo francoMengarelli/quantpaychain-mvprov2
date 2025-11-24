@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/page-layout";
@@ -12,6 +12,14 @@ export default function DemoPage() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  const handlePlayPause = useCallback(() => {
+    setIsPlaying(prev => !prev);
+  }, []);
+
+  const handleRestart = useCallback(() => {
+    setIsPlaying(false);
   }, []);
 
   if (!mounted) {
@@ -53,8 +61,9 @@ export default function DemoPage() {
                   <p className="text-gray-400 mb-4">Próximamente habrá una demostración interactiva</p>
                   <div className="flex gap-4 justify-center">
                     <Button
-                      onClick={() => setIsPlaying(!isPlaying)}
+                      onClick={handlePlayPause}
                       className="qpc-gradient text-white"
+                      type="button"
                     >
                       {isPlaying ? (
                         <>
@@ -69,9 +78,10 @@ export default function DemoPage() {
                       )}
                     </Button>
                     <Button
-                      onClick={() => setIsPlaying(false)}
+                      onClick={handleRestart}
                       variant="outline"
                       className="border-purple-500/30 text-white hover:bg-purple-500/10"
+                      type="button"
                     >
                       <RotateCcw className="mr-2" size={18} />
                       Reiniciar

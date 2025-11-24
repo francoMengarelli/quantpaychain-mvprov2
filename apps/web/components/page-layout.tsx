@@ -1,12 +1,13 @@
 "use client";
 
+import { memo } from "react";
 import { Navbar } from "./navbar";
 
 interface PageLayoutProps {
   children: React.ReactNode;
 }
 
-export function PageLayout({ children }: PageLayoutProps) {
+function PageLayoutComponent({ children }: PageLayoutProps) {
   return (
     <>
       <Navbar />
@@ -14,3 +15,5 @@ export function PageLayout({ children }: PageLayoutProps) {
     </>
   );
 }
+
+export const PageLayout = memo(PageLayoutComponent);
