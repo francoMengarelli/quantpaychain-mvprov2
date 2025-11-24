@@ -49,8 +49,8 @@ export default function DemoPage() {
                       <Play className="text-purple-400" size={32} />
                     )}
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">Platform Walkthrough</h3>
-                  <p className="text-gray-400 mb-4">Interactive demo coming soon</p>
+                  <h3 className="text-xl font-bold text-white mb-2">Recorrido por la Plataforma</h3>
+                  <p className="text-gray-400 mb-4">Próximamente habrá una demostración interactiva</p>
                   <div className="flex gap-4 justify-center">
                     <Button
                       onClick={() => setIsPlaying(!isPlaying)}
@@ -59,21 +59,22 @@ export default function DemoPage() {
                       {isPlaying ? (
                         <>
                           <Pause className="mr-2" size={18} />
-                          Pause
+                          Pausar
                         </>
                       ) : (
                         <>
                           <Play className="mr-2" size={18} />
-                          Play Demo
+                          Jugar Demo
                         </>
                       )}
                     </Button>
                     <Button
+                      onClick={() => setIsPlaying(false)}
                       variant="outline"
                       className="border-purple-500/30 text-white hover:bg-purple-500/10"
                     >
                       <RotateCcw className="mr-2" size={18} />
-                      Restart
+                      Reiniciar
                     </Button>
                   </div>
                 </div>
