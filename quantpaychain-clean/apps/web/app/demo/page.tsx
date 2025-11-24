@@ -64,41 +64,29 @@ export default function DemoPage() {
             <div className="aspect-video bg-slate-900/50 rounded-lg flex items-center justify-center border border-purple-500/20">
               <div className="text-center">
                 <div className="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
-                  {isPlaying ? (
-                    <Pause className="text-purple-400" size={32} />
-                  ) : (
-                    <Play className="text-purple-400" size={32} />
-                  )}
+                  <Play className="text-purple-400" size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">Recorrido por la Plataforma</h3>
                 <p className="text-gray-400 mb-4">Próximamente habrá una demostración interactiva</p>
                 <div className="flex gap-4 justify-center">
-                  <Button
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    className="qpc-gradient text-white"
+                  <button
+                    onClick={handlePlayPause}
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background qpc-gradient text-white h-10 py-2 px-4"
                     type="button"
                   >
-                    {isPlaying ? (
-                      <>
-                        <Pause className="mr-2" size={18} />
-                        Pausar
-                      </>
-                    ) : (
-                      <>
-                        <Play className="mr-2" size={18} />
-                        Jugar Demo
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    onClick={() => setIsPlaying(false)}
-                    variant="outline"
-                    className="border-purple-500/30 text-white hover:bg-purple-500/10"
+                    <span id="play-icon" className="mr-2">
+                      <Play size={18} />
+                    </span>
+                    <span id="play-text">Jugar Demo</span>
+                  </button>
+                  <button
+                    onClick={handleRestart}
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-purple-500/30 text-white hover:bg-purple-500/10 h-10 py-2 px-4"
                     type="button"
                   >
                     <RotateCcw className="mr-2" size={18} />
                     Reiniciar
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
