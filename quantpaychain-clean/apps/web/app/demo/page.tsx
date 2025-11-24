@@ -86,24 +86,24 @@ export default function DemoPage() {
             <Card className="glass-effect border-purple-500/20">
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🏢</div>
-                <h3 className="text-lg font-bold text-white mb-2">Asset Tokenization</h3>
-                <p className="text-sm text-gray-400">Watch how real-world assets are converted into digital tokens</p>
+                <h3 className="text-lg font-bold text-white mb-2">Tokenización de Activos</h3>
+                <p className="text-sm text-gray-400">Observe cómo los activos del mundo real se convierten en tokens digitales</p>
               </CardContent>
             </Card>
 
             <Card className="glass-effect border-purple-500/20">
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🔐</div>
-                <h3 className="text-lg font-bold text-white mb-2">Post-Quantum Security</h3>
-                <p className="text-sm text-gray-400">See how NIST-approved algorithms protect your assets</p>
+                <h3 className="text-lg font-bold text-white mb-2">Seguridad Post-Cuántica</h3>
+                <p className="text-sm text-gray-400">Vea cómo los algoritmos aprobados por NIST protegen sus activos</p>
               </CardContent>
             </Card>
 
             <Card className="glass-effect border-purple-500/20">
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">💳</div>
-                <h3 className="text-lg font-bold text-white mb-2">Payment Processing</h3>
-                <p className="text-sm text-gray-400">Explore multi-currency payment flows and settlements</p>
+                <h3 className="text-lg font-bold text-white mb-2">Procesamiento de Pagos</h3>
+                <p className="text-sm text-gray-400">Explore flujos de pago multi-moneda y liquidaciones</p>
               </CardContent>
             </Card>
           </div>
