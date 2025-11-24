@@ -34,8 +34,9 @@ export default function LoginPage() {
         // Get redirect URL from query params or default to dashboard
         const searchParams = new URLSearchParams(window.location.search);
         const redirectTo = searchParams.get('redirectTo') || '/dashboard';
-        router.push(redirectTo);
-        router.refresh();
+        
+        // Force navigation
+        window.location.href = redirectTo;
       }
     } catch (error: any) {
       setError(error.message || "Error al iniciar sesión");
