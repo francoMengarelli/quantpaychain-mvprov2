@@ -1,17 +1,34 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/page-layout";
-import { TrendingUp, Wallet, FileText, Activity } from "lucide-react";
+import { TrendingUp, Wallet, FileText, Activity, Plus, User } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+
   return (
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
-            <p className="text-gray-400">Your portfolio and investment overview</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-2">
+                  Bienvenido, {user?.user_metadata?.name || user?.email?.split('@')[0]}
+                </h1>
+                <p className="text-gray-400">Tu portafolio y resumen de inversiones</p>
+              </div>
+              <Link href="/create-asset">
+                <Button className="qpc-gradient text-white">
+                  <Plus className="mr-2" size={18} />
+                  Crear Asset
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Stats Grid */}
