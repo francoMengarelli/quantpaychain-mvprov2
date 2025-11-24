@@ -14,13 +14,13 @@ export default function DemoPage() {
     setMounted(true);
   }, []);
 
-  const handlePlayPause = () => {
+  const handlePlayPause = useCallback(() => {
     setIsPlaying(prev => !prev);
-  };
+  }, []);
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     setIsPlaying(false);
-  };
+  }, []);
 
   if (!mounted) {
     return (
