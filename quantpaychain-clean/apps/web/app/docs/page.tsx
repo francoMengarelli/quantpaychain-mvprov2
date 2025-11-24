@@ -81,13 +81,13 @@ export default function DocsPage() {
                     <Icon className={colorClasses[doc.color as keyof typeof colorClasses].split(' ')[0]} size={32} />
                     <h3 className="text-xl font-bold text-white mb-2 mt-4">{doc.title}</h3>
                     <p className="text-gray-400 mb-2">{doc.description}</p>
-                    <p className="text-sm text-gray-500 mb-4">Size: {doc.size}</p>
+                    <p className="text-sm text-gray-500 mb-4">Tamaño: {doc.size}</p>
                     <Button 
                       onClick={() => handleDownload(doc.file, `${doc.title.toLowerCase().replace(/\s+/g, '-')}.pdf`)}
                       className="qpc-gradient text-white"
                     >
                       <Download className="mr-2" size={16} />
-                      Download PDF
+                      Descargar PDF
                     </Button>
                   </CardContent>
                 </Card>
