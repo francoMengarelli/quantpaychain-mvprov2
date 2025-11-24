@@ -151,5 +151,6 @@ export default function DashboardPage() {
         </div>
       </div>
     </PageLayout>
+    </ProtectedRoute>
   );
 }
