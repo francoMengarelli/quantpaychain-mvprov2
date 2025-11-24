@@ -51,9 +51,7 @@ export default function RegisterPage() {
       if (error) throw error;
 
       setSuccess(true);
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+      // No redirect, show message to check email
     } catch (error: any) {
       setError(error.message || "Error al crear la cuenta");
     } finally {
