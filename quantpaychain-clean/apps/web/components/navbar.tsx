@@ -69,3 +69,5 @@ function NavbarComponent() {
     </nav>
   );
 }
+
+export const Navbar = memo(NavbarComponent);
