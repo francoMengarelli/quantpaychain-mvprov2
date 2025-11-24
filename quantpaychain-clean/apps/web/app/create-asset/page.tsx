@@ -117,16 +117,17 @@ export default function CreateAssetPage() {
   };
 
   return (
-    <PageLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Create Asset
-          </h1>
-          <p className="text-gray-400">Tokenize a new real-world asset</p>
-        </div>
+    <ProtectedRoute>
+      <PageLayout>
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-white mb-2">
+              Crear Asset
+            </h1>
+            <p className="text-gray-400">Tokeniza un nuevo activo del mundo real</p>
+          </div>
 
         <div className="max-w-3xl mx-auto">
           <Card className="glass-effect border-purple-500/20">
