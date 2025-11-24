@@ -69,9 +69,17 @@ export default function RegisterPage() {
                 <CheckCircle className="h-16 w-16 text-green-400" />
               </div>
               <h2 className="text-2xl font-bold text-white">¡Cuenta Creada!</h2>
-              <p className="text-gray-400">
-                Tu cuenta ha sido creada exitosamente. Redirigiendo a la página de inicio de sesión...
+              <p className="text-gray-400 mb-4">
+                Te hemos enviado un email de confirmación a <strong className="text-white">{email}</strong>
               </p>
+              <p className="text-sm text-gray-500 mb-4">
+                Por favor revisa tu bandeja de entrada y haz click en el enlace para verificar tu cuenta.
+              </p>
+              <Link href="/login">
+                <Button className="qpc-gradient text-white">
+                  Ir a Iniciar Sesión
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
