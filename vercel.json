@@ -1,3 +1,5 @@
 {
-  "outputDirectory": ".next"
+  "buildCommand": "cd apps/web && yarn build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "yarn install"
 }
