@@ -60,9 +60,9 @@ export default function DocsPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-white mb-2">
-              Technical Documentation
+              Documentación Técnica
             </h1>
-            <p className="text-gray-400">Comprehensive guides and technical specifications</p>
+            <p className="text-gray-400">Guías completas y especificaciones técnicas</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
