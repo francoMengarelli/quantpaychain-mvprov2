@@ -217,7 +217,7 @@ export default function CreateAssetPage() {
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="token_symbol" className="text-gray-300">Token Symbol *</Label>
+                        <Label htmlFor="token_symbol" className="text-gray-300">Símbolo del Token *</Label>
                         <Input
                           id="token_symbol"
                           required
@@ -225,6 +225,7 @@ export default function CreateAssetPage() {
                           onChange={(e) => setFormData({...formData, token_symbol: e.target.value})}
                           className="bg-slate-900/50 border-purple-500/20 text-white"
                           placeholder="MCB"
+                          maxLength={10}
                         />
                       </div>
 
@@ -249,11 +250,12 @@ export default function CreateAssetPage() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="total_supply" className="text-gray-300">Total Supply *</Label>
+                        <Label htmlFor="total_supply" className="text-gray-300">Supply Total *</Label>
                         <Input
                           id="total_supply"
                           type="number"
                           required
+                          min="1"
                           value={formData.total_supply}
                           onChange={(e) => setFormData({...formData, total_supply: e.target.value})}
                           className="bg-slate-900/50 border-purple-500/20 text-white"
@@ -262,12 +264,13 @@ export default function CreateAssetPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="price_per_token" className="text-gray-300">Price per Token (USD) *</Label>
+                        <Label htmlFor="price_per_token" className="text-gray-300">Precio por Token (USD) *</Label>
                         <Input
                           id="price_per_token"
                           type="number"
                           step="0.01"
                           required
+                          min="0.01"
                           value={formData.price_per_token}
                           onChange={(e) => setFormData({...formData, price_per_token: e.target.value})}
                           className="bg-slate-900/50 border-purple-500/20 text-white"
