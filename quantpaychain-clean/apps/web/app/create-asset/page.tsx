@@ -135,56 +135,56 @@ export default function CreateAssetPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Asset Details */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Asset Details</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">Detalles del Asset</h3>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="name" className="text-gray-300">Asset Name *</Label>
+                      <Label htmlFor="name" className="text-gray-300">Nombre del Asset *</Label>
                       <Input
                         id="name"
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         className="bg-slate-900/50 border-purple-500/20 text-white"
-                        placeholder="e.g., Manhattan Commercial Building"
+                        placeholder="Ej: Edificio Comercial Manhattan"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="asset_type" className="text-gray-300">Asset Type *</Label>
+                      <Label htmlFor="asset_type" className="text-gray-300">Tipo de Asset *</Label>
                       <Select
                         value={formData.asset_type}
                         onValueChange={(value) => setFormData({...formData, asset_type: value})}
                       >
                         <SelectTrigger className="bg-slate-900/50 border-purple-500/20 text-white">
-                          <SelectValue placeholder="Select asset type" />
+                          <SelectValue placeholder="Selecciona el tipo" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="real_estate">Real Estate</SelectItem>
+                          <SelectItem value="real_estate">Bienes Raíces</SelectItem>
                           <SelectItem value="commodity">Commodity</SelectItem>
-                          <SelectItem value="art">Art</SelectItem>
-                          <SelectItem value="bond">Bond</SelectItem>
+                          <SelectItem value="art">Arte</SelectItem>
+                          <SelectItem value="bond">Bono</SelectItem>
                           <SelectItem value="equity">Equity</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="other">Otro</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div>
-                      <Label htmlFor="description" className="text-gray-300">Description *</Label>
+                      <Label htmlFor="description" className="text-gray-300">Descripción *</Label>
                       <Textarea
                         id="description"
                         required
                         value={formData.description}
                         onChange={(e) => setFormData({...formData, description: e.target.value})}
                         className="bg-slate-900/50 border-purple-500/20 text-white"
-                        placeholder="Detailed description of the asset"
+                        placeholder="Descripción detallada del activo"
                         rows={4}
                       />
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="value_usd" className="text-gray-300">Asset Value (USD) *</Label>
+                        <Label htmlFor="value_usd" className="text-gray-300">Valor del Asset (USD) *</Label>
                         <Input
                           id="value_usd"
                           type="number"
@@ -197,14 +197,14 @@ export default function CreateAssetPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="location" className="text-gray-300">Location *</Label>
+                        <Label htmlFor="location" className="text-gray-300">Ubicación *</Label>
                         <Input
                           id="location"
                           required
                           value={formData.location}
                           onChange={(e) => setFormData({...formData, location: e.target.value})}
                           className="bg-slate-900/50 border-purple-500/20 text-white"
-                          placeholder="New York, USA"
+                          placeholder="Nueva York, USA"
                         />
                       </div>
                     </div>
@@ -213,7 +213,7 @@ export default function CreateAssetPage() {
 
                 {/* Tokenization Details */}
                 <div className="pt-6 border-t border-gray-800">
-                  <h3 className="text-lg font-semibold text-white mb-4">Tokenization Details</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">Detalles de Tokenización</h3>
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
