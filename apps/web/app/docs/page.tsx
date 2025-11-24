@@ -8,39 +8,39 @@ import { PageLayout } from "@/components/page-layout";
 const documents = [
   {
     id: 1,
-    title: "Platform Whitepaper",
-    description: "Complete technical overview of QuantPayChain platform",
+    title: "Whitepaper de la Plataforma",
+    description: "Descripción técnica completa de la plataforma QuantPayChain",
     icon: FileText,
     color: "purple",
     file: "/docs/quantpaychain-whitepaper.pdf",
-    size: "2.4 MB"
+    size: "2.7 KB"
   },
   {
     id: 2,
-    title: "Post-Quantum Security",
-    description: "NIST-approved post-quantum cryptography implementation",
+    title: "Seguridad Post-Cuántica",
+    description: "Implementación de criptografía post-cuántica aprobada por NIST",
     icon: Shield,
     color: "blue",
     file: "/docs/post-quantum-security.pdf",
-    size: "1.8 MB"
+    size: "2.4 KB"
   },
   {
     id: 3,
-    title: "ISO 20022 Compliance",
-    description: "Financial messaging standards implementation guide",
+    title: "Cumplimiento ISO 20022",
+    description: "Guía de implementación de estándares de mensajería financiera",
     icon: Book,
     color: "green",
     file: "/docs/iso20022-compliance.pdf",
-    size: "1.2 MB"
+    size: "2.2 KB"
   },
   {
     id: 4,
-    title: "API Documentation",
-    description: "Complete REST API reference and integration guide",
+    title: "Documentación de API",
+    description: "Referencia completa de API REST y guía de integración",
     icon: FileText,
     color: "orange",
     file: "/docs/api-documentation.pdf",
-    size: "3.1 MB"
+    size: "2.3 KB"
   }
 ];
 
@@ -60,9 +60,9 @@ export default function DocsPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-white mb-2">
-              Technical Documentation
+              Documentación Técnica
             </h1>
-            <p className="text-gray-400">Comprehensive guides and technical specifications</p>
+            <p className="text-gray-400">Guías completas y especificaciones técnicas</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -81,13 +81,13 @@ export default function DocsPage() {
                     <Icon className={colorClasses[doc.color as keyof typeof colorClasses].split(' ')[0]} size={32} />
                     <h3 className="text-xl font-bold text-white mb-2 mt-4">{doc.title}</h3>
                     <p className="text-gray-400 mb-2">{doc.description}</p>
-                    <p className="text-sm text-gray-500 mb-4">Size: {doc.size}</p>
+                    <p className="text-sm text-gray-500 mb-4">Tamaño: {doc.size}</p>
                     <Button 
                       onClick={() => handleDownload(doc.file, `${doc.title.toLowerCase().replace(/\s+/g, '-')}.pdf`)}
                       className="qpc-gradient text-white"
                     >
                       <Download className="mr-2" size={16} />
-                      Download PDF
+                      Descargar PDF
                     </Button>
                   </CardContent>
                 </Card>
