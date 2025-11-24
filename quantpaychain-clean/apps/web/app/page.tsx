@@ -114,15 +114,15 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Link href="/dashboard">
+              <Link href="/register">
                 <Button size="lg" className="qpc-gradient text-white px-8 py-6 text-lg animate-glow-pulse">
-                  Launch Platform
+                  Crear Cuenta Gratis
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
               <Link href="/demo">
                 <Button size="lg" variant="outline" className="border-purple-500/30 text-white hover:bg-purple-500/10 px-8 py-6 text-lg">
-                  View Demo
+                  Ver Demostración
                   <ChevronRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
