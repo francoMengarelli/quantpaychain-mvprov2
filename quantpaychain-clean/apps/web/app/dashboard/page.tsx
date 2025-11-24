@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/page-layout";
+import { ProtectedRoute } from "@/components/protected-route";
 import { TrendingUp, Wallet, FileText, Activity, Plus, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
@@ -11,7 +12,8 @@ export default function DashboardPage() {
   const { user } = useAuth();
 
   return (
-    <PageLayout>
+    <ProtectedRoute>
+      <PageLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
