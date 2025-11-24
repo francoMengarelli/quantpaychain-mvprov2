@@ -1,13 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { WalletButton } from "./wallet-button";
 import { Button } from "./ui/button";
-import { Network, Menu } from "lucide-react";
+import { Network, Menu, User, LogOut } from "lucide-react";
 import { useState, memo } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 function NavbarComponent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, signOut } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-800/50 bg-slate-950/80 backdrop-blur-sm">
@@ -36,6 +45,30 @@ function NavbarComponent() {
                 Docs
               </Button>
             </Link>
+            
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center gap-2 text-gray-300 text-sm">
+                  <User size={16} />
+                  <span>{user?.email?.split('@')[0]}</span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  className="text-gray-300 hover:text-white"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="mr-2" size={16} />
+                  Salir
+                </Button>
+              </>
+            ) : (
+              <Link href="/login">
+                <Button className="qpc-gradient text-white">
+                  Iniciar Sesión
+                </Button>
+              </Link>
+            )}
+            
             <WalletButton />
           </div>
 
