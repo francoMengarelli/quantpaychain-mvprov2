@@ -14,6 +14,14 @@ export default function DemoPage() {
     setMounted(true);
   }, []);
 
+  const handlePlayPause = () => {
+    setIsPlaying(prev => !prev);
+  };
+
+  const handleRestart = () => {
+    setIsPlaying(false);
+  };
+
   if (!mounted) {
     return (
       <PageLayout>
