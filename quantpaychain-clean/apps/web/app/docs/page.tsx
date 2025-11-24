@@ -8,39 +8,39 @@ import { PageLayout } from "@/components/page-layout";
 const documents = [
   {
     id: 1,
-    title: "Platform Whitepaper",
-    description: "Complete technical overview of QuantPayChain platform",
+    title: "Whitepaper de la Plataforma",
+    description: "Descripción técnica completa de la plataforma QuantPayChain",
     icon: FileText,
     color: "purple",
     file: "/docs/quantpaychain-whitepaper.pdf",
-    size: "2.4 MB"
+    size: "2.7 KB"
   },
   {
     id: 2,
-    title: "Post-Quantum Security",
-    description: "NIST-approved post-quantum cryptography implementation",
+    title: "Seguridad Post-Cuántica",
+    description: "Implementación de criptografía post-cuántica aprobada por NIST",
     icon: Shield,
     color: "blue",
     file: "/docs/post-quantum-security.pdf",
-    size: "1.8 MB"
+    size: "2.4 KB"
   },
   {
     id: 3,
-    title: "ISO 20022 Compliance",
-    description: "Financial messaging standards implementation guide",
+    title: "Cumplimiento ISO 20022",
+    description: "Guía de implementación de estándares de mensajería financiera",
     icon: Book,
     color: "green",
     file: "/docs/iso20022-compliance.pdf",
-    size: "1.2 MB"
+    size: "2.2 KB"
   },
   {
     id: 4,
-    title: "API Documentation",
-    description: "Complete REST API reference and integration guide",
+    title: "Documentación de API",
+    description: "Referencia completa de API REST y guía de integración",
     icon: FileText,
     color: "orange",
     file: "/docs/api-documentation.pdf",
-    size: "3.1 MB"
+    size: "2.3 KB"
   }
 ];
 
