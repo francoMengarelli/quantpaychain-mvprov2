@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageLayout } from "@/components/page-layout";
+import { ProtectedRoute } from "@/components/protected-route";
 import { TrendingUp, Search } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
