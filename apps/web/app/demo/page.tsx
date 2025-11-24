@@ -105,9 +105,8 @@ export default function DemoPage() {
                 <p className="text-sm text-gray-400">Explore flujos de pago multi-moneda y liquidaciones</p>
               </CardContent>
             </Card>
-          </div>
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 }
