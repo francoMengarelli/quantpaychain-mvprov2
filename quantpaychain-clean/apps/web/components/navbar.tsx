@@ -73,7 +73,7 @@ function NavbarComponent({ showWalletButton = false }: NavbarProps) {
               </Link>
             )}
             
-            <WalletButton />
+            {showWalletButton && <WalletButton />}
           </div>
 
           {/* Mobile Menu Button */}
