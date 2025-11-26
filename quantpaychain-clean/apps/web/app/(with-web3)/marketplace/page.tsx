@@ -11,7 +11,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
-interface Token {
+interface MarketplaceToken {
   id: string;
   asset_id: string;
   token_symbol: string;
@@ -21,11 +21,17 @@ interface Token {
   blockchain_network: string;
   contract_address?: string;
   created_at: string;
+  // Asset info
+  asset_name: string;
+  asset_type: string;
+  asset_description: string;
+  asset_value_usd: number;
+  asset_location: string;
 }
 
 export default function MarketplacePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [tokens, setTokens] = useState<Token[]>([]);
+  const [tokens, setTokens] = useState<MarketplaceToken[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,23 +40,69 @@ export default function MarketplacePage() {
 
   const loadTokens = async () => {
     try {
+      setLoading(true);
+      // Join tokens with rwa_assets to get asset information
       const { data, error } = await supabase
         .from('tokens')
-        .select('*')
-        .limit(10);
+        .select(`
+          *,
+          asset:rwa_assets!inner(
+            name,
+            asset_type,
+            description,
+            value_usd,
+            location,
+            status
+          )
+        `)
+        .eq('asset.status', 'active')
+        .gt('available_supply', 0)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTokens(data || []);
-    } catch (error) {
+
+      // Transform data to flat structure
+      const transformedData = data?.map((item: any) => ({
+        id: item.id,
+        asset_id: item.asset_id,
+        token_symbol: item.token_symbol,
+        total_supply: item.total_supply,
+        available_supply: item.available_supply,
+        price_per_token: item.price_per_token,
+        blockchain_network: item.blockchain_network,
+        contract_address: item.contract_address,
+        created_at: item.created_at,
+        asset_name: item.asset.name,
+        asset_type: item.asset.asset_type,
+        asset_description: item.asset.description,
+        asset_value_usd: item.asset.value_usd,
+        asset_location: item.asset.location
+      })) || [];
+
+      setTokens(transformedData);
+    } catch (error: any) {
       console.error('Error loading tokens:', error);
-      toast.error('Error loading tokens');
+      toast.error('Error al cargar el marketplace');
     } finally {
       setLoading(false);
     }
   };
 
+  const getAssetTypeLabel = (type: string) => {
+    const types: Record<string, string> = {
+      'real_estate': 'Bienes Raíces',
+      'commodity': 'Commodity',
+      'art': 'Arte',
+      'bond': 'Bono',
+      'equity': 'Equity',
+      'other': 'Otro'
+    };
+    return types[type] || type;
+  };
+
   const filteredTokens = tokens.filter(token =>
-    token.token_symbol.toLowerCase().includes(searchTerm.toLowerCase())
+    token.token_symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    token.asset_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
