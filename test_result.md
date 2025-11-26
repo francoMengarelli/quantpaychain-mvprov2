@@ -128,14 +128,37 @@ These versions include patches for known hydration/DOM issues with portal-based 
 - Clean separation of concerns
 
 ### Testing Status - Round 3
+- **Deployment**: Pushed to GitHub, Vercel deployment completed
+- **User Testing Result**: PARTIALLY FAILED
+- **New Issue**: `WagmiProviderNotFoundError` on dashboard and login pages
+- **Root Cause**: Navbar's WalletButton was trying to use Wagmi hooks in pages without Web3Provider
+
+### Solution Implemented - Round 3.1 (Fix WalletButton)
+**Strategy**: Make WalletButton Conditional
+- **Problem**: All pages using PageLayout/Navbar were trying to render WalletButton which needs WagmiProvider
+- **Solution**: Added `showWalletButton` prop to Navbar and PageLayout
+- **Changes Made**:
+  - Modified `/components/navbar.tsx` to accept `showWalletButton` prop (default: false)
+  - Modified `/components/page-layout.tsx` to accept and pass through `showWalletButton` prop
+  - Updated home page and marketplace to pass `showWalletButton={true}`
+  - Other pages (dashboard, create-asset, login, etc.) use default (false) and don't show WalletButton
+
+**Result**: 
+- Pages WITH Web3Provider (home, marketplace): Show wallet button
+- Pages WITHOUT Web3Provider (all others): Don't show wallet button, no errors
+
+### Testing Status - Round 3.1
 - **Deployment**: Pushed to GitHub, Vercel deployment in progress
 - **User Testing Required**: YES
-- **Expected Result**: Select components should work without crashes
-- **Next Step**: User tests Select dropdown on /create-asset after deployment
+- **Expected Results**: 
+  1. `/create-asset` Select dropdown should work without crashes
+  2. `/dashboard` and other pages should load without WagmiProvider errors
+  3. Login and navigation should work normally
+- **Next Step**: User tests after deployment completes
 
 ### agent_communication:
 - **agent**: main
-- **message**: "¡Implementé la SOLUCIÓN DEFINITIVA! El problema era que Web3Provider estaba en el root layout afectando TODAS las páginas. Lo moví a un grupo de rutas específico - ahora solo las páginas que necesitan wallet (home y marketplace) tienen Web3Provider. La página /create-asset ya no tiene ese conflicto. Código pusheado, espera el deployment."
+- **message**: "Encontré un segundo problema: el Navbar intentaba mostrar WalletButton en todas las páginas, causando error de WagmiProvider. Lo hice condicional - ahora solo las páginas con Web3 (home y marketplace) muestran el botón de wallet. Las demás páginas funcionan normalmente. Código pusheado, espera el nuevo deployment."
 
 
 #    - When calling the testing agent, provide clear instructions about:
