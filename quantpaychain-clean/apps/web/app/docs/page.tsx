@@ -8,40 +8,42 @@ import Link from "next/link";
 
 const documents = [
   {
-    id: 1,
-    title: "Whitepaper de la Plataforma",
-    description: "Descripción técnica completa de la plataforma QuantPayChain",
+    title: "Whitepaper Técnico",
+    titleEn: "Technical Whitepaper",
+    description: "Arquitectura, tecnología y visión de QuantPayChain",
+    descriptionEn: "Architecture, technology and vision of QuantPayChain",
     icon: FileText,
-    color: "purple",
-    file: "/docs/quantpaychain-whitepaper.pdf",
-    size: "2.7 KB"
+    path: "/docs/whitepaper",
+    color: "from-purple-500 to-pink-500"
   },
   {
-    id: 2,
+    title: "Guía Técnica",
+    titleEn: "Technical Guide",
+    description: "Documentación completa para desarrolladores",
+    descriptionEn: "Complete documentation for developers",
+    icon: BookOpen,
+    path: "/docs/technical-guide",
+    color: "from-blue-500 to-cyan-500"
+  },
+  {
     title: "Seguridad Post-Cuántica",
-    description: "Implementación de criptografía post-cuántica aprobada por NIST",
+    titleEn: "Post-Quantum Security",
+    description: "Implementación de criptografía resistente a computadoras cuánticas",
+    descriptionEn: "Implementation of quantum-resistant cryptography",
     icon: Shield,
-    color: "blue",
-    file: "/docs/post-quantum-security.pdf",
-    size: "2.4 KB"
+    path: "/docs/pqc-security",
+    color: "from-emerald-500 to-teal-500",
+    comingSoon: true
   },
   {
-    id: 3,
-    title: "Cumplimiento ISO 20022",
-    description: "Guía de implementación de estándares de mensajería financiera",
-    icon: Book,
-    color: "green",
-    file: "/docs/iso20022-compliance.pdf",
-    size: "2.2 KB"
-  },
-  {
-    id: 4,
-    title: "Documentación de API",
-    description: "Referencia completa de API REST y guía de integración",
-    icon: FileText,
-    color: "orange",
-    file: "/docs/api-documentation.pdf",
-    size: "2.3 KB"
+    title: "ISO 20022 Compliance",
+    titleEn: "ISO 20022 Compliance",
+    description: "Estándares de mensajería financiera internacional",
+    descriptionEn: "International financial messaging standards",
+    icon: Globe,
+    path: "/docs/iso20022",
+    color: "from-orange-500 to-red-500",
+    comingSoon: true
   }
 ];
 
