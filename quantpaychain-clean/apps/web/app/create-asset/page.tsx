@@ -142,6 +142,16 @@ export default function CreateAssetPage() {
             <p className="text-gray-400">Tokeniza un nuevo activo del mundo real</p>
           </div>
 
+          {/* AI Advisor Panel */}
+          <div className="mb-8">
+            <AIAdvisorPanel
+              assetType={formData.asset_type}
+              description={formData.description}
+              valueUsd={formData.value_usd}
+              location={formData.location}
+            />
+          </div>
+
         <div className="max-w-3xl mx-auto">
           <Card className="glass-effect border-purple-500/20">
             <CardContent className="p-8">
