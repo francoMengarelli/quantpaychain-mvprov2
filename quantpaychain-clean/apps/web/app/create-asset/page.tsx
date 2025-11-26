@@ -163,6 +163,9 @@ export default function CreateAssetPage() {
 
                     <div>
                       <Label htmlFor="asset_type" className="text-gray-300">Tipo de Asset *</Label>
+                      {!mounted ? (
+                        <div className="h-10 bg-slate-900/50 border border-purple-500/20 rounded-md animate-pulse"></div>
+                      ) : (
                       <Select
                         value={formData.asset_type}
                         onValueChange={(value) => setFormData({...formData, asset_type: value})}
