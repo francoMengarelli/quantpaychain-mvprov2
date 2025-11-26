@@ -231,18 +231,20 @@ export default function CreateAssetPage() {
 
                       <div>
                         <Label htmlFor="blockchain" className="text-gray-300">Blockchain *</Label>
-                        <ClientSelect
+                        <Select
                           value={formData.blockchain}
                           onValueChange={(value) => setFormData({...formData, blockchain: value})}
-                          placeholder="Selecciona blockchain"
-                          className="bg-slate-900/50 border-purple-500/20 text-white"
-                          items={[
-                            { value: "ethereum", label: "Ethereum" },
-                            { value: "polygon", label: "Polygon" },
-                            { value: "avalanche", label: "Avalanche" },
-                            { value: "binance", label: "Binance Smart Chain" }
-                          ]}
-                        />
+                        >
+                          <SelectTrigger className="bg-slate-900/50 border-purple-500/20 text-white">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="ethereum">Ethereum</SelectItem>
+                            <SelectItem value="polygon">Polygon</SelectItem>
+                            <SelectItem value="avalanche">Avalanche</SelectItem>
+                            <SelectItem value="binance">Binance Smart Chain</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
