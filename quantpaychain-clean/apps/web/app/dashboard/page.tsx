@@ -122,48 +122,128 @@ export default function DashboardPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="glass-effect border-purple-500/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-400">Total Value</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-400">Valor Total</CardTitle>
                 <Wallet className="h-4 w-4 text-purple-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-gray-500 mt-1">Connect wallet to see balance</p>
+                <div className="text-2xl font-bold text-white">
+                  ${stats.totalValue.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">USD en activos</p>
               </CardContent>
             </Card>
 
             <Card className="glass-effect border-purple-500/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-400">Assets Owned</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-400">Assets Creados</CardTitle>
                 <FileText className="h-4 w-4 text-blue-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">0</div>
-                <p className="text-xs text-gray-500 mt-1">No assets yet</p>
+                <div className="text-2xl font-bold text-white">{stats.totalAssets}</div>
+                <p className="text-xs text-gray-500 mt-1">Total de assets</p>
               </CardContent>
             </Card>
 
             <Card className="glass-effect border-purple-500/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-400">Total Earnings</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-400">Assets Activos</CardTitle>
                 <TrendingUp className="h-4 w-4 text-emerald-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">$0.00</div>
-                <p className="text-xs text-emerald-500 mt-1">+0%</p>
+                <div className="text-2xl font-bold text-white">{stats.activeAssets}</div>
+                <p className="text-xs text-emerald-500 mt-1">Disponibles para venta</p>
               </CardContent>
             </Card>
 
             <Card className="glass-effect border-purple-500/20">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-400">Active Investments</CardTitle>
+                <CardTitle className="text-sm font-medium text-gray-400">Inversiones</CardTitle>
                 <Activity className="h-4 w-4 text-orange-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-white">0</div>
-                <p className="text-xs text-gray-500 mt-1">No active investments</p>
+                <p className="text-xs text-gray-500 mt-1">Próximamente</p>
               </CardContent>
             </Card>
           </div>
+
+          {/* My Assets Section */}
+          <Card className="glass-effect border-purple-500/20 mb-8">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  Mis Assets
+                </CardTitle>
+                {loading && (
+                  <Loader2 className="h-5 w-5 text-purple-400 animate-spin" />
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="text-center py-8 text-gray-400">
+                  Cargando tus assets...
+                </div>
+              ) : assets.length === 0 ? (
+                <div className="text-center py-12">
+                  <Building2 className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                  <p className="text-gray-400 mb-4">Aún no has creado ningún asset</p>
+                  <Link href="/create-asset">
+                    <Button className="qpc-gradient text-white">
+                      <Plus className="mr-2" size={18} />
+                      Crear tu Primer Asset
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {assets.map((asset) => (
+                    <Card key={asset.id} className="glass-effect border-purple-500/10 hover:border-purple-500/30 transition-all">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-lg font-semibold text-white">{asset.name}</h3>
+                              {getStatusBadge(asset.status)}
+                              <Badge variant="outline" className="text-xs border-purple-500/30 text-purple-300">
+                                {getAssetTypeLabel(asset.asset_type)}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-gray-400 mb-3 line-clamp-2">{asset.description}</p>
+                            <div className="flex items-center gap-6 text-sm">
+                              <div>
+                                <span className="text-gray-500">Valor:</span>
+                                <span className="text-white font-semibold ml-2">
+                                  ${Number(asset.value_usd).toLocaleString('es-ES')} USD
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-gray-500">Ubicación:</span>
+                                <span className="text-white ml-2">{asset.location}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-500">Creado:</span>
+                                <span className="text-white ml-2">
+                                  {new Date(asset.created_at).toLocaleDateString('es-ES')}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <Link href={`/token/${asset.id}`}>
+                            <Button variant="ghost" size="sm" className="text-purple-400 hover:text-purple-300">
+                              Ver Detalles
+                              <ExternalLink className="ml-2" size={14} />
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* User Info Card */}
           <Card className="glass-effect border-purple-500/20 mb-8">
