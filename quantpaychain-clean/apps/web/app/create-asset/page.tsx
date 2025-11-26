@@ -34,10 +34,6 @@ export default function CreateAssetPage() {
     blockchain: "ethereum"
   });
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
