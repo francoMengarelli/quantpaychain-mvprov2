@@ -48,15 +48,6 @@ const documents = [
 ];
 
 export default function DocsPage() {
-  const handleDownload = (fileUrl: string, fileName: string) => {
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
@@ -69,29 +60,34 @@ export default function DocsPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {documents.map((doc) => {
+            {documents.map((doc, index) => {
               const Icon = doc.icon;
-              const colorClasses = {
-                purple: "text-purple-400 border-purple-500/20",
-                blue: "text-blue-400 border-blue-500/20",
-                green: "text-green-400 border-green-500/20",
-                orange: "text-orange-400 border-orange-500/20"
-              };
 
               return (
-                <Card key={doc.id} className={`glass-effect ${colorClasses[doc.color as keyof typeof colorClasses].split(' ')[1]}`}>
+                <Card key={index} className="glass-effect border-gray-800/50 hover:border-gray-700/50 transition-all duration-300 group">
                   <CardContent className="p-8">
-                    <Icon className={colorClasses[doc.color as keyof typeof colorClasses].split(' ')[0]} size={32} />
-                    <h3 className="text-xl font-bold text-white mb-2 mt-4">{doc.title}</h3>
-                    <p className="text-gray-400 mb-2">{doc.description}</p>
-                    <p className="text-sm text-gray-500 mb-4">Tamaño: {doc.size}</p>
-                    <Button 
-                      onClick={() => handleDownload(doc.file, `${doc.title.toLowerCase().replace(/\s+/g, '-')}.pdf`)}
-                      className="qpc-gradient text-white"
-                    >
-                      <Download className="mr-2" size={16} />
-                      Descargar PDF
-                    </Button>
+                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${doc.color} flex items-center justify-center mb-4`}>
+                      <Icon className="text-white" size={24} />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">{doc.title}</h3>
+                    <p className="text-gray-400 mb-4">{doc.description}</p>
+                    
+                    {doc.comingSoon ? (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-amber-400 font-medium">Próximamente</span>
+                        <Button disabled className="bg-gray-700 text-gray-400 cursor-not-allowed">
+                          <ExternalLink className="mr-2" size={16} />
+                          Ver Documentación
+                        </Button>
+                      </div>
+                    ) : (
+                      <Link href={doc.path}>
+                        <Button className="qpc-gradient text-white group-hover:scale-105 transition-transform">
+                          <ExternalLink className="mr-2" size={16} />
+                          Ver Documentación
+                        </Button>
+                      </Link>
+                    )}
                   </CardContent>
                 </Card>
               );
