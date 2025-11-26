@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { WalletButton } from "./wallet-button";
+import dynamic from "next/dynamic";
 import { Button } from "./ui/button";
 import { Network, Menu, User, LogOut } from "lucide-react";
 import { useState, memo } from "react";
 import { useAuth } from "@/hooks/useAuth";
+
+// Importar WalletButton dinámicamente para evitar cargar RainbowKit en páginas sin Web3Provider
+const WalletButton = dynamic(
+  () => import("./wallet-button").then((mod) => ({ default: mod.WalletButton })),
+  { ssr: false }
+);
 
 interface NavbarProps {
   showWalletButton?: boolean;
