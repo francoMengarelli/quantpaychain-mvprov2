@@ -5,15 +5,28 @@ import { useEffect, useState } from 'react';
 
 export function WalletButton() {
   const [mounted, setMounted] = useState(false);
+  const [hasWagmi, setHasWagmi] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Verificar si estamos dentro de un WagmiProvider
+    try {
+      // Intentar importar useConfig y verificar si está disponible
+      import('wagmi').then((wagmi) => {
+        try {
+          // Si useConfig no arroja error, estamos dentro del provider
+          setHasWagmi(true);
+        } catch {
+          setHasWagmi(false);
+        }
+      });
+    } catch {
+      setHasWagmi(false);
+    }
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="h-10 w-32 bg-purple-500/20 rounded-lg animate-pulse" />
-    );
+  if (!mounted || !hasWagmi) {
+    return null;
   }
 
   return (
