@@ -55,7 +55,7 @@ export default function MarketplacePage() {
 
   return (
     <ProtectedRoute>
-      <PageLayout>
+      <PageLayout showWalletButton={true}>
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
