@@ -72,7 +72,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
       
       setAdvice(mockAdvice);
       setExpanded(true);
-      toast.success("🤖 Análisis de IA completado");
+      toast.success("Análisis de IA completado");
     } catch (error) {
       toast.error("Error al obtener consejos de IA");
     } finally {
