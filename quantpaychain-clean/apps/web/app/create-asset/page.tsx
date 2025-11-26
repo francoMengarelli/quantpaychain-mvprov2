@@ -264,6 +264,7 @@ export default function CreateAssetPage() {
                             <SelectItem value="binance">Binance Smart Chain</SelectItem>
                           </SelectContent>
                         </Select>
+                        )}
                       </div>
                     </div>
 
