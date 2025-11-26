@@ -5,12 +5,13 @@ import { Navbar } from "./navbar";
 
 interface PageLayoutProps {
   children: React.ReactNode;
+  showWalletButton?: boolean;
 }
 
-function PageLayoutComponent({ children }: PageLayoutProps) {
+function PageLayoutComponent({ children, showWalletButton = false }: PageLayoutProps) {
   return (
     <>
-      <Navbar />
+      <Navbar showWalletButton={showWalletButton} />
       {children}
     </>
   );
