@@ -122,11 +122,11 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
       
       // Redirect to dashboard after 2 seconds
       setTimeout(() => {
-        router.push(\"/dashboard\");
+        router.push("/dashboard");
       }, 2000);
     } catch (error: any) {
       console.error('Purchase error:', error);
-      toast.error(\"Error al procesar la compra\");
+      toast.error("Error al procesar la compra");
     } finally {
       setPurchasing(false);
     }
