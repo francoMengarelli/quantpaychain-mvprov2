@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import Link from "next/link";
+import { GamificationPanel } from "@/components/gamification-panel";
 
 interface Asset {
   id: string;
