@@ -50,3 +50,4 @@ NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id
 ## 📄 License
 
 Proprietary - All rights reserved
+# Force redeploy - NativeSelect fix
