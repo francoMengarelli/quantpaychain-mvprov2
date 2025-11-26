@@ -247,6 +247,9 @@ export default function CreateAssetPage() {
 
                       <div>
                         <Label htmlFor="blockchain" className="text-gray-300">Blockchain *</Label>
+                        {!mounted ? (
+                          <div className="h-10 bg-slate-900/50 border border-purple-500/20 rounded-md animate-pulse"></div>
+                        ) : (
                         <Select
                           value={formData.blockchain}
                           onValueChange={(value) => setFormData({...formData, blockchain: value})}
