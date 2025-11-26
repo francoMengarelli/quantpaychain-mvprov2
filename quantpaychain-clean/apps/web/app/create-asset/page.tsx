@@ -21,7 +21,6 @@ export default function CreateAssetPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     asset_type: "",
