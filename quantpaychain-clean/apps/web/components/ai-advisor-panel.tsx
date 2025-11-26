@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp } from "lucide-react";
+import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface AIAdvisorPanelProps {
