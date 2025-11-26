@@ -120,9 +120,11 @@ function NavbarComponent({ showWalletButton = false }: NavbarProps) {
               </Link>
             )}
             
-            <div className="px-4 py-2">
-              <WalletButton />
-            </div>
+            {showWalletButton && (
+              <div className="px-4 py-2">
+                <WalletButton />
+              </div>
+            )}
           </div>
         )}
       </div>
