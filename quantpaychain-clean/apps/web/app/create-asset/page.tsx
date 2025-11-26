@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,13 +15,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { v4 as uuidv4 } from 'uuid';
 import { AIAdvisorPanel } from "@/components/ai-advisor-panel";
-
-// Importar Select dinámicamente para evitar hydration issues con Radix UI Portal
-const Select = dynamic(() => import("@/components/ui/select").then(mod => mod.Select), { ssr: false });
-const SelectContent = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectContent), { ssr: false });
-const SelectItem = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectItem), { ssr: false });
-const SelectTrigger = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectTrigger), { ssr: false });
-const SelectValue = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectValue), { ssr: false });
+import { NativeSelect } from "@/components/native-select";
 
 export default function CreateAssetPage() {
   const router = useRouter();
