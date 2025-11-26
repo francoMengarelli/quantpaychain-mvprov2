@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageLayout } from "@/components/page-layout";
 import { ProtectedRoute } from "@/components/protected-route";
 import { toast } from "sonner";
@@ -15,12 +15,6 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { v4 as uuidv4 } from 'uuid';
-
-// Importar Select dinámicamente para evitar conflictos de hidratación con RainbowKit
-const ClientSelect = dynamic(
-  () => import("@/components/client-select").then((mod) => mod.ClientSelect),
-  { ssr: false }
-);
 
 export default function CreateAssetPage() {
   const router = useRouter();
@@ -157,20 +151,22 @@ export default function CreateAssetPage() {
 
                     <div>
                       <Label htmlFor="asset_type" className="text-gray-300">Tipo de Asset *</Label>
-                      <ClientSelect
+                      <Select
                         value={formData.asset_type}
                         onValueChange={(value) => setFormData({...formData, asset_type: value})}
-                        placeholder="Selecciona el tipo"
-                        className="bg-slate-900/50 border-purple-500/20 text-white"
-                        items={[
-                          { value: "real_estate", label: "Bienes Raíces" },
-                          { value: "commodity", label: "Commodity" },
-                          { value: "art", label: "Arte" },
-                          { value: "bond", label: "Bono" },
-                          { value: "equity", label: "Equity" },
-                          { value: "other", label: "Otro" }
-                        ]}
-                      />
+                      >
+                        <SelectTrigger className="bg-slate-900/50 border-purple-500/20 text-white">
+                          <SelectValue placeholder="Selecciona el tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="real_estate">Bienes Raíces</SelectItem>
+                          <SelectItem value="commodity">Commodity</SelectItem>
+                          <SelectItem value="art">Arte</SelectItem>
+                          <SelectItem value="bond">Bono</SelectItem>
+                          <SelectItem value="equity">Equity</SelectItem>
+                          <SelectItem value="other">Otro</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div>
@@ -235,18 +231,20 @@ export default function CreateAssetPage() {
 
                       <div>
                         <Label htmlFor="blockchain" className="text-gray-300">Blockchain *</Label>
-                        <ClientSelect
+                        <Select
                           value={formData.blockchain}
                           onValueChange={(value) => setFormData({...formData, blockchain: value})}
-                          placeholder="Selecciona blockchain"
-                          className="bg-slate-900/50 border-purple-500/20 text-white"
-                          items={[
-                            { value: "ethereum", label: "Ethereum" },
-                            { value: "polygon", label: "Polygon" },
-                            { value: "avalanche", label: "Avalanche" },
-                            { value: "binance", label: "Binance Smart Chain" }
-                          ]}
-                        />
+                        >
+                          <SelectTrigger className="bg-slate-900/50 border-purple-500/20 text-white">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="ethereum">Ethereum</SelectItem>
+                            <SelectItem value="polygon">Polygon</SelectItem>
+                            <SelectItem value="avalanche">Avalanche</SelectItem>
+                            <SelectItem value="binance">Binance Smart Chain</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
