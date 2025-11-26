@@ -98,14 +98,31 @@ Updated web3 dependencies to latest stable versions compatible with RainbowKit 2
 
 These versions include patches for known hydration/DOM issues with portal-based components.
 
-### Testing Status
+### Testing Status - Round 1
+- **Deployment**: Pushed to GitHub, Vercel deployment completed
+- **User Testing Result**: FAILED - Crash persists
+- **User Feedback**: "sigue el crash al poner el tipo de activo"
+
+### Solution Implemented - Round 2
+**Strategy**: Dynamic Import with SSR Disabled
+- Created `ClientSelect` wrapper component
+- Used `next/dynamic` to import Select with `ssr: false`
+- Applied to both Select components (asset_type and blockchain)
+- This loads the Select only on client-side, avoiding hydration conflicts
+
+**Technical Details**:
+- File created: `/apps/web/components/client-select.tsx`
+- File modified: `/apps/web/app/create-asset/page.tsx`
+- The Select component now renders only after RainbowKit is fully mounted
+
+### Testing Status - Round 2
 - **Deployment**: Pushed to GitHub, Vercel deployment in progress
 - **User Testing Required**: YES
-- **Next Step**: User needs to test the Select dropdown functionality on the deployed URL
+- **Next Step**: User needs to test Select dropdown on deployed URL after new deployment completes
 
 ### agent_communication:
 - **agent**: main
-- **message**: "Actualicé las dependencias web3 a sus últimas versiones estables. Esto debería resolver el crash del componente Select. El código está pusheado y Vercel está desplegando. Por favor prueba seleccionar un tipo de activo en /create-asset cuando el deployment termine."
+- **message**: "La actualización de dependencias no fue suficiente. Implementé la estrategia de dynamic import - ahora el Select se carga solo en el cliente (ssr:false), evitando conflictos de hidratación con RainbowKit. Código pusheado, espera el nuevo deployment de Vercel y prueba nuevamente."
 
 
 #    - When calling the testing agent, provide clear instructions about:
