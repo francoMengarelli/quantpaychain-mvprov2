@@ -81,8 +81,8 @@ class SupabaseService:
         """
         Obtiene todos los tokens activos
         """
-        result = self.client.table('tokens').select(`
+        result = self.client.table('tokens').select('''
             *,
             asset:rwa_assets!inner(name, asset_type, description, value_usd, location, status)
-        `).eq('asset.status', 'active').gt('available_supply', 0).execute()
+        ''').eq('asset.status', 'active').gt('available_supply', 0).execute()
         return result.data if result.data else []
