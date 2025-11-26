@@ -8,7 +8,11 @@ import { Network, Menu, User, LogOut } from "lucide-react";
 import { useState, memo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
-function NavbarComponent() {
+interface NavbarProps {
+  showWalletButton?: boolean;
+}
+
+function NavbarComponent({ showWalletButton = false }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, signOut } = useAuth();
   const router = useRouter();
@@ -69,7 +73,7 @@ function NavbarComponent() {
               </Link>
             )}
             
-            <WalletButton />
+            {showWalletButton && <WalletButton />}
           </div>
 
           {/* Mobile Menu Button */}
@@ -116,9 +120,11 @@ function NavbarComponent() {
               </Link>
             )}
             
-            <div className="px-4 py-2">
-              <WalletButton />
-            </div>
+            {showWalletButton && (
+              <div className="px-4 py-2">
+                <WalletButton />
+              </div>
+            )}
           </div>
         )}
       </div>
