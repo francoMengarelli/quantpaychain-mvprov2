@@ -10,11 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { PageLayout } from "@/components/page-layout";
 import { ProtectedRoute } from "@/components/protected-route";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { v4 as uuidv4 } from 'uuid';
+import { AIAdvisorPanel } from "@/components/ai-advisor-panel";
 
 // Importar Select dinámicamente para evitar hydration issues con Radix UI Portal
 const Select = dynamic(() => import("@/components/ui/select").then(mod => mod.Select), { ssr: false });
