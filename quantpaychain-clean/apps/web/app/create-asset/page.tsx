@@ -182,6 +182,7 @@ export default function CreateAssetPage() {
                           <SelectItem value="other">Otro</SelectItem>
                         </SelectContent>
                       </Select>
+                      )}
                     </div>
 
                     <div>
