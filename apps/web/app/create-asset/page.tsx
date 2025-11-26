@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageLayout } from "@/components/page-layout";
 import { ProtectedRoute } from "@/components/protected-route";
 import { toast } from "sonner";
@@ -16,10 +16,18 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { v4 as uuidv4 } from 'uuid';
 
+// Importar Select dinámicamente para evitar hydration issues con Radix UI Portal
+const Select = dynamic(() => import("@/components/ui/select").then(mod => mod.Select), { ssr: false });
+const SelectContent = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectContent), { ssr: false });
+const SelectItem = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectItem), { ssr: false });
+const SelectTrigger = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectTrigger), { ssr: false });
+const SelectValue = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectValue), { ssr: false });
+
 export default function CreateAssetPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     asset_type: "",
@@ -32,6 +40,10 @@ export default function CreateAssetPage() {
     price_per_token: "",
     blockchain: "ethereum"
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,6 +163,9 @@ export default function CreateAssetPage() {
 
                     <div>
                       <Label htmlFor="asset_type" className="text-gray-300">Tipo de Asset *</Label>
+                      {!mounted ? (
+                        <div className="h-10 bg-slate-900/50 border border-purple-500/20 rounded-md animate-pulse"></div>
+                      ) : (
                       <Select
                         value={formData.asset_type}
                         onValueChange={(value) => setFormData({...formData, asset_type: value})}
@@ -167,6 +182,7 @@ export default function CreateAssetPage() {
                           <SelectItem value="other">Otro</SelectItem>
                         </SelectContent>
                       </Select>
+                      )}
                     </div>
 
                     <div>
@@ -231,6 +247,9 @@ export default function CreateAssetPage() {
 
                       <div>
                         <Label htmlFor="blockchain" className="text-gray-300">Blockchain *</Label>
+                        {!mounted ? (
+                          <div className="h-10 bg-slate-900/50 border border-purple-500/20 rounded-md animate-pulse"></div>
+                        ) : (
                         <Select
                           value={formData.blockchain}
                           onValueChange={(value) => setFormData({...formData, blockchain: value})}
@@ -245,6 +264,7 @@ export default function CreateAssetPage() {
                             <SelectItem value="binance">Binance Smart Chain</SelectItem>
                           </SelectContent>
                         </Select>
+                        )}
                       </div>
                     </div>
 
