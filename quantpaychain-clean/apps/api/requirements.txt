@@ -3,10 +3,9 @@ uvicorn[standard]==0.27.0
 python-multipart==0.0.6
 pydantic==2.5.3
 stripe==7.10.0
-supabase==2.3.0
+supabase==2.3.4
 python-dotenv==1.0.0
-httpx==0.26.0
 cryptography==42.0.0
-# PQC libraries (to be added)
+# PQC libraries (to be added when needed)
 # liboqs-python==0.8.0
 # pqcrypto==0.3.0
