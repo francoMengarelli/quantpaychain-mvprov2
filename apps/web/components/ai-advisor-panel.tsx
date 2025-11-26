@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp } from "lucide-react";
+import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface AIAdvisorPanelProps {
@@ -72,7 +72,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
       
       setAdvice(mockAdvice);
       setExpanded(true);
-      toast.success("🤖 Análisis de IA completado");
+      toast.success("Análisis de IA completado");
     } catch (error) {
       toast.error("Error al obtener consejos de IA");
     } finally {

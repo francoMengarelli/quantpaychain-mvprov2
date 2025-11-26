@@ -114,19 +114,19 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
         available_supply: (token?.available_supply || 0) - quantity
       }).eq('id', params.id);
       
-      toast.success(\"\ud83c\udf89 \u00a1Compra exitosa! Tokens agregados a tu portafolio\");
-      toast.info(\"\ud83d\udd10 Transacci\u00f3n firmada con PQC\");
+      toast.success("Compra exitosa! Tokens agregados a tu portafolio");
+      toast.info("Transacción firmada con PQC");
       
       // Reset quantity
       setQuantity(1);
       
       // Redirect to dashboard after 2 seconds
       setTimeout(() => {
-        router.push(\"/dashboard\");
+        router.push("/dashboard");
       }, 2000);
     } catch (error: any) {
       console.error('Purchase error:', error);
-      toast.error(\"Error al procesar la compra\");
+      toast.error("Error al procesar la compra");
     } finally {
       setPurchasing(false);
     }
