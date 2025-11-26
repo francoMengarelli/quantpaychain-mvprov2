@@ -138,34 +138,58 @@ export default function MarketplacePage() {
           ) : filteredTokens.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTokens.map((token) => (
-                <Card key={token.id} className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all">
+                <Card key={token.id} className="glass-effect border-purple-500/20 hover:border-purple-500/40 transition-all group">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold qpc-gradient-text">{token.token_symbol}</h3>
-                      <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-                        {token.blockchain_network}
-                      </Badge>
+                    {/* Header */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="outline" className="text-xs border-purple-500/30 text-purple-300">
+                          {getAssetTypeLabel(token.asset_type)}
+                        </Badge>
+                        <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs">
+                          {token.blockchain_network}
+                        </Badge>
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">
+                        {token.asset_name}
+                      </h3>
+                      <p className="text-sm text-gray-400 line-clamp-2">{token.asset_description}</p>
                     </div>
-                    
-                    <div className="space-y-3 mb-6">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Price</span>
-                        <span className="text-white font-semibold">${token.price_per_token?.toFixed(2)}</span>
+
+                    {/* Token Info */}
+                    <div className="bg-slate-900/50 rounded-lg p-4 mb-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400">Token</span>
+                        <span className="text-sm font-bold text-purple-300">{token.token_symbol}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Available</span>
-                        <span className="text-white font-semibold">{token.available_supply?.toLocaleString()}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400">Precio por Token</span>
+                        <span className="text-sm font-semibold text-white">${token.price_per_token?.toFixed(2)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Total Supply</span>
-                        <span className="text-white">{token.total_supply?.toLocaleString()}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-400">Disponibles</span>
+                        <span className="text-sm text-emerald-400 font-semibold">
+                          {token.available_supply?.toLocaleString()} / {token.total_supply?.toLocaleString()}
+                        </span>
                       </div>
                     </div>
 
-                    <Link href={`/token/${token.id}`}>
-                      <Button className="w-full qpc-gradient text-white">
+                    {/* Asset Value */}
+                    <div className="mb-4 pb-4 border-b border-gray-800">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Valor del Asset</span>
+                        <span className="text-lg font-bold text-white">
+                          ${Number(token.asset_value_usd).toLocaleString('es-ES')}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">{token.asset_location}</p>
+                    </div>
+
+                    {/* Action Button */}
+                    <Link href={`/token/${token.asset_id}`}>
+                      <Button className="w-full qpc-gradient text-white group-hover:shadow-lg group-hover:shadow-purple-500/50 transition-all">
                         <TrendingUp className="mr-2" size={18} />
-                        View Details
+                        Ver Detalles & Comprar
                       </Button>
                     </Link>
                   </CardContent>
