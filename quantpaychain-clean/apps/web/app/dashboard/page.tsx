@@ -168,6 +168,11 @@ export default function DashboardPage() {
             </Card>
           </div>
 
+          {/* Gamification Panel */}
+          <div className="mb-8">
+            <GamificationPanel userId={user?.id} />
+          </div>
+
           {/* My Assets Section */}
           <Card className="glass-effect border-purple-500/20 mb-8">
             <CardHeader>
