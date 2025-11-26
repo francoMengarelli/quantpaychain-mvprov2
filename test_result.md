@@ -180,3 +180,61 @@ These versions include patches for known hydration/DOM issues with portal-based 
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "TEST COMPLETO DE CREATE ASSET CON AUTENTICACIÓN - Testing the Create Asset functionality with authentication, specifically focusing on Select components that were causing crashes with removeChild errors"
+
+frontend:
+  - task: "Create Asset Page Authentication"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/CreateAsset.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "AUTHENTICATION ISSUE: Cannot access Create Asset page. Both login with test@quantpay.com/Test123456! and registration attempts failed. Login returns 400 error from Supabase. Registration form fills correctly but doesn't redirect to authenticated area. User remains on register page after submission. All attempts to access /create-asset redirect to /login page."
+
+  - task: "Create Asset Select Components"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/ui/select.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "CANNOT TEST: Unable to test Select components due to authentication barrier. The asset type select with data-testid='asset-type-select' exists in the code and uses Radix UI Select component, but cannot be accessed without authentication. No removeChild or NotFoundError detected in console logs during testing attempts."
+
+  - task: "Create Asset Form Fields"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CreateAsset.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "CANNOT TEST: Form fields (asset name, value, description) exist with proper data-testid attributes but cannot be tested due to authentication barrier."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Create Asset Page Authentication"
+    - "Create Asset Select Components"
+  stuck_tasks:
+    - "Create Asset Page Authentication"
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "CRITICAL AUTHENTICATION ISSUE: Cannot complete Create Asset testing due to authentication failure. Both test credentials (test@quantpay.com/Test123456!) and new registration attempts fail. Login returns 400 error from Supabase auth endpoint. Registration form accepts input but doesn't authenticate user. This blocks testing of the critical Select components that were reported to cause removeChild crashes. Recommend: 1) Fix authentication system, 2) Provide working test credentials, or 3) Implement auth bypass for testing purposes."
