@@ -1,9 +1,10 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Download, ExternalLink, Book, Shield } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/page-layout";
+import { FileText, ExternalLink, BookOpen, Shield, Globe } from "lucide-react";
+import Link from "next/link";
 
 const documents = [
   {
