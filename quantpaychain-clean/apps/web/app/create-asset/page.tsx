@@ -157,22 +157,20 @@ export default function CreateAssetPage() {
 
                     <div>
                       <Label htmlFor="asset_type" className="text-gray-300">Tipo de Asset *</Label>
-                      <Select
+                      <ClientSelect
                         value={formData.asset_type}
                         onValueChange={(value) => setFormData({...formData, asset_type: value})}
-                      >
-                        <SelectTrigger className="bg-slate-900/50 border-purple-500/20 text-white">
-                          <SelectValue placeholder="Selecciona el tipo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="real_estate">Bienes Raíces</SelectItem>
-                          <SelectItem value="commodity">Commodity</SelectItem>
-                          <SelectItem value="art">Arte</SelectItem>
-                          <SelectItem value="bond">Bono</SelectItem>
-                          <SelectItem value="equity">Equity</SelectItem>
-                          <SelectItem value="other">Otro</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        placeholder="Selecciona el tipo"
+                        className="bg-slate-900/50 border-purple-500/20 text-white"
+                        items={[
+                          { value: "real_estate", label: "Bienes Raíces" },
+                          { value: "commodity", label: "Commodity" },
+                          { value: "art", label: "Arte" },
+                          { value: "bond", label: "Bono" },
+                          { value: "equity", label: "Equity" },
+                          { value: "other", label: "Otro" }
+                        ]}
+                      />
                     </div>
 
                     <div>
