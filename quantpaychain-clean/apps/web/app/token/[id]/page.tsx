@@ -290,15 +290,32 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
                 <Button
                   onClick={handlePurchase}
-                  className="w-full qpc-gradient text-white mb-3"
+                  disabled={purchasing || (token?.available_supply || 0) < 1}
+                  className="w-full qpc-gradient text-white mb-3 group"
                 >
-                  <ShoppingCart className="mr-2" size={18} />
-                  Purchase Now
+                  {purchasing ? (
+                    <>
+                      <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="mr-2 group-hover:scale-110 transition-transform" size={18} />
+                      Comprar Ahora
+                    </>
+                  )}
                 </Button>
 
-                <p className="text-xs text-gray-500 text-center">
-                  Secured with post-quantum cryptography
-                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                    <Shield className="h-3 w-3 text-purple-400" />
+                    <span>Post-Quantum Cryptography</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                    <Zap className="h-3 w-3 text-blue-400" />
+                    <span>ISO 20022 Compliant</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
