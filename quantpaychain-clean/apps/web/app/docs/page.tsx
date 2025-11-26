@@ -81,7 +81,7 @@ export default function DocsPage() {
                         </Button>
                       </div>
                     ) : (
-                      <Link href={doc.path}>
+                      <Link href={doc.path} target="_blank" rel="noopener noreferrer">
                         <Button className="qpc-gradient text-white group-hover:scale-105 transition-transform">
                           <ExternalLink className="mr-2" size={16} />
                           Ver Documentación
