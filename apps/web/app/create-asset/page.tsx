@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,19 +15,12 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { v4 as uuidv4 } from 'uuid';
 import { AIAdvisorPanel } from "@/components/ai-advisor-panel";
-
-// Importar Select dinámicamente para evitar hydration issues con Radix UI Portal
-const Select = dynamic(() => import("@/components/ui/select").then(mod => mod.Select), { ssr: false });
-const SelectContent = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectContent), { ssr: false });
-const SelectItem = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectItem), { ssr: false });
-const SelectTrigger = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectTrigger), { ssr: false });
-const SelectValue = dynamic(() => import("@/components/ui/select").then(mod => mod.SelectValue), { ssr: false });
+import { NativeSelect } from "@/components/native-select";
 
 export default function CreateAssetPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     asset_type: "",
@@ -41,10 +33,6 @@ export default function CreateAssetPage() {
     price_per_token: "",
     blockchain: "ethereum"
   });
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -174,26 +162,21 @@ export default function CreateAssetPage() {
 
                     <div>
                       <Label htmlFor="asset_type" className="text-gray-300">Tipo de Asset *</Label>
-                      {!mounted ? (
-                        <div className="h-10 bg-slate-900/50 border border-purple-500/20 rounded-md animate-pulse"></div>
-                      ) : (
-                      <Select
+                      <NativeSelect
+                        id="asset_type"
                         value={formData.asset_type}
-                        onValueChange={(value) => setFormData({...formData, asset_type: value})}
-                      >
-                        <SelectTrigger className="bg-slate-900/50 border-purple-500/20 text-white">
-                          <SelectValue placeholder="Selecciona el tipo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="real_estate">Bienes Raíces</SelectItem>
-                          <SelectItem value="commodity">Commodity</SelectItem>
-                          <SelectItem value="art">Arte</SelectItem>
-                          <SelectItem value="bond">Bono</SelectItem>
-                          <SelectItem value="equity">Equity</SelectItem>
-                          <SelectItem value="other">Otro</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      )}
+                        onChange={(value) => setFormData({...formData, asset_type: value})}
+                        placeholder="Selecciona el tipo"
+                        className="bg-slate-900/50 border-purple-500/20 text-white"
+                        options={[
+                          { value: "real_estate", label: "Bienes Raíces" },
+                          { value: "commodity", label: "Commodity" },
+                          { value: "art", label: "Arte" },
+                          { value: "bond", label: "Bono" },
+                          { value: "equity", label: "Equity" },
+                          { value: "other", label: "Otro" }
+                        ]}
+                      />
                     </div>
 
                     <div>
@@ -258,24 +241,19 @@ export default function CreateAssetPage() {
 
                       <div>
                         <Label htmlFor="blockchain" className="text-gray-300">Blockchain *</Label>
-                        {!mounted ? (
-                          <div className="h-10 bg-slate-900/50 border border-purple-500/20 rounded-md animate-pulse"></div>
-                        ) : (
-                        <Select
+                        <NativeSelect
+                          id="blockchain"
                           value={formData.blockchain}
-                          onValueChange={(value) => setFormData({...formData, blockchain: value})}
-                        >
-                          <SelectTrigger className="bg-slate-900/50 border-purple-500/20 text-white">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ethereum">Ethereum</SelectItem>
-                            <SelectItem value="polygon">Polygon</SelectItem>
-                            <SelectItem value="avalanche">Avalanche</SelectItem>
-                            <SelectItem value="binance">Binance Smart Chain</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        )}
+                          onChange={(value) => setFormData({...formData, blockchain: value})}
+                          placeholder="Selecciona blockchain"
+                          className="bg-slate-900/50 border-purple-500/20 text-white"
+                          options={[
+                            { value: "ethereum", label: "Ethereum" },
+                            { value: "polygon", label: "Polygon" },
+                            { value: "avalanche", label: "Avalanche" },
+                            { value: "binance", label: "Binance Smart Chain" }
+                          ]}
+                        />
                       </div>
                     </div>
 
