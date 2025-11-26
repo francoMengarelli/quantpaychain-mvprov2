@@ -82,7 +82,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar showWalletButton={true} />
       <main className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
