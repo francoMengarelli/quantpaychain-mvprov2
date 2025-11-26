@@ -82,6 +82,32 @@
 #    - When you fix an issue with a stuck task, don't reset the stuck_count until the testing agent confirms it's working
 #
 # 4. Provide Context to Testing Agent:
+
+## [2025-01-XX] - Web3 Dependencies Update - Fix for Create Asset Crash
+
+### Action Taken by Main Agent
+- **Issue**: Critical crash on `/create-asset` page when interacting with "Tipo de Activo" Select dropdown
+- **Error**: `NotFoundError: Failed to execute 'removeChild' on 'Node'`
+- **Root Cause**: DOM conflict between RainbowKit (Web3Provider) and Radix UI Select component (portal-based)
+
+### Solution Implemented
+Updated web3 dependencies to latest stable versions compatible with RainbowKit 2.2.9:
+- `@rainbow-me/rainbowkit`: 2.2.2 → 2.2.9
+- `wagmi`: 2.12.25 → 2.18.2
+- `viem`: 2.21.45 → 2.40.0
+
+These versions include patches for known hydration/DOM issues with portal-based components.
+
+### Testing Status
+- **Deployment**: Pushed to GitHub, Vercel deployment in progress
+- **User Testing Required**: YES
+- **Next Step**: User needs to test the Select dropdown functionality on the deployed URL
+
+### agent_communication:
+- **agent**: main
+- **message**: "Actualicé las dependencias web3 a sus últimas versiones estables. Esto debería resolver el crash del componente Select. El código está pusheado y Vercel está desplegando. Por favor prueba seleccionar un tipo de activo en /create-asset cuando el deployment termine."
+
+
 #    - When calling the testing agent, provide clear instructions about:
 #      - Which tasks need testing (reference the test_plan)
 #      - Any authentication details or configuration needed
