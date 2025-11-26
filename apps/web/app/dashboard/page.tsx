@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import Link from "next/link";
+import { GamificationPanel } from "@/components/gamification-panel";
 
 interface Asset {
   id: string;
@@ -165,6 +166,11 @@ export default function DashboardPage() {
                 <p className="text-xs text-gray-500 mt-1">Próximamente</p>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Gamification Panel */}
+          <div className="mb-8">
+            <GamificationPanel userId={user?.id} />
           </div>
 
           {/* My Assets Section */}
