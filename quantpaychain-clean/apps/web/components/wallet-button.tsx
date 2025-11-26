@@ -2,29 +2,25 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useEffect, useState } from 'react';
+import { useConfig } from 'wagmi';
 
 export function WalletButton() {
   const [mounted, setMounted] = useState(false);
-  const [hasWagmi, setHasWagmi] = useState(false);
+  
+  // Intentar obtener el config de Wagmi
+  let hasWagmi = false;
+  try {
+    useConfig();
+    hasWagmi = true;
+  } catch {
+    hasWagmi = false;
+  }
 
   useEffect(() => {
     setMounted(true);
-    // Verificar si estamos dentro de un WagmiProvider
-    try {
-      // Intentar importar useConfig y verificar si está disponible
-      import('wagmi').then((wagmi) => {
-        try {
-          // Si useConfig no arroja error, estamos dentro del provider
-          setHasWagmi(true);
-        } catch {
-          setHasWagmi(false);
-        }
-      });
-    } catch {
-      setHasWagmi(false);
-    }
   }, []);
 
+  // No renderizar si no está montado o no hay WagmiProvider
   if (!mounted || !hasWagmi) {
     return null;
   }
