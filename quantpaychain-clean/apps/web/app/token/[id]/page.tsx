@@ -5,11 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageLayout } from "@/components/page-layout";
-import { ArrowLeft, TrendingUp, ShoppingCart, ExternalLink } from "lucide-react";
+import { ArrowLeft, TrendingUp, ShoppingCart, ExternalLink, Shield, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Token {
   id: string;
