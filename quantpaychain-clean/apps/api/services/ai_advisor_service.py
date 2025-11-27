@@ -33,7 +33,7 @@ Sé preciso, profesional pero accesible.
     
     async def analyze_asset(self, asset_type: str, description: str, value_usd: float, location: str, user_context: Optional[Dict] = None):
         """
-        Analiza el asset usando GPT-4 y proporciona advice legal y estratégico REAL
+        Analiza el asset usando OpenAI API directamente y proporciona advice legal y estratégico REAL
         """
         try:
             user_prompt = f"""
@@ -83,25 +83,44 @@ Responde con JSON en este formato exacto:
 }}
 """
 
-            response = await self.client.chat_completion_async(
-                messages=[
-                    {"role": "system", "content": self.system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ]
-            )
-            
-            # Parse JSON response
-            ai_analysis = json.loads(response.choices[0].message.content)
-            
-            # Añadir metadata de AI
-            ai_analysis["metadata"] = {
-                "ai_powered": True,
-                "model": "gpt-4",
-                "confidence": "high",
-                "generated_at": asyncio.get_event_loop().time()
-            }
-            
-            return ai_analysis
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{self.base_url}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": self.model,
+                        "messages": [
+                            {"role": "system", "content": self.system_prompt},
+                            {"role": "user", "content": user_prompt}
+                        ],
+                        "temperature": 0.7,
+                        "max_tokens": 2000
+                    },
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    content = data["choices"][0]["message"]["content"]
+                    
+                    # Parse JSON response
+                    ai_analysis = json.loads(content)
+                    
+                    # Añadir metadata de AI
+                    ai_analysis["metadata"] = {
+                        "ai_powered": True,
+                        "model": self.model,
+                        "confidence": "high",
+                        "generated_at": asyncio.get_event_loop().time()
+                    }
+                    
+                    return ai_analysis
+                else:
+                    print(f"OpenAI API Error: {response.status_code} - {response.text}")
+                    return self._get_fallback_analysis(asset_type, description, value_usd, location)
             
         except json.JSONDecodeError:
             # Fallback si GPT-4 no devuelve JSON válido
