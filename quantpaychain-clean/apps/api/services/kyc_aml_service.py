@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import json
 import hashlib
 from datetime import datetime
-import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 class KYCAMLService:
     """
