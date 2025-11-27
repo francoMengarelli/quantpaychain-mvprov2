@@ -35,7 +35,7 @@ Responde siempre en JSON válido con evaluaciones precisas y justificadas.
     
     async def verify_user(self, user_id: str, document_type: str, document_data: Dict, document_image: Optional[str] = None) -> Dict:
         """
-        Verifica identidad del usuario usando AI REAL
+        Verifica identidad del usuario usando OpenAI API directamente
         """
         try:
             # Preparar datos para análisis AI
@@ -46,11 +46,11 @@ Analiza este caso de KYC/AML:
 **DOCUMENTO:** {document_type}
 **DATOS:** {json.dumps(document_data, ensure_ascii=False)}
 
-Si hay imagen del documento, analízala para verificar:
+Analiza para verificar:
 1. Autenticidad del documento
-2. Calidad de la imagen
-3. Signos de manipulación
-4. Legibilidad de información clave
+2. Calidad de la información
+3. Signos de manipulación o fraude
+4. Consistencia de datos
 
 Responde con JSON exacto:
 {{
@@ -82,63 +82,74 @@ Responde con JSON exacto:
 }}
 """
 
-            messages = [
-                {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": user_prompt}
-            ]
-
-            # Añadir imagen si está disponible
-            if document_image:
-                messages[1]["content"] = [
-                    {"type": "text", "text": user_prompt},
-                    {"type": "image_url", "image_url": {"url": document_image}}
-                ]
-
-            response = await self.client.chat_completion_async(messages=messages)
-            
-            ai_analysis = json.loads(response.choices[0].message.content)
-            
-            # Procesar resultados
-            doc_verification = ai_analysis["document_verification"]
-            identity_check = ai_analysis["identity_verification"] 
-            aml_result = ai_analysis["aml_screening"]
-            risk_assessment = ai_analysis["risk_assessment"]
-            
-            # Decisión final
-            approved = (
-                risk_assessment["overall_score"] < self.risk_threshold and
-                doc_verification["is_valid"] and
-                identity_check["data_consistent"] and
-                risk_assessment["recommendation"] == "Aprobar"
-            )
-            
-            return {
-                "user_id": user_id,
-                "verification_status": "approved" if approved else "rejected", 
-                "kyc_status": {
-                    "document_verified": doc_verification["is_valid"],
-                    "identity_confirmed": identity_check["data_consistent"],
-                    "document_type": document_type,
-                    "confidence": doc_verification["confidence"],
-                    "quality_score": doc_verification.get("quality_score", 0)
-                },
-                "aml_status": {
-                    "risk_score": risk_assessment["overall_score"],
-                    "risk_level": risk_assessment["risk_level"], 
-                    "on_watchlist": False,  # Requeriría integración con bases de datos específicas
-                    "geographic_risk": aml_result["geographic_risk"],
-                    "suspicious_patterns": aml_result["suspicious_patterns"]
-                },
-                "ai_analysis": {
-                    "model": "gpt-4-vision-preview",
-                    "processed_at": datetime.utcnow().isoformat(),
-                    "recommendation": risk_assessment["recommendation"],
-                    "reasoning": risk_assessment["reasoning"],
-                    "risk_indicators": aml_result["risk_indicators"]
-                },
-                "compliance_flags": self._generate_compliance_flags(ai_analysis),
-                "next_steps": self._get_next_steps(approved, risk_assessment["overall_score"])
-            }
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{self.base_url}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": self.model,
+                        "messages": [
+                            {"role": "system", "content": self.system_prompt},
+                            {"role": "user", "content": user_prompt}
+                        ],
+                        "temperature": 0.3,
+                        "max_tokens": 1500
+                    },
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    content = data["choices"][0]["message"]["content"]
+                    ai_analysis = json.loads(content)
+                    
+                    # Procesar resultados
+                    doc_verification = ai_analysis["document_verification"]
+                    identity_check = ai_analysis["identity_verification"] 
+                    aml_result = ai_analysis["aml_screening"]
+                    risk_assessment = ai_analysis["risk_assessment"]
+                    
+                    # Decisión final
+                    approved = (
+                        risk_assessment["overall_score"] < self.risk_threshold and
+                        doc_verification["is_valid"] and
+                        identity_check["data_consistent"] and
+                        risk_assessment["recommendation"] == "Aprobar"
+                    )
+                    
+                    return {
+                        "user_id": user_id,
+                        "verification_status": "approved" if approved else "rejected", 
+                        "kyc_status": {
+                            "document_verified": doc_verification["is_valid"],
+                            "identity_confirmed": identity_check["data_consistent"],
+                            "document_type": document_type,
+                            "confidence": doc_verification["confidence"],
+                            "quality_score": doc_verification.get("quality_score", 0)
+                        },
+                        "aml_status": {
+                            "risk_score": risk_assessment["overall_score"],
+                            "risk_level": risk_assessment["risk_level"], 
+                            "on_watchlist": False,
+                            "geographic_risk": aml_result["geographic_risk"],
+                            "suspicious_patterns": aml_result["suspicious_patterns"]
+                        },
+                        "ai_analysis": {
+                            "model": self.model,
+                            "processed_at": datetime.utcnow().isoformat(),
+                            "recommendation": risk_assessment["recommendation"],
+                            "reasoning": risk_assessment["reasoning"],
+                            "risk_indicators": aml_result["risk_indicators"]
+                        },
+                        "compliance_flags": self._generate_compliance_flags(ai_analysis),
+                        "next_steps": self._get_next_steps(approved, risk_assessment["overall_score"])
+                    }
+                else:
+                    print(f"OpenAI API Error: {response.status_code} - {response.text}")
+                    return self._get_fallback_verification(user_id, document_type, document_data)
             
         except Exception as e:
             print(f"KYC/AML AI Error: {e}")
