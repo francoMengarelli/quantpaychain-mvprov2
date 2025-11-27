@@ -109,24 +109,24 @@ Responde con JSON exacto:
             
             # Parse JSON response
             ai_analysis = json.loads(response)
-                    
-                    # Procesar resultados
-                    doc_verification = ai_analysis["document_verification"]
-                    identity_check = ai_analysis["identity_verification"] 
-                    aml_result = ai_analysis["aml_screening"]
-                    risk_assessment = ai_analysis["risk_assessment"]
-                    
-                    # Decisión final
-                    approved = (
-                        risk_assessment["overall_score"] < self.risk_threshold and
-                        doc_verification["is_valid"] and
-                        identity_check["data_consistent"] and
-                        risk_assessment["recommendation"] == "Aprobar"
-                    )
-                    
-                    return {
-                        "user_id": user_id,
-                        "verification_status": "approved" if approved else "rejected", 
+            
+            # Procesar resultados
+            doc_verification = ai_analysis["document_verification"]
+            identity_check = ai_analysis["identity_verification"] 
+            aml_result = ai_analysis["aml_screening"]
+            risk_assessment = ai_analysis["risk_assessment"]
+            
+            # Decisión final
+            approved = (
+                risk_assessment["overall_score"] < self.risk_threshold and
+                doc_verification["is_valid"] and
+                identity_check["data_consistent"] and
+                risk_assessment["recommendation"] == "Aprobar"
+            )
+            
+            return {
+                "user_id": user_id,
+                "verification_status": "approved" if approved else "rejected", 
                         "kyc_status": {
                             "document_verified": doc_verification["is_valid"],
                             "identity_confirmed": identity_check["data_consistent"],
