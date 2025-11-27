@@ -18,12 +18,14 @@ class KYCAMLService:
     """
     
     def __init__(self):
-        self.api_key = os.environ.get("OPENAI_API_KEY") 
+        # Intentar primero con Emergent LLM Key, luego con OpenAI API Key
+        self.api_key = os.environ.get("EMERGENT_LLM_KEY") or os.environ.get("OPENAI_API_KEY") 
         if not self.api_key:
-            print("⚠️ WARNING: OPENAI_API_KEY not found for KYC/AML service")
+            print("⚠️ WARNING: No API key found for KYC/AML (EMERGENT_LLM_KEY or OPENAI_API_KEY)")
             self.api_key = None
         else:
-            print(f"✅ OPENAI_API_KEY loaded for KYC/AML (length: {len(self.api_key)})")
+            key_type = "EMERGENT_LLM_KEY" if os.environ.get("EMERGENT_LLM_KEY") else "OPENAI_API_KEY"
+            print(f"✅ Using {key_type} for KYC/AML (length: {len(self.api_key)})")
             
         self.base_url = "https://api.openai.com/v1"
         self.model = "gpt-4o"  # Modelo actualizado con capacidades de visión
