@@ -7,6 +7,7 @@ supabase>=2.3.4
 python-dotenv>=1.0.0
 httpx>=0.28.1
 cryptography>=42.0.0
+emergentintegrations>=1.0.0
 # PQC libraries (to be added when needed)
 # liboqs-python==0.8.0
 # pqcrypto==0.3.0
