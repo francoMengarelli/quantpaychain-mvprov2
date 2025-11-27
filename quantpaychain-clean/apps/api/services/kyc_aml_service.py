@@ -20,7 +20,10 @@ class KYCAMLService:
     def __init__(self):
         self.api_key = os.environ.get("OPENAI_API_KEY") 
         if not self.api_key:
-            raise ValueError("OPENAI_API_KEY environment variable is required")
+            print("⚠️ WARNING: OPENAI_API_KEY not found for KYC/AML service")
+            self.api_key = None
+        else:
+            print(f"✅ OPENAI_API_KEY loaded for KYC/AML (length: {len(self.api_key)})")
             
         self.base_url = "https://api.openai.com/v1"
         self.model = "gpt-4-vision-preview"
