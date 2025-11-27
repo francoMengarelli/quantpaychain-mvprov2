@@ -2,7 +2,7 @@ from typing import Dict, Optional
 import json
 import hashlib
 from datetime import datetime
-from emergentintegrations import ChatClient
+import httpx
 
 class KYCAMLService:
     """
@@ -18,11 +18,8 @@ class KYCAMLService:
     
     def __init__(self):
         self.api_key = "sk-emergent-7A968AeD5Dc41Be1bD"
-        self.client = ChatClient(
-            api_key=self.api_key,
-            model="gpt-4-vision-preview", 
-            temperature=0.3  # Más determinístico para compliance
-        )
+        self.base_url = "https://api.openai.com/v1"
+        self.model = "gpt-4-vision-preview"
         self.risk_threshold = 70
         self.system_prompt = """
 Eres un experto en KYC/AML y compliance financiero.
