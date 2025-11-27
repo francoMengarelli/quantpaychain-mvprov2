@@ -17,7 +17,10 @@ class KYCAMLService:
     """
     
     def __init__(self):
-        self.api_key = "sk-emergent-7A968AeD5Dc41Be1bD"
+        self.api_key = os.environ.get("OPENAI_API_KEY") 
+        if not self.api_key:
+            raise ValueError("OPENAI_API_KEY environment variable is required")
+            
         self.base_url = "https://api.openai.com/v1"
         self.model = "gpt-4-vision-preview"
         self.risk_threshold = 70
