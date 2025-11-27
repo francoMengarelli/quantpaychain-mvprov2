@@ -1,8 +1,7 @@
 import os
 import json
-import asyncio
 from typing import Dict, Optional
-import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 class AIAdvisorService:
     """
@@ -21,12 +20,11 @@ class AIAdvisorService:
             self.api_key = None
         else:
             key_type = "EMERGENT_LLM_KEY" if os.environ.get("EMERGENT_LLM_KEY") else "OPENAI_API_KEY"
-            print(f"✅ Using {key_type} (length: {len(self.api_key)})")
+            print(f"✅ Using {key_type} for AI Advisor (length: {len(self.api_key)})")
         
-        self.base_url = "https://api.openai.com/v1"
+        self.provider = "openai"
         self.model = "gpt-4o-mini"  # Modelo actualizado y más económico
-        self.system_prompt = """
-Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
+        self.system_message = """Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
 Tu trabajo es analizar activos y proporcionar:
 
 1. Requisitos legales específicos por jurisdicción
@@ -36,12 +34,11 @@ Tu trabajo es analizar activos y proporcionar:
 
 Responde siempre en JSON válido con estructura específica.
 Usa emojis para hacer el contenido más atractivo.
-Sé preciso, profesional pero accesible.
-"""
+Sé preciso, profesional pero accesible."""
     
     async def analyze_asset(self, asset_type: str, description: str, value_usd: float, location: str, user_context: Optional[Dict] = None):
         """
-        Analiza el asset usando OpenAI API directamente y proporciona advice legal y estratégico REAL
+        Analiza el asset usando Emergent LLM integration y proporciona advice legal y estratégico REAL
         """
         # Si no hay API key, usar fallback inmediatamente
         if not self.api_key:
@@ -49,7 +46,8 @@ Sé preciso, profesional pero accesible.
             return self._get_fallback_analysis(asset_type, description, value_usd, location)
         
         try:
-            print(f"🔑 Using OpenAI API key: {self.api_key[:10]}...")
+            print(f"🔑 Using {self.provider} {self.model} via Emergent Integration")
+            
             user_prompt = f"""
 Analiza este activo para tokenización:
 
@@ -97,47 +95,33 @@ Responde con JSON en este formato exacto:
 }}
 """
 
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    f"{self.base_url}/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {self.api_key}",
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "model": self.model,
-                        "messages": [
-                            {"role": "system", "content": self.system_prompt},
-                            {"role": "user", "content": user_prompt}
-                        ],
-                        "temperature": 0.7,
-                        "max_tokens": 2000
-                    },
-                    timeout=30
-                )
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    content = data["choices"][0]["message"]["content"]
-                    
-                    # Parse JSON response
-                    ai_analysis = json.loads(content)
-                    
-                    # Añadir metadata de AI
-                    ai_analysis["metadata"] = {
-                        "ai_powered": True,
-                        "model": self.model,
-                        "confidence": "high",
-                        "generated_at": asyncio.get_event_loop().time()
-                    }
-                    
-                    return ai_analysis
-                else:
-                    print(f"OpenAI API Error: {response.status_code} - {response.text}")
-                    return self._get_fallback_analysis(asset_type, description, value_usd, location)
+            # Crear chat usando Emergent LLM integration
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"ai-advisor-{asset_type}-{hash(description)}",
+                system_message=self.system_message
+            ).with_model(self.provider, self.model)
             
-        except json.JSONDecodeError:
-            # Fallback si GPT-4 no devuelve JSON válido
+            # Enviar mensaje
+            user_message = UserMessage(text=user_prompt)
+            response = await chat.send_message(user_message)
+            
+            # Parse JSON response
+            ai_analysis = json.loads(response)
+            
+            # Añadir metadata de AI
+            ai_analysis["metadata"] = {
+                "ai_powered": True,
+                "model": self.model,
+                "confidence": "high",
+                "provider": self.provider
+            }
+            
+            print(f"✅ AI Analysis completed successfully")
+            return ai_analysis
+            
+        except json.JSONDecodeError as e:
+            print(f"JSON Parse Error: {e}")
             return self._get_fallback_analysis(asset_type, description, value_usd, location)
         except Exception as e:
             print(f"AI Advisor Error: {e}")

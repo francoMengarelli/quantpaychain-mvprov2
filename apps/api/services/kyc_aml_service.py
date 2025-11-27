@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import json
 import hashlib
 from datetime import datetime
-import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 class KYCAMLService:
     """
@@ -27,11 +27,10 @@ class KYCAMLService:
             key_type = "EMERGENT_LLM_KEY" if os.environ.get("EMERGENT_LLM_KEY") else "OPENAI_API_KEY"
             print(f"✅ Using {key_type} for KYC/AML (length: {len(self.api_key)})")
             
-        self.base_url = "https://api.openai.com/v1"
+        self.provider = "openai"
         self.model = "gpt-4o"  # Modelo actualizado con capacidades de visión
         self.risk_threshold = 70
-        self.system_prompt = """
-Eres un experto en KYC/AML y compliance financiero.
+        self.system_message = """Eres un experto en KYC/AML y compliance financiero.
 Analiza documentos de identidad y datos de usuarios para:
 
 1. Verificar autenticidad de documentos
@@ -39,12 +38,11 @@ Analiza documentos de identidad y datos de usuarios para:
 3. Evaluar riesgo AML
 4. Identificar banderas rojas
 
-Responde siempre en JSON válido con evaluaciones precisas y justificadas.
-"""
+Responde siempre en JSON válido con evaluaciones precisas y justificadas."""
     
     async def verify_user(self, user_id: str, document_type: str, document_data: Dict, document_image: Optional[str] = None) -> Dict:
         """
-        Verifica identidad del usuario usando OpenAI API directamente
+        Verifica identidad del usuario usando Emergent LLM integration
         """
         # Si no hay API key, usar fallback
         if not self.api_key:
@@ -52,7 +50,8 @@ Responde siempre en JSON válido con evaluaciones precisas y justificadas.
             return self._get_fallback_verification(user_id, document_type, document_data)
         
         try:
-            print(f"🔑 Using OpenAI API key for KYC: {self.api_key[:10]}...")
+            print(f"🔑 Using {self.provider} {self.model} for KYC via Emergent Integration")
+            
             # Preparar datos para análisis AI
             user_prompt = f"""
 Analiza este caso de KYC/AML:
@@ -97,29 +96,19 @@ Responde con JSON exacto:
 }}
 """
 
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    f"{self.base_url}/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {self.api_key}",
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "model": self.model,
-                        "messages": [
-                            {"role": "system", "content": self.system_prompt},
-                            {"role": "user", "content": user_prompt}
-                        ],
-                        "temperature": 0.3,
-                        "max_tokens": 1500
-                    },
-                    timeout=30
-                )
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    content = data["choices"][0]["message"]["content"]
-                    ai_analysis = json.loads(content)
+            # Crear chat usando Emergent LLM integration
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"kyc-{user_id}-{hash(document_type)}",
+                system_message=self.system_message
+            ).with_model(self.provider, self.model)
+            
+            # Enviar mensaje
+            user_message = UserMessage(text=user_prompt)
+            response = await chat.send_message(user_message)
+            
+            # Parse JSON response
+            ai_analysis = json.loads(response)
                     
                     # Procesar resultados
                     doc_verification = ai_analysis["document_verification"]
