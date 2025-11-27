@@ -42,7 +42,13 @@ Sé preciso, profesional pero accesible.
         """
         Analiza el asset usando OpenAI API directamente y proporciona advice legal y estratégico REAL
         """
+        # Si no hay API key, usar fallback inmediatamente
+        if not self.api_key:
+            print("⚠️ No API key available - using fallback")
+            return self._get_fallback_analysis(asset_type, description, value_usd, location)
+        
         try:
+            print(f"🔑 Using OpenAI API key: {self.api_key[:10]}...")
             user_prompt = f"""
 Analiza este activo para tokenización:
 
