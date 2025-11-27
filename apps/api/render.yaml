@@ -9,6 +9,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
+      - key: OPENAI_API_KEY
+        sync: false
       - key: EMERGENT_LLM_KEY
         sync: false
       - key: SUPABASE_URL  
