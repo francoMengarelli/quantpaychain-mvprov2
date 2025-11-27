@@ -224,6 +224,21 @@ export default function CreateAssetV2Page() {
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
+                      <label htmlFor="token_name" className="block text-gray-300 mb-2">
+                        Nombre del Token *
+                      </label>
+                      <input
+                        id="token_name"
+                        type="text"
+                        required
+                        value={formData.token_name}
+                        onChange={(e) => setFormData({...formData, token_name: e.target.value})}
+                        className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-purple-500/20 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="Ej: Manhattan Property Token"
+                      />
+                    </div>
+
+                    <div>
                       <label htmlFor="token_symbol" className="block text-gray-300 mb-2">
                         Símbolo del Token *
                       </label>
@@ -238,6 +253,9 @@ export default function CreateAssetV2Page() {
                         maxLength={10}
                       />
                     </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
 
                     <div>
                       <label htmlFor="blockchain" className="block text-gray-300 mb-2">
