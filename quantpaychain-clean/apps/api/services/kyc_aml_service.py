@@ -27,11 +27,10 @@ class KYCAMLService:
             key_type = "EMERGENT_LLM_KEY" if os.environ.get("EMERGENT_LLM_KEY") else "OPENAI_API_KEY"
             print(f"✅ Using {key_type} for KYC/AML (length: {len(self.api_key)})")
             
-        self.base_url = "https://api.openai.com/v1"
+        self.provider = "openai"
         self.model = "gpt-4o"  # Modelo actualizado con capacidades de visión
         self.risk_threshold = 70
-        self.system_prompt = """
-Eres un experto en KYC/AML y compliance financiero.
+        self.system_message = """Eres un experto en KYC/AML y compliance financiero.
 Analiza documentos de identidad y datos de usuarios para:
 
 1. Verificar autenticidad de documentos
@@ -39,8 +38,7 @@ Analiza documentos de identidad y datos de usuarios para:
 3. Evaluar riesgo AML
 4. Identificar banderas rojas
 
-Responde siempre en JSON válido con evaluaciones precisas y justificadas.
-"""
+Responde siempre en JSON válido con evaluaciones precisas y justificadas."""
     
     async def verify_user(self, user_id: str, document_type: str, document_data: Dict, document_image: Optional[str] = None) -> Dict:
         """
