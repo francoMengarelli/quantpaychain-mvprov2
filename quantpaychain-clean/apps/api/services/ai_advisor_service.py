@@ -23,7 +23,7 @@ class AIAdvisorService:
             print(f"✅ OPENAI_API_KEY loaded successfully (length: {len(self.api_key)})")
         
         self.base_url = "https://api.openai.com/v1"
-        self.model = "gpt-4"
+        self.model = "gpt-4o-mini"  # Modelo actualizado y más económico
         self.system_prompt = """
 Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
 Tu trabajo es analizar activos y proporcionar:
