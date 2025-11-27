@@ -16,7 +16,11 @@ class AIAdvisorService:
     def __init__(self):
         self.api_key = os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
-            raise ValueError("OPENAI_API_KEY environment variable is required")
+            print("⚠️ WARNING: OPENAI_API_KEY not found in environment variables")
+            print(f"⚠️ Available env vars: {list(os.environ.keys())[:10]}...")
+            self.api_key = None
+        else:
+            print(f"✅ OPENAI_API_KEY loaded successfully (length: {len(self.api_key)})")
         
         self.base_url = "https://api.openai.com/v1"
         self.model = "gpt-4"
