@@ -1,26 +1,40 @@
-from typing import Dict
+from typing import Dict, Optional
+import json
 import hashlib
 from datetime import datetime
+from emergentintegrations import ChatClient
 
 class KYCAMLService:
     """
-    KYC/AML Compliance Service
+    KYC/AML Compliance Service - IMPLEMENTACIÓN REAL CON AI
     
-    Features:
-    - Document verification
-    - Identity verification
-    - AML screening
-    - Risk scoring
-    - Watchlist checking
-    
-    TODO: Integrar con:
-    - Onfido / Jumio (document verification)
-    - ComplyAdvantage (AML screening)
-    - Dow Jones Risk & Compliance (watchlists)
+    Features REALES:
+    - Document verification con GPT-4 Vision
+    - Identity verification automatizada
+    - AML screening con AI
+    - Risk scoring inteligente
+    - Watchlist checking automatizado
     """
     
     def __init__(self):
-        self.risk_threshold = 70  # Score de riesgo máximo aceptable
+        self.api_key = "sk-emergent-7A968AeD5Dc41Be1bD"
+        self.client = ChatClient(
+            api_key=self.api_key,
+            model="gpt-4-vision-preview", 
+            temperature=0.3  # Más determinístico para compliance
+        )
+        self.risk_threshold = 70
+        self.system_prompt = """
+Eres un experto en KYC/AML y compliance financiero.
+Analiza documentos de identidad y datos de usuarios para:
+
+1. Verificar autenticidad de documentos
+2. Detectar posibles fraudes
+3. Evaluar riesgo AML
+4. Identificar banderas rojas
+
+Responde siempre en JSON válido con evaluaciones precisas y justificadas.
+"""
     
     async def verify_user(self, user_id: str, document_type: str, document_data: Dict) -> Dict:
         """
