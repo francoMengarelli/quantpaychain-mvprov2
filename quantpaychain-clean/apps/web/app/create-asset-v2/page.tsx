@@ -256,7 +256,6 @@ export default function CreateAssetV2Page() {
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
-
                     <div>
                       <label htmlFor="blockchain" className="block text-gray-300 mb-2">
                         Blockchain *
