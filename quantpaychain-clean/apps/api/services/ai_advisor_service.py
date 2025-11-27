@@ -2,11 +2,11 @@ import os
 import json
 import asyncio
 from typing import Dict, Optional
-from emergentintegrations import ChatClient
+import httpx
 
 class AIAdvisorService:
     """
-    AI Legal Advisor Service - IMPLEMENTACIÓN REAL CON GPT-4
+    AI Legal Advisor Service - IMPLEMENTACIÓN REAL CON OPENAI API
     - Guía legal para creación de assets
     - Sugerencias de uso (guardar, invertir, vender)
     - Gamificación y tips interactivos
@@ -15,11 +15,8 @@ class AIAdvisorService:
     
     def __init__(self):
         self.api_key = "sk-emergent-7A968AeD5Dc41Be1bD"
-        self.client = ChatClient(
-            api_key=self.api_key,
-            model="gpt-4",
-            temperature=0.7
-        )
+        self.base_url = "https://api.openai.com/v1"
+        self.model = "gpt-4"
         self.system_prompt = """
 Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
 Tu trabajo es analizar activos y proporcionar:
