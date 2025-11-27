@@ -14,13 +14,14 @@ class AIAdvisorService:
     """
     
     def __init__(self):
-        self.api_key = os.environ.get("OPENAI_API_KEY")
+        # Intentar primero con Emergent LLM Key, luego con OpenAI API Key
+        self.api_key = os.environ.get("EMERGENT_LLM_KEY") or os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
-            print("⚠️ WARNING: OPENAI_API_KEY not found in environment variables")
-            print(f"⚠️ Available env vars: {list(os.environ.keys())[:10]}...")
+            print("⚠️ WARNING: No API key found (EMERGENT_LLM_KEY or OPENAI_API_KEY)")
             self.api_key = None
         else:
-            print(f"✅ OPENAI_API_KEY loaded successfully (length: {len(self.api_key)})")
+            key_type = "EMERGENT_LLM_KEY" if os.environ.get("EMERGENT_LLM_KEY") else "OPENAI_API_KEY"
+            print(f"✅ Using {key_type} (length: {len(self.api_key)})")
         
         self.base_url = "https://api.openai.com/v1"
         self.model = "gpt-4o-mini"  # Modelo actualizado y más económico
