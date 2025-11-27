@@ -36,118 +36,138 @@ Sé preciso, profesional pero accesible.
     
     async def analyze_asset(self, asset_type: str, description: str, value_usd: float, location: str, user_context: Optional[Dict] = None):
         """
-        Analiza el asset y proporciona advice legal y estratégico
+        Analiza el asset usando GPT-4 y proporciona advice legal y estratégico REAL
         """
-        
-        # TODO: Integrar con OpenAI API real
-        # Por ahora, retorno estructura de ejemplo
-        
-        asset_guides = {
-            "real_estate": {
-                "legal_requirements": [
-                    "🏛️ Verificar título de propiedad",
-                    "📋 Avalúo profesional reciente",
-                    "⚖️ Verificar zonificación y permisos",
-                    "🔍 Due diligence completo"
-                ],
-                "tokenization_strategy": "Fraccionamiento ideal: 1,000-10,000 tokens para liquidez óptima",
-                "investment_potential": "Alto",
-                "recommendations": [
-                    "💡 Considera alquilar para generar ingresos pasivos",
-                    "📈 Revalorización promedio: 5-8% anual",
-                    "🎯 Ideal para diversificar portafolio"
+        try:
+            user_prompt = f"""
+Analiza este activo para tokenización:
+
+**ACTIVO:**
+- Tipo: {asset_type}
+- Descripción: {description}
+- Valor USD: ${value_usd:,}
+- Ubicación: {location}
+
+**CONTEXTO USUARIO:** {user_context or 'Usuario nuevo'}
+
+Responde con JSON en este formato exacto:
+{{
+    "asset_analysis": {{
+        "type": "{asset_type}",
+        "value_assessment": "string con evaluación del valor",
+        "location_analysis": "análisis específico de la ubicación",
+        "market_insights": "insights de mercado relevantes"
+    }},
+    "legal_guidance": {{
+        "requirements": ["lista de 4-6 requisitos legales específicos con emojis"],
+        "compliance_level": "High|Medium|Low",
+        "jurisdictional_notes": "notas específicas para {location}",
+        "next_steps": ["4 pasos concretos numerados con emojis"]
+    }},
+    "tokenization_strategy": {{
+        "recommended_tokens": "número recomendado de tokens a crear",
+        "pricing_model": "estrategia de precio por token",
+        "liquidity_approach": "cómo maximizar liquidez",
+        "fractionalization_benefits": "beneficios del fraccionamiento"
+    }},
+    "investment_recommendations": {{
+        "potential": "Alto|Medio-Alto|Medio|Bajo-Medio|Bajo",
+        "risk_level": "Alto|Medio-Alto|Medio|Bajo-Medio|Bajo",
+        "strategies": ["3-4 estrategias específicas con emojis"],
+        "timeline": "recomendación de timeline de inversión",
+        "expected_returns": "estimación de retornos anuales"
+    }},
+    "ai_insights": {{
+        "market_trends": "tendencias de mercado para este tipo de activo",
+        "timing_analysis": "análisis del momento actual para tokenizar",
+        "competitive_advantages": "ventajas competitivas de este activo",
+        "gamification_tip": "tip gamificado con emoji 🎮"
+    }}
+}}
+"""
+
+            response = await self.client.chat_completion_async(
+                messages=[
+                    {"role": "system", "content": self.system_prompt},
+                    {"role": "user", "content": user_prompt}
                 ]
-            },
-            "art": {
-                "legal_requirements": [
-                    "🎨 Certificado de autenticidad",
-                    "📜 Provenance documentation",
-                    "🔐 Seguro de arte",
-                    "🏛️ Valuación por experto certificado"
-                ],
-                "tokenization_strategy": "Fraccionamiento: 100-1,000 tokens para colección premium",
-                "investment_potential": "Medio-Alto",
-                "recommendations": [
-                    "🖼️ Arte contemporáneo tiene mejor liquidez",
-                    "💎 Considerar artista emergente vs establecido",
-                    "🔄 Rotación de colección cada 3-5 años"
-                ]
-            },
-            "commodity": {
-                "legal_requirements": [
-                    "📦 Certificado de origen",
-                    "⚖️ Cumplimiento con regulaciones comerciales",
-                    "🏭 Certificaciones de calidad (ISO, etc.)",
-                    "📊 Contratos de almacenamiento"
-                ],
-                "tokenization_strategy": "Tokens representan unidades físicas (kg, barriles, etc.)",
-                "investment_potential": "Medio",
-                "recommendations": [
-                    "📈 Correlaciona con inflación",
-                    "🌍 Exposición a mercados globales",
-                    "⏰ Timing importa: seguir ciclos de commodities"
-                ]
-            },
-            "bond": {
-                "legal_requirements": [
-                    "📋 Prospecto de emisión",
-                    "⚖️ Cumplimiento con regulaciones de valores",
-                    "💰 Rating crediticio",
-                    "📄 Términos y condiciones claros"
-                ],
-                "tokenization_strategy": "Tokens = cupones o participación en bono",
-                "investment_potential": "Bajo-Medio (más seguro)",
-                "recommendations": [
-                    "🛡️ Ideal para perfil conservador",
-                    "💵 Ingresos predecibles",
-                    "📊 Diversifica con bonos de diferentes plazos"
-                ]
-            },
-            "equity": {
-                "legal_requirements": [
-                    "🏢 Documentación corporativa completa",
-                    "📊 Estados financieros auditados",
-                    "⚖️ Cumplimiento con leyes de valores",
-                    "👥 Acuerdos de accionistas"
-                ],
-                "tokenization_strategy": "Tokens = Equity stake / Derechos de voto",
-                "investment_potential": "Alto (mayor riesgo)",
-                "recommendations": [
-                    "🚀 Potencial de alto retorno",
-                    "⚠️ Mayor volatilidad",
-                    "🔍 Due diligence exhaustivo necesario"
-                ]
+            )
+            
+            # Parse JSON response
+            ai_analysis = json.loads(response.choices[0].message.content)
+            
+            # Añadir metadata de AI
+            ai_analysis["metadata"] = {
+                "ai_powered": True,
+                "model": "gpt-4",
+                "confidence": "high",
+                "generated_at": asyncio.get_event_loop().time()
             }
-        }
-        
-        guide = asset_guides.get(asset_type, asset_guides["real_estate"])
-        
+            
+            return ai_analysis
+            
+        except json.JSONDecodeError:
+            # Fallback si GPT-4 no devuelve JSON válido
+            return self._get_fallback_analysis(asset_type, description, value_usd, location)
+        except Exception as e:
+            print(f"AI Advisor Error: {e}")
+            return self._get_fallback_analysis(asset_type, description, value_usd, location)
+    
+    def _get_fallback_analysis(self, asset_type: str, description: str, value_usd: float, location: str) -> Dict:
+        """
+        Análisis de respaldo si falla la IA
+        """
         return {
             "asset_analysis": {
                 "type": asset_type,
-                "value_assessment": self._assess_value(value_usd),
-                "location_analysis": self._analyze_location(location)
+                "value_assessment": f"Asset valorado en ${value_usd:,} - Análisis básico disponible",
+                "location_analysis": f"Ubicado en {location}",
+                "market_insights": "Conectando con AI - análisis básico mostrado"
             },
             "legal_guidance": {
-                "requirements": guide["legal_requirements"],
+                "requirements": [
+                    "📋 Documentación legal básica",
+                    "⚖️ Cumplimiento regulatorio local",
+                    "💰 Valuación profesional",
+                    "🔍 Due diligence completo"
+                ],
                 "compliance_level": "Medium",
+                "jurisdictional_notes": f"Revisar regulaciones específicas de {location}",
                 "next_steps": [
-                    "1️⃣ Reunir documentación legal",
-                    "2️⃣ Obtener valuación profesional",
-                    "3️⃣ Verificar cumplimiento regulatorio",
-                    "4️⃣ Configurar estructura de tokens"
+                    "1️⃣ Reunir documentación",
+                    "2️⃣ Obtener valuación",
+                    "3️⃣ Verificar compliance",
+                    "4️⃣ Estructurar tokens"
                 ]
             },
-            "tokenization_strategy": guide["tokenization_strategy"],
+            "tokenization_strategy": {
+                "recommended_tokens": "1,000 tokens para liquidez óptima",
+                "pricing_model": f"${value_usd/1000:,.2f} por token",
+                "liquidity_approach": "Marketplace público + incentivos",
+                "fractionalization_benefits": "Acceso democratizado a inversión"
+            },
             "investment_recommendations": {
-                "potential": guide["investment_potential"],
-                "strategies": guide["recommendations"],
-                "risk_level": self._calculate_risk(asset_type, value_usd)
+                "potential": self._get_potential_by_type(asset_type),
+                "risk_level": self._get_risk_by_type(asset_type),
+                "strategies": [
+                    "💎 Hold para apreciación a largo plazo",
+                    "💰 Generar ingresos pasivos",
+                    "📈 Diversificar portafolio"
+                ],
+                "timeline": "3-5 años recomendado",
+                "expected_returns": "Varía según mercado"
             },
             "ai_insights": {
-                "market_trends": f"📊 {asset_type.title()} muestra tendencia positiva en {location}",
-                "timing": "⏰ Momento favorable para tokenizar",
-                "gamification_tip": "🎮 ¡Completa tu primer asset para desbloquear badge 'Tokenizador Novato'!"
+                "market_trends": f"{asset_type.title()} en tendencia positiva",
+                "timing_analysis": "Momento neutral para tokenización",
+                "competitive_advantages": "First-mover advantage en tokenización",
+                "gamification_tip": "🎮 ¡Completa tu análisis AI para ganar XP extra!"
+            },
+            "metadata": {
+                "ai_powered": False,
+                "model": "fallback",
+                "confidence": "basic",
+                "note": "AI analysis temporarily unavailable"
             }
         }
     
