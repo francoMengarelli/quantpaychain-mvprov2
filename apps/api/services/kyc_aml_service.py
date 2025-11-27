@@ -26,7 +26,7 @@ class KYCAMLService:
             print(f"✅ OPENAI_API_KEY loaded for KYC/AML (length: {len(self.api_key)})")
             
         self.base_url = "https://api.openai.com/v1"
-        self.model = "gpt-4-vision-preview"
+        self.model = "gpt-4o"  # Modelo actualizado con capacidades de visión
         self.risk_threshold = 70
         self.system_prompt = """
 Eres un experto en KYC/AML y compliance financiero.
