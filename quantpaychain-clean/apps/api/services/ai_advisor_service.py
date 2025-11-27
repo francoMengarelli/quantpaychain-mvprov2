@@ -223,24 +223,22 @@ Responde con JSON en este formato exacto:
             }
         }
     
-    def _assess_value(self, value_usd: float) -> str:
-        if value_usd < 100000:
-            return "Entry-level asset - Ideal para empezar"
-        elif value_usd < 1000000:
-            return "Mid-range asset - Buen balance riesgo/retorno"
-        else:
-            return "High-value asset - Requiere expertise adicional"
+    def _get_potential_by_type(self, asset_type: str) -> str:
+        potential_map = {
+            "real_estate": "Alto",
+            "art": "Medio-Alto", 
+            "commodity": "Medio",
+            "bond": "Bajo-Medio",
+            "equity": "Alto"
+        }
+        return potential_map.get(asset_type, "Medio")
     
-    def _analyze_location(self, location: str) -> str:
-        # Simplificado - en producción usar API de análisis de mercado
-        return f"Ubicación estratégica en {location}"
-    
-    def _calculate_risk(self, asset_type: str, value_usd: float) -> str:
-        risk_levels = {
+    def _get_risk_by_type(self, asset_type: str) -> str:
+        risk_map = {
             "bond": "Bajo",
-            "real_estate": "Medio",
+            "real_estate": "Medio", 
             "commodity": "Medio",
             "art": "Medio-Alto",
             "equity": "Alto"
         }
-        return risk_levels.get(asset_type, "Medio")
+        return risk_map.get(asset_type, "Medio")
