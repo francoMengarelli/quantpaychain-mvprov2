@@ -1,145 +1,246 @@
 import os
-from typing import Dict, Optional
 import json
+import asyncio
+from typing import Dict, Optional
+from emergentintegrations import ChatClient
 
 class AIAdvisorService:
     """
-    AI Legal Advisor Service
+    AI Legal Advisor Service - IMPLEMENTACIÓN REAL CON GPT-4
     - Guía legal para creación de assets
     - Sugerencias de uso (guardar, invertir, vender)
     - Gamificación y tips interactivos
+    - Análisis de riesgo personalizado
     """
     
     def __init__(self):
-        self.api_key = os.getenv("OPENAI_API_KEY") or os.getenv("EMERGENT_LLM_KEY")
-        self.model = "gpt-4"
+        self.api_key = "sk-emergent-7A968AeD5Dc41Be1bD"
+        self.client = ChatClient(
+            api_key=self.api_key,
+            model="gpt-4",
+            temperature=0.7
+        )
+        self.system_prompt = """
+Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
+Tu trabajo es analizar activos y proporcionar:
+
+1. Requisitos legales específicos por jurisdicción
+2. Estrategia de tokenización óptima
+3. Análisis de riesgo y potencial de inversión
+4. Recomendaciones prácticas y accionables
+
+Responde siempre en JSON válido con estructura específica.
+Usa emojis para hacer el contenido más atractivo.
+Sé preciso, profesional pero accesible.
+"""
     
     async def analyze_asset(self, asset_type: str, description: str, value_usd: float, location: str, user_context: Optional[Dict] = None):
         """
-        Analiza el asset y proporciona advice legal y estratégico
+        Analiza el asset usando GPT-4 y proporciona advice legal y estratégico REAL
         """
-        
-        # TODO: Integrar con OpenAI API real
-        # Por ahora, retorno estructura de ejemplo
-        
-        asset_guides = {
-            "real_estate": {
-                "legal_requirements": [
-                    "🏛️ Verificar título de propiedad",
-                    "📋 Avalúo profesional reciente",
-                    "⚖️ Verificar zonificación y permisos",
-                    "🔍 Due diligence completo"
-                ],
-                "tokenization_strategy": "Fraccionamiento ideal: 1,000-10,000 tokens para liquidez óptima",
-                "investment_potential": "Alto",
-                "recommendations": [
-                    "💡 Considera alquilar para generar ingresos pasivos",
-                    "📈 Revalorización promedio: 5-8% anual",
-                    "🎯 Ideal para diversificar portafolio"
+        try:
+            user_prompt = f"""
+Analiza este activo para tokenización:
+
+**ACTIVO:**
+- Tipo: {asset_type}
+- Descripción: {description}
+- Valor USD: ${value_usd:,}
+- Ubicación: {location}
+
+**CONTEXTO USUARIO:** {user_context or 'Usuario nuevo'}
+
+Responde con JSON en este formato exacto:
+{{
+    "asset_analysis": {{
+        "type": "{asset_type}",
+        "value_assessment": "string con evaluación del valor",
+        "location_analysis": "análisis específico de la ubicación",
+        "market_insights": "insights de mercado relevantes"
+    }},
+    "legal_guidance": {{
+        "requirements": ["lista de 4-6 requisitos legales específicos con emojis"],
+        "compliance_level": "High|Medium|Low",
+        "jurisdictional_notes": "notas específicas para {location}",
+        "next_steps": ["4 pasos concretos numerados con emojis"]
+    }},
+    "tokenization_strategy": {{
+        "recommended_tokens": "número recomendado de tokens a crear",
+        "pricing_model": "estrategia de precio por token",
+        "liquidity_approach": "cómo maximizar liquidez",
+        "fractionalization_benefits": "beneficios del fraccionamiento"
+    }},
+    "investment_recommendations": {{
+        "potential": "Alto|Medio-Alto|Medio|Bajo-Medio|Bajo",
+        "risk_level": "Alto|Medio-Alto|Medio|Bajo-Medio|Bajo",
+        "strategies": ["3-4 estrategias específicas con emojis"],
+        "timeline": "recomendación de timeline de inversión",
+        "expected_returns": "estimación de retornos anuales"
+    }},
+    "ai_insights": {{
+        "market_trends": "tendencias de mercado para este tipo de activo",
+        "timing_analysis": "análisis del momento actual para tokenizar",
+        "competitive_advantages": "ventajas competitivas de este activo",
+        "gamification_tip": "tip gamificado con emoji 🎮"
+    }}
+}}
+"""
+
+            response = await self.client.chat_completion_async(
+                messages=[
+                    {"role": "system", "content": self.system_prompt},
+                    {"role": "user", "content": user_prompt}
                 ]
-            },
-            "art": {
-                "legal_requirements": [
-                    "🎨 Certificado de autenticidad",
-                    "📜 Provenance documentation",
-                    "🔐 Seguro de arte",
-                    "🏛️ Valuación por experto certificado"
-                ],
-                "tokenization_strategy": "Fraccionamiento: 100-1,000 tokens para colección premium",
-                "investment_potential": "Medio-Alto",
-                "recommendations": [
-                    "🖼️ Arte contemporáneo tiene mejor liquidez",
-                    "💎 Considerar artista emergente vs establecido",
-                    "🔄 Rotación de colección cada 3-5 años"
-                ]
-            },
-            "commodity": {
-                "legal_requirements": [
-                    "📦 Certificado de origen",
-                    "⚖️ Cumplimiento con regulaciones comerciales",
-                    "🏭 Certificaciones de calidad (ISO, etc.)",
-                    "📊 Contratos de almacenamiento"
-                ],
-                "tokenization_strategy": "Tokens representan unidades físicas (kg, barriles, etc.)",
-                "investment_potential": "Medio",
-                "recommendations": [
-                    "📈 Correlaciona con inflación",
-                    "🌍 Exposición a mercados globales",
-                    "⏰ Timing importa: seguir ciclos de commodities"
-                ]
-            },
-            "bond": {
-                "legal_requirements": [
-                    "📋 Prospecto de emisión",
-                    "⚖️ Cumplimiento con regulaciones de valores",
-                    "💰 Rating crediticio",
-                    "📄 Términos y condiciones claros"
-                ],
-                "tokenization_strategy": "Tokens = cupones o participación en bono",
-                "investment_potential": "Bajo-Medio (más seguro)",
-                "recommendations": [
-                    "🛡️ Ideal para perfil conservador",
-                    "💵 Ingresos predecibles",
-                    "📊 Diversifica con bonos de diferentes plazos"
-                ]
-            },
-            "equity": {
-                "legal_requirements": [
-                    "🏢 Documentación corporativa completa",
-                    "📊 Estados financieros auditados",
-                    "⚖️ Cumplimiento con leyes de valores",
-                    "👥 Acuerdos de accionistas"
-                ],
-                "tokenization_strategy": "Tokens = Equity stake / Derechos de voto",
-                "investment_potential": "Alto (mayor riesgo)",
-                "recommendations": [
-                    "🚀 Potencial de alto retorno",
-                    "⚠️ Mayor volatilidad",
-                    "🔍 Due diligence exhaustivo necesario"
-                ]
+            )
+            
+            # Parse JSON response
+            ai_analysis = json.loads(response.choices[0].message.content)
+            
+            # Añadir metadata de AI
+            ai_analysis["metadata"] = {
+                "ai_powered": True,
+                "model": "gpt-4",
+                "confidence": "high",
+                "generated_at": asyncio.get_event_loop().time()
             }
-        }
-        
-        guide = asset_guides.get(asset_type, asset_guides["real_estate"])
-        
+            
+            return ai_analysis
+            
+        except json.JSONDecodeError:
+            # Fallback si GPT-4 no devuelve JSON válido
+            return self._get_fallback_analysis(asset_type, description, value_usd, location)
+        except Exception as e:
+            print(f"AI Advisor Error: {e}")
+            return self._get_fallback_analysis(asset_type, description, value_usd, location)
+    
+    def _get_fallback_analysis(self, asset_type: str, description: str, value_usd: float, location: str) -> Dict:
+        """
+        Análisis de respaldo si falla la IA
+        """
         return {
             "asset_analysis": {
                 "type": asset_type,
-                "value_assessment": self._assess_value(value_usd),
-                "location_analysis": self._analyze_location(location)
+                "value_assessment": f"Asset valorado en ${value_usd:,} - Análisis básico disponible",
+                "location_analysis": f"Ubicado en {location}",
+                "market_insights": "Conectando con AI - análisis básico mostrado"
             },
             "legal_guidance": {
-                "requirements": guide["legal_requirements"],
+                "requirements": [
+                    "📋 Documentación legal básica",
+                    "⚖️ Cumplimiento regulatorio local",
+                    "💰 Valuación profesional",
+                    "🔍 Due diligence completo"
+                ],
                 "compliance_level": "Medium",
+                "jurisdictional_notes": f"Revisar regulaciones específicas de {location}",
                 "next_steps": [
-                    "1️⃣ Reunir documentación legal",
-                    "2️⃣ Obtener valuación profesional",
-                    "3️⃣ Verificar cumplimiento regulatorio",
-                    "4️⃣ Configurar estructura de tokens"
+                    "1️⃣ Reunir documentación",
+                    "2️⃣ Obtener valuación",
+                    "3️⃣ Verificar compliance",
+                    "4️⃣ Estructurar tokens"
                 ]
             },
-            "tokenization_strategy": guide["tokenization_strategy"],
+            "tokenization_strategy": {
+                "recommended_tokens": "1,000 tokens para liquidez óptima",
+                "pricing_model": f"${value_usd/1000:,.2f} por token",
+                "liquidity_approach": "Marketplace público + incentivos",
+                "fractionalization_benefits": "Acceso democratizado a inversión"
+            },
             "investment_recommendations": {
-                "potential": guide["investment_potential"],
-                "strategies": guide["recommendations"],
-                "risk_level": self._calculate_risk(asset_type, value_usd)
+                "potential": self._get_potential_by_type(asset_type),
+                "risk_level": self._get_risk_by_type(asset_type),
+                "strategies": [
+                    "💎 Hold para apreciación a largo plazo",
+                    "💰 Generar ingresos pasivos",
+                    "📈 Diversificar portafolio"
+                ],
+                "timeline": "3-5 años recomendado",
+                "expected_returns": "Varía según mercado"
             },
             "ai_insights": {
-                "market_trends": f"📊 {asset_type.title()} muestra tendencia positiva en {location}",
-                "timing": "⏰ Momento favorable para tokenizar",
-                "gamification_tip": "🎮 ¡Completa tu primer asset para desbloquear badge 'Tokenizador Novato'!"
+                "market_trends": f"{asset_type.title()} en tendencia positiva",
+                "timing_analysis": "Momento neutral para tokenización",
+                "competitive_advantages": "First-mover advantage en tokenización",
+                "gamification_tip": "🎮 ¡Completa tu análisis AI para ganar XP extra!"
+            },
+            "metadata": {
+                "ai_powered": False,
+                "model": "fallback",
+                "confidence": "basic",
+                "note": "AI analysis temporarily unavailable"
             }
         }
     
-    async def get_gamification_tips(self, asset_id: str):
+    async def get_gamification_tips(self, asset_id: str, user_stats: Optional[Dict] = None):
         """
-        Tips gamificados para mantener engagement
+        Tips gamificados usando AI para personalización
+        """
+        try:
+            user_prompt = f"""
+Genera tips de gamificación personalizados para un usuario de QuantPayChain.
+
+**CONTEXTO:**
+- Asset ID: {asset_id}
+- Stats del usuario: {user_stats or 'Usuario nuevo'}
+
+Responde con JSON exacto:
+{{
+    "achievements": [
+        {{
+            "id": "achievement_id",
+            "name": "🏆 Nombre con emoji",
+            "description": "Descripción motivadora",
+            "unlocked": true/false,
+            "progress": "1/3" (si aplica),
+            "reward": "+XP puntos"
+        }}
+    ],
+    "next_actions": [
+        {{
+            "action": "🎯 Acción específica con emoji",
+            "xp": number,
+            "difficulty": "Fácil|Medio|Difícil"
+        }}
+    ],
+    "daily_challenge": {{
+        "challenge": "🎲 Desafío específico con emoji",
+        "reward": "+XP",
+        "expires_in": "tiempo restante"
+    }},
+    "leaderboard_position": {{
+        "rank": number,
+        "total_users": number,
+        "message": "🚀 Mensaje motivacional"
+    }},
+    "ai_motivation": "Mensaje personalizado motivacional de 1-2 líneas"
+}}
+
+Haz que sea específico y motivacional.
+"""
+
+            response = await self.client.chat_completion_async(
+                messages=[
+                    {"role": "system", "content": "Eres un experto en gamificación y engagement de usuarios. Crea experiencias motivadoras y personalizadas."},
+                    {"role": "user", "content": user_prompt}
+                ]
+            )
+            
+            ai_tips = json.loads(response.choices[0].message.content)
+            return ai_tips
+            
+        except Exception as e:
+            print(f"Gamification AI Error: {e}")
+            return self._get_fallback_gamification(asset_id)
+    
+    def _get_fallback_gamification(self, asset_id: str) -> Dict:
+        """
+        Gamificación de respaldo
         """
         return {
             "achievements": [
                 {
                     "id": "first_asset",
-                    "name": "🌟 Primer Asset",
+                    "name": "🌟 Primer Asset", 
                     "description": "Tokeniza tu primer activo",
                     "unlocked": True,
                     "reward": "+100 XP"
@@ -147,60 +248,52 @@ class AIAdvisorService:
                 {
                     "id": "diversifier",
                     "name": "🎯 Diversificador",
-                    "description": "Crea assets en 3 categorías diferentes",
+                    "description": "Crea assets en 3 categorías diferentes", 
                     "unlocked": False,
                     "progress": "1/3"
-                },
-                {
-                    "id": "high_value",
-                    "name": "💎 Alto Valor",
-                    "description": "Tokeniza un asset valorado en $1M+",
-                    "unlocked": False,
-                    "reward": "+500 XP"
                 }
             ],
             "next_actions": [
                 {
-                    "action": "💰 Vende tu primer token",
-                    "xp": 200,
-                    "difficulty": "Medio"
+                    "action": "💰 Completa tu primer análisis AI",
+                    "xp": 150,
+                    "difficulty": "Fácil"
                 },
                 {
-                    "action": "📈 Alcanza $10k en valor total",
+                    "action": "📈 Alcanza $10k en valor total", 
                     "xp": 300,
-                    "difficulty": "Alto"
+                    "difficulty": "Medio"
                 }
             ],
             "daily_challenge": {
-                "challenge": "🎲 Explora 5 assets en el marketplace",
-                "reward": "+50 XP",
+                "challenge": "🎲 Explora 3 assets en el marketplace",
+                "reward": "+75 XP",
                 "expires_in": "23h 45m"
             },
             "leaderboard_position": {
                 "rank": 42,
-                "total_users": 156,
-                "message": "🚀 ¡Estás en el top 27%!"
-            }
+                "total_users": 156, 
+                "message": "🚀 ¡Escalando en el ranking!"
+            },
+            "ai_motivation": "🤖 Sigue tokenizando para desbloquear análisis AI más avanzados"
         }
     
-    def _assess_value(self, value_usd: float) -> str:
-        if value_usd < 100000:
-            return "Entry-level asset - Ideal para empezar"
-        elif value_usd < 1000000:
-            return "Mid-range asset - Buen balance riesgo/retorno"
-        else:
-            return "High-value asset - Requiere expertise adicional"
+    def _get_potential_by_type(self, asset_type: str) -> str:
+        potential_map = {
+            "real_estate": "Alto",
+            "art": "Medio-Alto", 
+            "commodity": "Medio",
+            "bond": "Bajo-Medio",
+            "equity": "Alto"
+        }
+        return potential_map.get(asset_type, "Medio")
     
-    def _analyze_location(self, location: str) -> str:
-        # Simplificado - en producción usar API de análisis de mercado
-        return f"Ubicación estratégica en {location}"
-    
-    def _calculate_risk(self, asset_type: str, value_usd: float) -> str:
-        risk_levels = {
+    def _get_risk_by_type(self, asset_type: str) -> str:
+        risk_map = {
             "bond": "Bajo",
-            "real_estate": "Medio",
+            "real_estate": "Medio", 
             "commodity": "Medio",
             "art": "Medio-Alto",
             "equity": "Alto"
         }
-        return risk_levels.get(asset_type, "Medio")
+        return risk_map.get(asset_type, "Medio")
