@@ -40,6 +40,14 @@ export default function CreateAssetV2Page() {
         return;
       }
 
+      // DEBUG: Log user info
+      console.log("🔍 DEBUG - User info:", {
+        user_exists: !!user,
+        user_id: user.id,
+        user_email: user.email,
+        user_object: user
+      });
+
       const assetId = uuidv4();
       const tokenId = uuidv4();
 
@@ -56,11 +64,17 @@ export default function CreateAssetV2Page() {
         updated_at: new Date().toISOString()
       };
 
+      // DEBUG: Log asset object before insert
+      console.log("🔍 DEBUG - Asset to insert:", asset);
+
       const { error: assetError } = await supabase
         .from('rwa_assets')
         .insert([asset]);
 
-      if (assetError) throw assetError;
+      if (assetError) {
+        console.error("🚨 DEBUG - Supabase error:", assetError);
+        throw assetError;
+      }
 
       const token = {
         id: tokenId,
