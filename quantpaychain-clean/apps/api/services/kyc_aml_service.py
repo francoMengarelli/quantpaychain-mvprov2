@@ -127,34 +127,34 @@ Responde con JSON exacto:
             return {
                 "user_id": user_id,
                 "verification_status": "approved" if approved else "rejected", 
-                        "kyc_status": {
-                            "document_verified": doc_verification["is_valid"],
-                            "identity_confirmed": identity_check["data_consistent"],
-                            "document_type": document_type,
-                            "confidence": doc_verification["confidence"],
-                            "quality_score": doc_verification.get("quality_score", 0)
-                        },
-                        "aml_status": {
-                            "risk_score": risk_assessment["overall_score"],
-                            "risk_level": risk_assessment["risk_level"], 
-                            "on_watchlist": False,
-                            "geographic_risk": aml_result["geographic_risk"],
-                            "suspicious_patterns": aml_result["suspicious_patterns"]
-                        },
-                        "ai_analysis": {
-                            "model": self.model,
-                            "processed_at": datetime.utcnow().isoformat(),
-                            "recommendation": risk_assessment["recommendation"],
-                            "reasoning": risk_assessment["reasoning"],
-                            "risk_indicators": aml_result["risk_indicators"]
-                        },
-                        "compliance_flags": self._generate_compliance_flags(ai_analysis),
-                        "next_steps": self._get_next_steps(approved, risk_assessment["overall_score"])
-                    }
-                else:
-                    print(f"OpenAI API Error: {response.status_code} - {response.text}")
-                    return self._get_fallback_verification(user_id, document_type, document_data)
+                "kyc_status": {
+                    "document_verified": doc_verification["is_valid"],
+                    "identity_confirmed": identity_check["data_consistent"],
+                    "document_type": document_type,
+                    "confidence": doc_verification["confidence"],
+                    "quality_score": doc_verification.get("quality_score", 0)
+                },
+                "aml_status": {
+                    "risk_score": risk_assessment["overall_score"],
+                    "risk_level": risk_assessment["risk_level"], 
+                    "on_watchlist": False,
+                    "geographic_risk": aml_result["geographic_risk"],
+                    "suspicious_patterns": aml_result["suspicious_patterns"]
+                },
+                "ai_analysis": {
+                    "model": self.model,
+                    "processed_at": datetime.utcnow().isoformat(),
+                    "recommendation": risk_assessment["recommendation"],
+                    "reasoning": risk_assessment["reasoning"],
+                    "risk_indicators": aml_result["risk_indicators"]
+                },
+                "compliance_flags": self._generate_compliance_flags(ai_analysis),
+                "next_steps": self._get_next_steps(approved, risk_assessment["overall_score"])
+            }
             
+        except json.JSONDecodeError as e:
+            print(f"JSON Parse Error in KYC: {e}")
+            return self._get_fallback_verification(user_id, document_type, document_data)
         except Exception as e:
             print(f"KYC/AML AI Error: {e}")
             return self._get_fallback_verification(user_id, document_type, document_data)
