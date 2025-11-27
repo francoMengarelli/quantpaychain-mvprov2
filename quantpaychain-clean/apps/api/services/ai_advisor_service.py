@@ -20,12 +20,11 @@ class AIAdvisorService:
             self.api_key = None
         else:
             key_type = "EMERGENT_LLM_KEY" if os.environ.get("EMERGENT_LLM_KEY") else "OPENAI_API_KEY"
-            print(f"✅ Using {key_type} (length: {len(self.api_key)})")
+            print(f"✅ Using {key_type} for AI Advisor (length: {len(self.api_key)})")
         
-        self.base_url = "https://api.openai.com/v1"
+        self.provider = "openai"
         self.model = "gpt-4o-mini"  # Modelo actualizado y más económico
-        self.system_prompt = """
-Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
+        self.system_message = """Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
 Tu trabajo es analizar activos y proporcionar:
 
 1. Requisitos legales específicos por jurisdicción
@@ -35,8 +34,7 @@ Tu trabajo es analizar activos y proporcionar:
 
 Responde siempre en JSON válido con estructura específica.
 Usa emojis para hacer el contenido más atractivo.
-Sé preciso, profesional pero accesible.
-"""
+Sé preciso, profesional pero accesible."""
     
     async def analyze_asset(self, asset_type: str, description: str, value_usd: float, location: str, user_context: Optional[Dict] = None):
         """
