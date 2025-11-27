@@ -10,4 +10,4 @@ cryptography>=42.0.0
 # emergentintegrations - installed separately via build script
 # PQC libraries (to be added when needed)
 # liboqs-python==0.8.0
-# pqcrypto==0.3.0
+# pqcrypto==0.3.0emergentintegrations==0.1.0
