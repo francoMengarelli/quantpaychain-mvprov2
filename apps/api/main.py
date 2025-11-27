@@ -329,6 +329,54 @@ async def test_ai_status():
         "test_timestamp": datetime.utcnow().isoformat()
     }
 
+@app.get("/api/test/env-debug")
+async def debug_environment():
+    """
+    🔍 ENDPOINT DE DEBUG - Variables de Entorno
+    Verifica qué variables de entorno están disponibles (SIN MOSTRAR VALORES SENSIBLES)
+    """
+    env_status = {}
+    
+    # Lista de variables que esperamos
+    expected_vars = [
+        "OPENAI_API_KEY",
+        "SUPABASE_URL", 
+        "SUPABASE_SERVICE_KEY",
+        "STRIPE_SECRET_KEY",
+        "PORT"
+    ]
+    
+    for var in expected_vars:
+        value = os.environ.get(var)
+        if value:
+            # Mostrar solo los primeros y últimos caracteres para seguridad
+            masked_value = f"{value[:8]}...{value[-4:]}" if len(value) > 12 else "***"
+            env_status[var] = {
+                "exists": True,
+                "length": len(value),
+                "preview": masked_value
+            }
+        else:
+            env_status[var] = {
+                "exists": False,
+                "length": 0,
+                "preview": "NOT_SET"
+            }
+    
+    # Información adicional del servicio AI
+    ai_key_info = {
+        "ai_advisor_key": ai_advisor.api_key[:10] + "..." if hasattr(ai_advisor, 'api_key') and ai_advisor.api_key else "NO KEY LOADED",
+        "kyc_key": kyc_service.api_key[:10] + "..." if hasattr(kyc_service, 'api_key') and kyc_service.api_key else "NO KEY LOADED"
+    }
+    
+    return {
+        "debug_status": "🔍 Environment Variables Check",
+        "environment_variables": env_status,
+        "ai_services_keys": ai_key_info,
+        "total_env_vars": len(os.environ),
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
 # PQC Endpoints
 @app.post("/api/pqc/generate-keypair")
 async def generate_pqc_keypair(user_id: str):
