@@ -181,10 +181,7 @@ qpc-v2-core/
 └── LICENSE            # Licencia perpetua compartida
 ```
 
-**Pricing Model** (Del PDF):
-- **Perpetual License**: $50,000 - $200,000 (one-time)
-- **Annual License**: $20,000 - $80,000/year
-- **Revenue Share**: 5-10% of revenue
+
 
 ---
 
