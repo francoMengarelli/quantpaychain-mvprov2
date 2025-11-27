@@ -171,15 +171,76 @@ Responde con JSON en este formato exacto:
             }
         }
     
-    async def get_gamification_tips(self, asset_id: str):
+    async def get_gamification_tips(self, asset_id: str, user_stats: Optional[Dict] = None):
         """
-        Tips gamificados para mantener engagement
+        Tips gamificados usando AI para personalización
+        """
+        try:
+            user_prompt = f"""
+Genera tips de gamificación personalizados para un usuario de QuantPayChain.
+
+**CONTEXTO:**
+- Asset ID: {asset_id}
+- Stats del usuario: {user_stats or 'Usuario nuevo'}
+
+Responde con JSON exacto:
+{{
+    "achievements": [
+        {{
+            "id": "achievement_id",
+            "name": "🏆 Nombre con emoji",
+            "description": "Descripción motivadora",
+            "unlocked": true/false,
+            "progress": "1/3" (si aplica),
+            "reward": "+XP puntos"
+        }}
+    ],
+    "next_actions": [
+        {{
+            "action": "🎯 Acción específica con emoji",
+            "xp": number,
+            "difficulty": "Fácil|Medio|Difícil"
+        }}
+    ],
+    "daily_challenge": {{
+        "challenge": "🎲 Desafío específico con emoji",
+        "reward": "+XP",
+        "expires_in": "tiempo restante"
+    }},
+    "leaderboard_position": {{
+        "rank": number,
+        "total_users": number,
+        "message": "🚀 Mensaje motivacional"
+    }},
+    "ai_motivation": "Mensaje personalizado motivacional de 1-2 líneas"
+}}
+
+Haz que sea específico y motivacional.
+"""
+
+            response = await self.client.chat_completion_async(
+                messages=[
+                    {"role": "system", "content": "Eres un experto en gamificación y engagement de usuarios. Crea experiencias motivadoras y personalizadas."},
+                    {"role": "user", "content": user_prompt}
+                ]
+            )
+            
+            ai_tips = json.loads(response.choices[0].message.content)
+            return ai_tips
+            
+        except Exception as e:
+            print(f"Gamification AI Error: {e}")
+            return self._get_fallback_gamification(asset_id)
+    
+    def _get_fallback_gamification(self, asset_id: str) -> Dict:
+        """
+        Gamificación de respaldo
         """
         return {
             "achievements": [
                 {
                     "id": "first_asset",
-                    "name": "🌟 Primer Asset",
+                    "name": "🌟 Primer Asset", 
                     "description": "Tokeniza tu primer activo",
                     "unlocked": True,
                     "reward": "+100 XP"
@@ -187,40 +248,34 @@ Responde con JSON en este formato exacto:
                 {
                     "id": "diversifier",
                     "name": "🎯 Diversificador",
-                    "description": "Crea assets en 3 categorías diferentes",
+                    "description": "Crea assets en 3 categorías diferentes", 
                     "unlocked": False,
                     "progress": "1/3"
-                },
-                {
-                    "id": "high_value",
-                    "name": "💎 Alto Valor",
-                    "description": "Tokeniza un asset valorado en $1M+",
-                    "unlocked": False,
-                    "reward": "+500 XP"
                 }
             ],
             "next_actions": [
                 {
-                    "action": "💰 Vende tu primer token",
-                    "xp": 200,
-                    "difficulty": "Medio"
+                    "action": "💰 Completa tu primer análisis AI",
+                    "xp": 150,
+                    "difficulty": "Fácil"
                 },
                 {
-                    "action": "📈 Alcanza $10k en valor total",
+                    "action": "📈 Alcanza $10k en valor total", 
                     "xp": 300,
-                    "difficulty": "Alto"
+                    "difficulty": "Medio"
                 }
             ],
             "daily_challenge": {
-                "challenge": "🎲 Explora 5 assets en el marketplace",
-                "reward": "+50 XP",
+                "challenge": "🎲 Explora 3 assets en el marketplace",
+                "reward": "+75 XP",
                 "expires_in": "23h 45m"
             },
             "leaderboard_position": {
                 "rank": 42,
-                "total_users": 156,
-                "message": "🚀 ¡Estás en el top 27%!"
-            }
+                "total_users": 156, 
+                "message": "🚀 ¡Escalando en el ranking!"
+            },
+            "ai_motivation": "🤖 Sigue tokenizando para desbloquear análisis AI más avanzados"
         }
     
     def _get_potential_by_type(self, asset_type: str) -> str:
