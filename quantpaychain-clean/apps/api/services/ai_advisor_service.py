@@ -1,8 +1,7 @@
 import os
 import json
-import asyncio
 from typing import Dict, Optional
-import httpx
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 class AIAdvisorService:
     """
