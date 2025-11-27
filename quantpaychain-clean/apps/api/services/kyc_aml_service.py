@@ -44,7 +44,13 @@ Responde siempre en JSON válido con evaluaciones precisas y justificadas.
         """
         Verifica identidad del usuario usando OpenAI API directamente
         """
+        # Si no hay API key, usar fallback
+        if not self.api_key:
+            print("⚠️ No API key available for KYC - using fallback")
+            return self._get_fallback_verification(user_id, document_type, document_data)
+        
         try:
+            print(f"🔑 Using OpenAI API key for KYC: {self.api_key[:10]}...")
             # Preparar datos para análisis AI
             user_prompt = f"""
 Analiza este caso de KYC/AML:
