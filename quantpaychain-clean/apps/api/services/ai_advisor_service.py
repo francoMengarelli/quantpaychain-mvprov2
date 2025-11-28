@@ -114,7 +114,17 @@ Responde con JSON en este formato exacto:
                 print("⚠️ Empty response from AI")
                 return self._get_fallback_analysis(asset_type, description, value_usd, location)
             
-            ai_analysis = json.loads(response)
+            # Limpiar markdown si viene envuelto en ```json...```
+            cleaned_response = response.strip()
+            if cleaned_response.startswith("```json"):
+                cleaned_response = cleaned_response[7:]  # Remove ```json
+            if cleaned_response.startswith("```"):
+                cleaned_response = cleaned_response[3:]  # Remove ```
+            if cleaned_response.endswith("```"):
+                cleaned_response = cleaned_response[:-3]  # Remove trailing ```
+            cleaned_response = cleaned_response.strip()
+            
+            ai_analysis = json.loads(cleaned_response)
             
             # Añadir metadata de AI
             ai_analysis["metadata"] = {
