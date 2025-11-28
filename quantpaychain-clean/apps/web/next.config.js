@@ -8,19 +8,7 @@ const nextConfig = {
   experimental: {
     esmExternals: 'loose',
   },
-  // Prevent indexedDB access during build by disabling problematic modules on server
   webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Prevent Supabase and Web3 from running during build
-      config.externals.push({
-        '@supabase/supabase-js': 'commonjs @supabase/supabase-js',
-        '@rainbow-me/rainbowkit': 'commonjs @rainbow-me/rainbowkit',
-        'wagmi': 'commonjs wagmi',
-      });
-    }
-    return config;
-  },
-  webpack_old: (config, { isServer }) => {
     // Ignore optional peer dependencies and problematic modules
     config.externals.push({
       'porto/internal': 'commonjs porto/internal',
