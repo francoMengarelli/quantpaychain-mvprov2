@@ -106,7 +106,14 @@ Responde con JSON en este formato exacto:
             user_message = UserMessage(text=user_prompt)
             response = await chat.send_message(user_message)
             
+            print(f"📥 Raw AI response type: {type(response)}")
+            print(f"📥 Raw AI response (first 200 chars): {str(response)[:200]}")
+            
             # Parse JSON response
+            if not response:
+                print("⚠️ Empty response from AI")
+                return self._get_fallback_analysis(asset_type, description, value_usd, location)
+            
             ai_analysis = json.loads(response)
             
             # Añadir metadata de AI
