@@ -57,27 +57,37 @@ def test_ai_services_status():
                 
                 # Check if both services show ai_powered: true
                 success = True
-                if "advisor" in data:
-                    if data["advisor"].get("ai_powered") != True:
-                        print(f"❌ Advisor service ai_powered is not true: {data['advisor'].get('ai_powered')}")
+                services = data.get("services", {})
+                
+                if "ai_advisor" in services:
+                    advisor = services["ai_advisor"]
+                    if advisor.get("ai_powered") != True:
+                        print(f"❌ AI Advisor service ai_powered is not true: {advisor.get('ai_powered')}")
                         success = False
                     else:
-                        print(f"✅ Advisor service ai_powered: {data['advisor'].get('ai_powered')}")
-                        print(f"✅ Advisor model: {data['advisor'].get('model')}")
+                        print(f"✅ AI Advisor service ai_powered: {advisor.get('ai_powered')}")
+                        print(f"✅ AI Advisor model: {advisor.get('model')}")
+                        print(f"✅ AI Advisor status: {advisor.get('status')}")
                 else:
-                    print("❌ Advisor service not found in response")
+                    print("❌ AI Advisor service not found in response")
                     success = False
                 
-                if "kyc" in data:
-                    if data["kyc"].get("ai_powered") != True:
-                        print(f"❌ KYC service ai_powered is not true: {data['kyc'].get('ai_powered')}")
+                if "kyc_aml" in services:
+                    kyc = services["kyc_aml"]
+                    if kyc.get("ai_powered") != True:
+                        print(f"❌ KYC/AML service ai_powered is not true: {kyc.get('ai_powered')}")
                         success = False
                     else:
-                        print(f"✅ KYC service ai_powered: {data['kyc'].get('ai_powered')}")
-                        print(f"✅ KYC model: {data['kyc'].get('model')}")
+                        print(f"✅ KYC/AML service ai_powered: {kyc.get('ai_powered')}")
+                        print(f"✅ KYC/AML model: {kyc.get('model')}")
+                        print(f"✅ KYC/AML status: {kyc.get('status')}")
                 else:
-                    print("❌ KYC service not found in response")
+                    print("❌ KYC/AML service not found in response")
                     success = False
+                
+                # Check emergent LLM key status
+                if data.get("emergent_llm_key"):
+                    print(f"✅ Emergent LLM Key: {data.get('emergent_llm_key')}")
                 
                 if success:
                     print("✅ AI Services Status PASSED - Both services are AI powered")
