@@ -4,6 +4,10 @@ import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Toaster } from "sonner";
 
+// Force dynamic rendering for all pages to avoid indexedDB errors
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 const inter = Inter({ 
   subsets: ["latin"],
   variable: "--font-inter"
