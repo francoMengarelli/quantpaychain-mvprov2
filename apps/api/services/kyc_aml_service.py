@@ -115,7 +115,17 @@ Responde con JSON exacto:
                 print("⚠️ Empty response from KYC AI")
                 return self._get_fallback_verification(user_id, document_type, document_data)
             
-            ai_analysis = json.loads(response)
+            # Limpiar markdown si viene envuelto en ```json...```
+            cleaned_response = response.strip()
+            if cleaned_response.startswith("```json"):
+                cleaned_response = cleaned_response[7:]  # Remove ```json
+            if cleaned_response.startswith("```"):
+                cleaned_response = cleaned_response[3:]  # Remove ```
+            if cleaned_response.endswith("```"):
+                cleaned_response = cleaned_response[:-3]  # Remove trailing ```
+            cleaned_response = cleaned_response.strip()
+            
+            ai_analysis = json.loads(cleaned_response)
             
             # Procesar resultados
             doc_verification = ai_analysis["document_verification"]
