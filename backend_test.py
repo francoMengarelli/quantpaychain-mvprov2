@@ -13,7 +13,7 @@ from datetime import datetime
 BASE_URL = "https://quantpaychain-api.onrender.com"
 
 def test_health_check():
-    """Test GET / - should return 200 with status 'operativo'"""
+    """Test GET / - should return 200 with status 'operational'"""
     print("\n=== Testing Health Check ===")
     try:
         response = requests.get(f"{BASE_URL}/", timeout=30)
@@ -23,11 +23,13 @@ def test_health_check():
         if response.status_code == 200:
             try:
                 data = response.json()
-                if data.get("status") == "operativo":
-                    print("✅ Health check PASSED - Status is 'operativo'")
+                if data.get("status") == "operational":
+                    print("✅ Health check PASSED - Status is 'operational'")
+                    print(f"✅ Service: {data.get('service')}")
+                    print(f"✅ Version: {data.get('version')}")
                     return True
                 else:
-                    print(f"❌ Health check FAILED - Expected status 'operativo', got: {data.get('status')}")
+                    print(f"❌ Health check FAILED - Expected status 'operational', got: {data.get('status')}")
                     return False
             except json.JSONDecodeError:
                 print(f"❌ Health check FAILED - Response is not valid JSON: {response.text}")
