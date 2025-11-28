@@ -5,6 +5,8 @@ const nextConfig = {
   images: {
     domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
   },
+  // Force dynamic rendering to avoid indexedDB errors during build
+  output: 'standalone',
   experimental: {
     esmExternals: 'loose',
   },
