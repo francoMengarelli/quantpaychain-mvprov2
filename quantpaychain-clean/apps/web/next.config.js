@@ -2,11 +2,17 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
-  images: {
-    domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
-  },
+  // Force all pages to be dynamic to avoid indexedDB errors during build
   experimental: {
     esmExternals: 'loose',
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
+  // Disable static generation globally
+  dynamicIO: true,
+  images: {
+    domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
   },
   webpack: (config, { isServer }) => {
     // Ignore optional peer dependencies and problematic modules
