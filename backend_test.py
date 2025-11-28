@@ -193,7 +193,7 @@ def test_ai_legal_advisor():
         return False
 
 def test_env_debug():
-    """Test GET /api/test/env-debug - verify EMERGENT_LLM_KEY exists and has length 30"""
+    """Test GET /api/test/env-debug - verify AI service keys exist"""
     print("\n=== Testing Environment Debug ===")
     try:
         response = requests.get(f"{BASE_URL}/api/test/env-debug", timeout=30)
@@ -205,25 +205,49 @@ def test_env_debug():
                 data = response.json()
                 print(f"Parsed JSON: {json.dumps(data, indent=2)}")
                 
-                # Check EMERGENT_LLM_KEY
-                if "EMERGENT_LLM_KEY" in data:
-                    key_info = data["EMERGENT_LLM_KEY"]
-                    if isinstance(key_info, dict):
-                        exists = key_info.get("exists", False)
-                        length = key_info.get("length", 0)
-                        
-                        if exists and length >= 30:
-                            print(f"✅ EMERGENT_LLM_KEY exists with length {length}")
-                            print("✅ Environment Debug PASSED")
-                            return True
-                        else:
-                            print(f"❌ EMERGENT_LLM_KEY issue - exists: {exists}, length: {length}")
-                            return False
+                success = True
+                
+                # Check AI services keys
+                if "ai_services_keys" in data:
+                    ai_keys = data["ai_services_keys"]
+                    
+                    if "ai_advisor_key" in ai_keys and ai_keys["ai_advisor_key"]:
+                        print(f"✅ AI Advisor key exists: {ai_keys['ai_advisor_key']}")
                     else:
-                        print(f"❌ EMERGENT_LLM_KEY format unexpected: {key_info}")
-                        return False
+                        print("❌ AI Advisor key missing")
+                        success = False
+                    
+                    if "kyc_key" in ai_keys and ai_keys["kyc_key"]:
+                        print(f"✅ KYC key exists: {ai_keys['kyc_key']}")
+                    else:
+                        print("❌ KYC key missing")
+                        success = False
                 else:
-                    print("❌ EMERGENT_LLM_KEY not found in response")
+                    print("❌ ai_services_keys not found in response")
+                    success = False
+                
+                # Check environment variables
+                if "environment_variables" in data:
+                    env_vars = data["environment_variables"]
+                    print(f"✅ Found {len(env_vars)} environment variables")
+                    
+                    # Check for key services
+                    key_services = ["OPENAI_API_KEY", "SUPABASE_URL", "STRIPE_SECRET_KEY"]
+                    for service in key_services:
+                        if service in env_vars and env_vars[service].get("exists"):
+                            print(f"✅ {service} exists (length: {env_vars[service].get('length')})")
+                        else:
+                            print(f"❌ {service} missing or not configured")
+                
+                # Check total environment variables
+                if "total_env_vars" in data:
+                    print(f"✅ Total environment variables: {data['total_env_vars']}")
+                
+                if success:
+                    print("✅ Environment Debug PASSED - AI service keys configured")
+                    return True
+                else:
+                    print("❌ Environment Debug FAILED - Missing AI service keys")
                     return False
                     
             except json.JSONDecodeError:
