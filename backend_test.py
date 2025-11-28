@@ -131,29 +131,54 @@ def test_ai_legal_advisor():
             try:
                 data = response.json()
                 
+                # Check for test status
+                if "test_status" in data:
+                    print(f"✅ Test Status: {data['test_status']}")
+                
+                # Check for model used
+                if "model_used" in data:
+                    print(f"✅ Model Used: {data['model_used']}")
+                
                 # Check for AI analysis structure
                 success = True
-                required_fields = ["asset_analysis", "legal_guidance", "tokenization_strategy"]
+                ai_analysis = data.get("ai_analysis", {})
                 
-                for field in required_fields:
-                    if field not in data:
-                        print(f"❌ Missing required field: {field}")
-                        success = False
-                    else:
-                        print(f"✅ Found field: {field}")
-                
-                # Check for AI metadata
-                if "ai_powered" in data and data["ai_powered"] == True:
-                    print("✅ Response shows ai_powered: true")
+                # Look for analysis components in the actual response structure
+                if "asset_analysis" in ai_analysis:
+                    print("✅ Found asset_analysis")
+                    asset_analysis = ai_analysis["asset_analysis"]
+                    if "value_assessment" in asset_analysis:
+                        print("✅ Found value_assessment")
+                    if "location_analysis" in asset_analysis:
+                        print("✅ Found location_analysis")
                 else:
-                    print(f"❌ ai_powered not true or missing: {data.get('ai_powered')}")
+                    print("❌ Missing asset_analysis")
+                    success = False
+                
+                if "legal_guidance" in ai_analysis:
+                    print("✅ Found legal_guidance")
+                else:
+                    print("❌ Missing legal_guidance")
+                    success = False
+                
+                if "tokenization_strategy" in ai_analysis:
+                    print("✅ Found tokenization_strategy")
+                else:
+                    print("❌ Missing tokenization_strategy")
+                    success = False
+                
+                # Check if response indicates AI is working
+                if data.get("model_used") in ["gpt-4", "gpt-4o", "gpt-4o-mini"]:
+                    print("✅ Real AI model being used (not fallback)")
+                else:
+                    print(f"❌ Unexpected model: {data.get('model_used')}")
                     success = False
                 
                 if success:
                     print("✅ AI Legal Advisor PASSED - Real AI analysis returned")
                     return True
                 else:
-                    print("❌ AI Legal Advisor FAILED - Missing required analysis fields")
+                    print("❌ AI Legal Advisor FAILED - Missing required analysis components")
                     return False
                     
             except json.JSONDecodeError:
