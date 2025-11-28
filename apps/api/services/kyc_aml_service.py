@@ -107,7 +107,14 @@ Responde con JSON exacto:
             user_message = UserMessage(text=user_prompt)
             response = await chat.send_message(user_message)
             
+            print(f"📥 Raw KYC response type: {type(response)}")
+            print(f"📥 Raw KYC response (first 200 chars): {str(response)[:200]}")
+            
             # Parse JSON response
+            if not response:
+                print("⚠️ Empty response from KYC AI")
+                return self._get_fallback_verification(user_id, document_type, document_data)
+            
             ai_analysis = json.loads(response)
             
             # Procesar resultados
