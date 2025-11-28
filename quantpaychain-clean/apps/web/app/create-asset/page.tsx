@@ -13,6 +13,9 @@ import { Loader2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
+
+// Force dynamic rendering to avoid indexedDB errors during build
+export const dynamic = 'force-dynamic';
 import { v4 as uuidv4 } from 'uuid';
 import { AIAdvisorPanel } from "@/components/ai-advisor-panel";
 import { NativeSelect } from "@/components/native-select";
