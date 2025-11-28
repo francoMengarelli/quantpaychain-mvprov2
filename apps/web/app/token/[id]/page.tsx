@@ -12,6 +12,9 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 
+// Force dynamic rendering to avoid indexedDB errors during build
+export const dynamic = 'force-dynamic';
+
 interface Token {
   id: string;
   asset_id: string;

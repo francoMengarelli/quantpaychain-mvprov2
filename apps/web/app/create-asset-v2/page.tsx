@@ -12,6 +12,9 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { v4 as uuidv4 } from 'uuid';
 
+// Force dynamic rendering to avoid indexedDB errors during build
+export const dynamic = 'force-dynamic';
+
 export default function CreateAssetV2Page() {
   const router = useRouter();
   const { user } = useAuth();

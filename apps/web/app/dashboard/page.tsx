@@ -13,6 +13,9 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { GamificationPanel } from "@/components/gamification-panel";
 
+// Force dynamic rendering to avoid indexedDB errors during build
+export const dynamic = 'force-dynamic';
+
 interface Asset {
   id: string;
   name: string;

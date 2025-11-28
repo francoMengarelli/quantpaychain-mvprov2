@@ -11,6 +11,9 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
+// Force dynamic rendering to avoid indexedDB errors during build
+export const dynamic = 'force-dynamic';
+
 interface MarketplaceToken {
   id: string;
   asset_id: string;
