@@ -1,18 +1,16 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/web/$1"
-    }
-  ],
-  "installCommand": "yarn install",
+  "framework": "nextjs",
   "buildCommand": "cd apps/web && yarn build",
-  "outputDirectory": "apps/web/.next"
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "yarn install",
+  "devCommand": "cd apps/web && yarn dev",
+  "env": {
+    "SKIP_ENV_VALIDATION": "1"
+  },
+  "build": {
+    "env": {
+      "NEXT_PHASE": "phase-production-build"
+    }
+  }
 }
