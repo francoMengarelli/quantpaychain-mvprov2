@@ -2,15 +2,17 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
-  // Disable SSR to avoid indexedDB errors during build
-  output: 'export',
-  distDir: '.next',
   images: {
-    unoptimized: true, // Required for static export
     domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
   },
+  // Force all routes to be dynamic to prevent static generation
   experimental: {
     esmExternals: 'loose',
+    appDir: true,
+  },
+  // Explicitly disable static optimization
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
   },
   webpack: (config, { isServer }) => {
     // Ignore optional peer dependencies and problematic modules
