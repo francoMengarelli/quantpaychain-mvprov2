@@ -46,17 +46,25 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
   const loadTokenDetails = async () => {
     try {
+      console.log('Loading token for asset_id:', params.id);
+      
+      // FIX: Query by asset_id instead of id (marketplace links use asset_id)
       const { data, error } = await supabase
         .from('tokens')
         .select('*')
-        .eq('id', params.id)
+        .eq('asset_id', params.id)  // Changed from .eq('id', params.id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('Token loaded successfully:', data);
       setToken(data);
     } catch (error) {
       console.error('Error loading token:', error);
-      toast.error('Error loading token details');
+      toast.error('Error al cargar detalles del token');
     } finally {
       setLoading(false);
     }
@@ -67,7 +75,7 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
   const handlePurchase = async () => {
     if (!user) {
-      toast.error("Debes iniciar sesi\u00f3n para comprar");
+      toast.error("Debes iniciar sesión para comprar");
       router.push("/login");
       return;
     }
@@ -79,12 +87,12 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
     setPurchasing(true);
     try {
-      // TODO: Conectar con backend API cuando est\u00e9 deployado
+      // TODO: Conectar con backend API cuando esté deployado
       // const response = await fetch('/api/purchase/create-intent', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify({
-      //     token_id: params.id,
+      //     token_id: token.id,
       //     quantity,
       //     user_id: user.id
       //   })
@@ -99,11 +107,11 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
         setToken({ ...token, available_supply: newSupply });
       }
       
-      // Crear transacci\u00f3n en Supabase
+      // Crear transacción en Supabase
       const { error } = await supabase.from('transactions').insert([{
         id: crypto.randomUUID(),
         buyer_id: user.id,
-        token_id: params.id,
+        token_id: token?.id,
         quantity,
         total_amount: totalPrice,
         transaction_hash: `mock_${Date.now()}`,
@@ -113,10 +121,10 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
       
       if (error) throw error;
       
-      // Actualizar supply en DB
+      // FIX: Update by asset_id instead of id
       await supabase.from('tokens').update({
         available_supply: (token?.available_supply || 0) - quantity
-      }).eq('id', params.id);
+      }).eq('asset_id', params.id);  // Changed from .eq('id', params.id)
       
       toast.success("Compra exitosa! Tokens agregados a tu portafolio");
       toast.info("Transacción firmada con PQC");
@@ -140,7 +148,7 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
     return (
       <PageLayout>
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 flex items-center justify-center">
-          <div className="text-white text-xl">Loading...</div>
+          <div className="text-white text-xl">Cargando...</div>
         </div>
       </PageLayout>
     );
@@ -153,11 +161,11 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
         <div className="container mx-auto px-4 py-8">
           <Card className="glass-effect border-purple-500/20">
             <CardContent className="p-12 text-center">
-              <p className="text-gray-400 text-lg mb-4">Token not found</p>
+              <p className="text-gray-400 text-lg mb-4">Token no encontrado</p>
               <Link href="/marketplace">
                 <Button className="qpc-gradient text-white">
                   <ArrowLeft className="mr-2" size={16} />
-                  Back to Marketplace
+                  Volver al Marketplace
                 </Button>
               </Link>
             </CardContent>
@@ -178,7 +186,7 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
         <Link href="/marketplace">
           <Button variant="ghost" className="text-gray-400 hover:text-white mb-6">
             <ArrowLeft className="mr-2" size={16} />
-            Back to Marketplace
+            Volver al Marketplace
           </Button>
         </Link>
 
@@ -198,28 +206,28 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
                 <div className="grid md:grid-cols-2 gap-6 mb-8">
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Price per Token</p>
+                    <p className="text-gray-400 text-sm mb-1">Precio por Token</p>
                     <p className="text-3xl font-bold text-white">${token.price_per_token?.toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Available Supply</p>
+                    <p className="text-gray-400 text-sm mb-1">Supply Disponible</p>
                     <p className="text-3xl font-bold text-white">{token.available_supply?.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Total Supply</p>
+                    <p className="text-gray-400 text-sm mb-1">Supply Total</p>
                     <p className="text-2xl font-semibold text-white">{token.total_supply?.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Status</p>
+                    <p className="text-gray-400 text-sm mb-1">Estado</p>
                     <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30">
-                      Active
+                      Activo
                     </Badge>
                   </div>
                 </div>
 
                 {token.contract_address && (
                   <div className="mb-6">
-                    <p className="text-gray-400 text-sm mb-2">Contract Address</p>
+                    <p className="text-gray-400 text-sm mb-2">Dirección del Contrato</p>
                     <div className="flex items-center gap-2">
                       <code className="text-purple-400 text-sm bg-slate-900/50 px-3 py-2 rounded border border-purple-500/20">
                         {token.contract_address}
@@ -236,18 +244,18 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
             {/* Additional Info */}
             <Card className="glass-effect border-purple-500/20">
               <CardContent className="p-8">
-                <h2 className="text-2xl font-bold text-white mb-4">Token Information</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">Información del Token</h2>
                 <div className="space-y-4">
                   <div>
                     <p className="text-gray-400 text-sm mb-1">Asset ID</p>
                     <p className="text-white">{token.asset_id || 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Created</p>
+                    <p className="text-gray-400 text-sm mb-1">Creado</p>
                     <p className="text-white">{new Date(token.created_at).toLocaleDateString()}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">Compliance</p>
+                    <p className="text-gray-400 text-sm mb-1">Cumplimiento</p>
                     <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">
                       ISO 20022 Compliant
                     </Badge>
@@ -261,10 +269,10 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
           <div>
             <Card className="glass-effect border-purple-500/20 sticky top-8">
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-white mb-6">Purchase Tokens</h3>
+                <h3 className="text-xl font-bold text-white mb-6">Comprar Tokens</h3>
                 
                 <div className="mb-6">
-                  <label className="text-gray-400 text-sm mb-2 block">Quantity</label>
+                  <label className="text-gray-400 text-sm mb-2 block">Cantidad</label>
                   <input
                     type="number"
                     min="1"
@@ -277,11 +285,11 @@ export default function TokenDetailsPage({ params }: TokenDetailsProps) {
 
                 <div className="mb-6 p-4 bg-slate-900/50 rounded-lg border border-purple-500/20">
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-400">Price per token:</span>
+                    <span className="text-gray-400">Precio por token:</span>
                     <span className="text-white font-semibold">${token.price_per_token?.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-400">Quantity:</span>
+                    <span className="text-gray-400">Cantidad:</span>
                     <span className="text-white font-semibold">{quantity}</span>
                   </div>
                   <div className="border-t border-gray-800 pt-2 mt-2">
