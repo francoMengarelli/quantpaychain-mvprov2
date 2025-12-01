@@ -4,8 +4,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://quantpaychain-api.onrender.com';
 
 interface AIAdvisorPanelProps {
   assetType: string;
@@ -18,6 +20,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
   const [advice, setAdvice] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getAIAdvice = async () => {
     if (!assetType || !description || !valueUsd || !location) {
@@ -26,55 +29,40 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
     }
 
     setLoading(true);
+    setError(null);
+    
     try {
-      // TODO: Conectar con backend API real cuando esté deployado
-      // const response = await fetch('/api/ai/advisor', { ... });
+      console.log('🤖 Solicitando análisis AI al backend:', API_BASE_URL);
       
-      // Mock data por ahora
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await fetch(`${API_BASE_URL}/api/ai/advisor`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          asset_type: assetType,
+          description: description,
+          value_usd: parseFloat(valueUsd),
+          location: location,
+          user_context: null
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: 'Error desconocido' }));
+        throw new Error(errorData.detail || `Error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Análisis AI recibido:', data);
       
-      const mockAdvice = {
-        asset_analysis: {
-          type: assetType,
-          value_assessment: parseFloat(valueUsd) > 1000000 ? "High-value asset" : "Mid-range asset",
-          location_analysis: `Ubicación estratégica en ${location}`
-        },
-        legal_guidance: {
-          requirements: [
-            "🏛️ Verificar título de propiedad",
-            "📋 Avalúo profesional reciente",
-            "⚖️ Verificar zonificación y permisos",
-            "🔍 Due diligence completo"
-          ],
-          next_steps: [
-            "1️⃣ Reunir documentación legal",
-            "2️⃣ Obtener valuación profesional",
-            "3️⃣ Verificar cumplimiento regulatorio",
-            "4️⃣ Configurar estructura de tokens"
-          ]
-        },
-        tokenization_strategy: "Fraccionamiento ideal: 1,000-10,000 tokens para liquidez óptima",
-        investment_recommendations: {
-          potential: "Alto",
-          strategies: [
-            "💡 Considera alquilar para generar ingresos pasivos",
-            "📈 Revalorización promedio: 5-8% anual",
-            "🎯 Ideal para diversificar portafolio"
-          ],
-          risk_level: "Medio"
-        },
-        ai_insights: {
-          market_trends: `📊 ${assetType} muestra tendencia positiva en ${location}`,
-          timing: "⏰ Momento favorable para tokenizar",
-          gamification_tip: "🎮 ¡Completa tu primer asset para desbloquear badge 'Tokenizador Novato'!"
-        }
-      };
-      
-      setAdvice(mockAdvice);
+      setAdvice(data);
       setExpanded(true);
-      toast.success("Análisis de IA completado");
-    } catch (error) {
-      toast.error("Error al obtener consejos de IA");
+      toast.success("Análisis legal completado exitosamente");
+    } catch (error: any) {
+      console.error('❌ Error al obtener análisis AI:', error);
+      setError(error.message || "Error al conectar con el servicio de IA");
+      toast.error("Error al obtener análisis. Verifica tu conexión.");
     } finally {
       setLoading(false);
     }
@@ -89,14 +77,24 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
             AI Legal Advisor
           </CardTitle>
           <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-            Beta
+            Powered by AI
           </Badge>
         </div>
         <p className="text-sm text-gray-400 mt-2">
-          Obtén análisis legal, estrategia de tokenización y recomendaciones de inversión
+          Análisis legal profesional, estrategia de tokenización y recomendaciones de inversión
         </p>
       </CardHeader>
       <CardContent>
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 text-red-400 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-red-200">
+              <p className="font-semibold">Error al obtener análisis</p>
+              <p className="text-xs mt-1">{error}</p>
+            </div>
+          </div>
+        )}
+        
         {!advice ? (
           <Button
             onClick={getAIAdvice}
@@ -111,7 +109,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
             ) : (
               <>
                 <Sparkles className="mr-2 h-4 w-4" />
-                Obtener Análisis de IA
+                Obtener Análisis Legal AI
               </>
             )}
           </Button>
@@ -120,92 +118,124 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
             {/* Quick Summary */}
             <div className="bg-slate-900/50 rounded-lg p-4 border border-purple-500/20">
               <div className="flex items-start justify-between mb-3">
-                <div>
+                <div className="flex-1">
                   <h4 className="text-white font-semibold mb-1">Análisis Rápido</h4>
-                  <p className="text-sm text-gray-400">{advice.asset_analysis.value_assessment}</p>
+                  <p className="text-sm text-gray-400">
+                    {advice.executive_summary?.key_insight || 
+                     advice.asset_analysis?.value_assessment || 
+                     "Análisis completado"}
+                  </p>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setExpanded(!expanded)}
-                  className="text-purple-400"
+                  className="text-purple-400 flex-shrink-0"
                 >
                   {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </Button>
               </div>
               
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="outline" className="border-purple-500/30 text-purple-300">
-                  <TrendingUp className="mr-1 h-3 w-3" />
-                  {advice.investment_recommendations.potential}
-                </Badge>
-                <Badge variant="outline" className="border-blue-500/30 text-blue-300">
-                  <Shield className="mr-1 h-3 w-3" />
-                  {advice.investment_recommendations.risk_level}
-                </Badge>
+                {advice.investment_recommendations?.potential && (
+                  <Badge variant="outline" className="border-purple-500/30 text-purple-300">
+                    <TrendingUp className="mr-1 h-3 w-3" />
+                    {advice.investment_recommendations.potential}
+                  </Badge>
+                )}
+                {advice.investment_recommendations?.risk_level && (
+                  <Badge variant="outline" className="border-blue-500/30 text-blue-300">
+                    <Shield className="mr-1 h-3 w-3" />
+                    Riesgo: {advice.investment_recommendations.risk_level}
+                  </Badge>
+                )}
               </div>
             </div>
 
             {/* Gamification Tip */}
-            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-3 border border-purple-500/20">
-              <p className="text-sm text-purple-200">{advice.ai_insights.gamification_tip}</p>
-            </div>
+            {advice.ai_insights?.gamification_tip && (
+              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-3 border border-purple-500/20">
+                <p className="text-sm text-purple-200">{advice.ai_insights.gamification_tip}</p>
+              </div>
+            )}
 
-            {expanded && (
+            {expanded && advice.legal_guidance && (
               <div className="space-y-4 animate-in fade-in duration-300">
                 {/* Legal Requirements */}
-                <div>
-                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400" />
-                    Requisitos Legales
-                  </h4>
-                  <ul className="space-y-2">
-                    {advice.legal_guidance.requirements.map((req: string, idx: number) => (
-                      <li key={idx} className="text-sm text-gray-300 flex items-start gap-2">
-                        <span className="text-purple-400">•</span>
-                        {req}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {advice.legal_guidance.requirements && Array.isArray(advice.legal_guidance.requirements) && (
+                  <div>
+                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-400" />
+                      Requisitos Legales
+                    </h4>
+                    <ul className="space-y-2">
+                      {advice.legal_guidance.requirements.map((req: string, idx: number) => (
+                        <li key={`req-${idx}-${req.substring(0, 10)}`} className="text-sm text-gray-300 flex items-start gap-2">
+                          <span className="text-purple-400">•</span>
+                          <span>{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Tokenization Strategy */}
-                <div className="bg-slate-900/50 rounded-lg p-3 border border-blue-500/20">
-                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <Lightbulb className="h-4 w-4 text-yellow-400" />
-                    Estrategia de Tokenización
-                  </h4>
-                  <p className="text-sm text-gray-300">{advice.tokenization_strategy}</p>
-                </div>
+                {advice.tokenization_strategy && (
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-blue-500/20">
+                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                      <Lightbulb className="h-4 w-4 text-yellow-400" />
+                      Estrategia de Tokenización
+                    </h4>
+                    <p className="text-sm text-gray-300">
+                      {typeof advice.tokenization_strategy === 'string' 
+                        ? advice.tokenization_strategy 
+                        : JSON.stringify(advice.tokenization_strategy)}
+                    </p>
+                  </div>
+                )}
 
                 {/* Investment Recommendations */}
-                <div>
-                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-emerald-400" />
-                    Recomendaciones de Inversión
-                  </h4>
-                  <ul className="space-y-2">
-                    {advice.investment_recommendations.strategies.map((strategy: string, idx: number) => (
-                      <li key={idx} className="text-sm text-gray-300">{strategy}</li>
-                    ))}
-                  </ul>
-                </div>
+                {advice.investment_recommendations?.strategies && Array.isArray(advice.investment_recommendations.strategies) && (
+                  <div>
+                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-emerald-400" />
+                      Recomendaciones de Inversión
+                    </h4>
+                    <ul className="space-y-2">
+                      {advice.investment_recommendations.strategies.map((strategy: string, idx: number) => (
+                        <li key={`strat-${idx}-${strategy.substring(0, 10)}`} className="text-sm text-gray-300">
+                          {strategy}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Next Steps */}
-                <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-3 border border-blue-500/20">
-                  <h4 className="text-white font-semibold mb-2">Próximos Pasos</h4>
-                  <ol className="space-y-1">
-                    {advice.legal_guidance.next_steps.map((step: string, idx: number) => (
-                      <li key={idx} className="text-sm text-gray-300">{step}</li>
-                    ))}
-                  </ol>
-                </div>
+                {advice.legal_guidance.next_steps && Array.isArray(advice.legal_guidance.next_steps) && (
+                  <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-3 border border-blue-500/20">
+                    <h4 className="text-white font-semibold mb-2">Próximos Pasos</h4>
+                    <ol className="space-y-1">
+                      {advice.legal_guidance.next_steps.map((step: string, idx: number) => (
+                        <li key={`step-${idx}-${step.substring(0, 10)}`} className="text-sm text-gray-300">
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
 
                 {/* Market Insights */}
-                <div className="bg-slate-900/50 rounded-lg p-3 border border-purple-500/20">
-                  <p className="text-sm text-purple-200">{advice.ai_insights.market_trends}</p>
-                  <p className="text-sm text-blue-200 mt-1">{advice.ai_insights.timing}</p>
-                </div>
+                {advice.ai_insights && (
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-purple-500/20">
+                    {advice.ai_insights.market_trends && (
+                      <p className="text-sm text-purple-200">{advice.ai_insights.market_trends}</p>
+                    )}
+                    {advice.ai_insights.timing && (
+                      <p className="text-sm text-blue-200 mt-1">{advice.ai_insights.timing}</p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
