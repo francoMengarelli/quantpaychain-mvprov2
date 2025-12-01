@@ -1,0 +1,10 @@
+This file forces Vercel to recognize new commits.
+Timestamp: 2025-01-XX
+Commit: 03f5492
+
+If Vercel is still cloning commit 29638b0, there may be:
+1. A Git configuration issue in Vercel settings
+2. A webhook delivery problem
+3. A cached deployment configuration
+
+Please check Vercel Dashboard → Settings → Git
