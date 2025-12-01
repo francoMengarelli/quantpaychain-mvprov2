@@ -5,15 +5,11 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 class AIAdvisorService:
     """
-    AI Legal Advisor Service - IMPLEMENTACIÓN REAL CON OPENAI API
-    - Guía legal para creación de assets
-    - Sugerencias de uso (guardar, invertir, vender)
-    - Gamificación y tips interactivos
-    - Análisis de riesgo personalizado
+    AI Legal Advisor Service - ASESOR LEGAL PROFESIONAL REAL
+    Proporciona análisis legal detallado, específico por jurisdicción y accionable
     """
     
     def __init__(self):
-        # Intentar primero con Emergent LLM Key, luego con OpenAI API Key
         self.api_key = os.environ.get("EMERGENT_LLM_KEY") or os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
             print("⚠️ WARNING: No API key found (EMERGENT_LLM_KEY or OPENAI_API_KEY)")
@@ -23,82 +19,170 @@ class AIAdvisorService:
             print(f"✅ Using {key_type} for AI Advisor (length: {len(self.api_key)})")
         
         self.provider = "openai"
-        self.model = "gpt-4o-mini"  # Modelo actualizado y más económico
-        self.system_message = """Eres un experto legal y financiero especializado en tokenización de activos del mundo real (RWA).
-Tu trabajo es analizar activos y proporcionar:
+        self.model = "gpt-4o-mini"
+        
+        # SYSTEM MESSAGE MEJORADO - Asesor Legal Profesional
+        self.system_message = """Eres un ASESOR LEGAL EXPERTO especializado en:
+- Tokenización de activos del mundo real (RWA/Real World Assets)
+- Derecho internacional de valores y securities
+- Regulación blockchain y criptoactivos
+- Cumplimiento normativo multi-jurisdiccional
+- Estructuración legal de SPVs y vehículos de inversión
+- KYC/AML y compliance financiero
 
-1. Requisitos legales específicos por jurisdicción
-2. Estrategia de tokenización óptima
-3. Análisis de riesgo y potencial de inversión
-4. Recomendaciones prácticas y accionables
+Tu misión es proporcionar ANÁLISIS LEGAL ESPECÍFICO, DETALLADO Y ACCIONABLE que un verdadero abogado daría.
 
-Responde siempre en JSON válido con estructura específica.
-Usa emojis para hacer el contenido más atractivo.
-Sé preciso, profesional pero accesible."""
+Principios clave:
+1. SÉ ESPECÍFICO: Menciona leyes, regulaciones, y frameworks específicos (ej: "Securities Act 1933 Section 5", "MiCA Regulation EU", "Ley del Mercado de Valores")
+2. SÉ PRÁCTICO: Da pasos concretos numerados que el usuario puede seguir AHORA
+3. SÉ CLARO SOBRE RIESGOS: Identifica riesgos legales reales y cómo mitigarlos
+4. SÉ JURISDICCIONAL: Adapta el consejo a la ubicación del activo
+5. NO SEAS GENÉRICO: Evita respuestas vagas como \"consulta un abogado\" sin dar contexto
+
+Responde siempre en formato JSON estructurado con análisis legal profundo."""
     
     async def analyze_asset(self, asset_type: str, description: str, value_usd: float, location: str, user_context: Optional[Dict] = None):
         """
-        Analiza el asset usando Emergent LLM integration y proporciona advice legal y estratégico REAL
+        Análisis legal REAL Y PROFUNDO del activo para tokenización
         """
-        # Si no hay API key, usar fallback inmediatamente
         if not self.api_key:
             print("⚠️ No API key available - using fallback")
             return self._get_fallback_analysis(asset_type, description, value_usd, location)
         
         try:
-            print(f"🔑 Using {self.provider} {self.model} via Emergent Integration")
+            print(f"🔑 Using {self.provider} {self.model} for LEGAL ANALYSIS")
             
+            # PROMPT MEJORADO - Análisis Legal Profundo
             user_prompt = f"""
-Analiza este activo para tokenización:
+Actúa como un abogado senior especializado en tokenización de activos. Analiza este activo:
 
-**ACTIVO:**
+**ACTIVO A TOKENIZAR:**
 - Tipo: {asset_type}
 - Descripción: {description}
-- Valor USD: ${value_usd:,}
-- Ubicación: {location}
+- Valor: ${value_usd:,} USD
+- Jurisdicción: {location}
+- Contexto Usuario: {user_context or 'Inversionista individual'}
 
-**CONTEXTO USUARIO:** {user_context or 'Usuario nuevo'}
+**TU TAREA:**
+Proporciona un análisis legal COMPLETO Y PROFESIONAL como lo haría un abogado experto en securities y blockchain.
 
-Responde con JSON en este formato exacto:
+Responde en JSON con esta estructura exacta:
+
 {{
-    "asset_analysis": {{
-        "type": "{asset_type}",
-        "value_assessment": "string con evaluación del valor",
-        "location_analysis": "análisis específico de la ubicación",
-        "market_insights": "insights de mercado relevantes"
+    "executive_summary": {{
+        "viability_score": "1-10 con justificación legal",
+        "primary_legal_classification": "Security/Utility/Commodity token según regulación",
+        "key_insight": "Insight legal más importante en 1-2 líneas",
+        "estimated_legal_costs": "Rango de costos legales en USD"
     }},
-    "legal_guidance": {{
-        "requirements": ["lista de 4-6 requisitos legales específicos con emojis"],
-        "compliance_level": "High|Medium|Low",
-        "jurisdictional_notes": "notas específicas para {location}",
-        "next_steps": ["4 pasos concretos numerados con emojis"]
+    
+    "legal_analysis": {{
+        "securities_classification": {{
+            "is_security": "Yes/No con análisis Howey Test (USA) o equivalente",
+            "applicable_framework": "Securities Act 1933/MiCA/Ley de Mercado de Valores, etc.",
+            "exemptions_available": ["Reg D 506(c)", "Reg S", "Reg A+", etc.],
+            "registration_requirements": "Específicos según clasificación"
+        }},
+        
+        "jurisdictional_requirements": {{
+            "primary_jurisdiction": "{location}",
+            "applicable_laws": ["Lista de 4-6 leyes/regulaciones ESPECÍFICAS con números de artículo"],
+            "regulatory_bodies": ["SEC/CNMV/FCA/BaFin según jurisdicción"],
+            "cross_border_considerations": "Si aplica inversión internacional"
+        }},
+        
+        "compliance_roadmap": {{
+            "phase_1_immediate": [
+                "1. Acción específica con marco legal",
+                "2. Documento específico a preparar",
+                "3. Registro o filing específico"
+            ],
+            "phase_2_structuring": [
+                "1. Estructura legal recomendada (LLC/SPV/Trust)",
+                "2. Documentos legales requeridos",
+                "3. Acuerdos de custodia y tokenización"
+            ],
+            "phase_3_ongoing": [
+                "1. Obligaciones de reporting (10-K, 10-Q, etc.)",
+                "2. Compliance continuo (AML/CFT monitoring)",
+                "3. Auditorías requeridas (frecuencia específica)"
+            ]
+        }}
     }},
-    "tokenization_strategy": {{
-        "recommended_tokens": "número recomendado de tokens a crear",
-        "pricing_model": "estrategia de precio por token",
-        "liquidity_approach": "cómo maximizar liquidez",
-        "fractionalization_benefits": "beneficios del fraccionamiento"
+    
+    "risk_mitigation": {{
+        "legal_risks": [
+            {{
+                "risk": "Riesgo legal específico",
+                "severity": "Critical/High/Medium/Low",
+                "mitigation": "Paso concreto de mitigación con referencia legal"
+            }}
+        ],
+        "regulatory_risks": [
+            {{
+                "risk": "Riesgo regulatorio específico",
+                "probability": "High/Medium/Low",
+                "action_plan": "Plan de acción concreto"
+            }}
+        ]
     }},
-    "investment_recommendations": {{
-        "potential": "Alto|Medio-Alto|Medio|Bajo-Medio|Bajo",
-        "risk_level": "Alto|Medio-Alto|Medio|Bajo-Medio|Bajo",
-        "strategies": ["3-4 estrategias específicas con emojis"],
-        "timeline": "recomendación de timeline de inversión",
-        "expected_returns": "estimación de retornos anuales"
+    
+    "kyc_aml_requirements": {{
+        "investor_verification_level": "Basic/Enhanced/Full según valor y jurisdicción",
+        "required_documents": ["Lista específica de documentos"],
+        "ongoing_monitoring": "Frecuencia y tipo de monitoreo",
+        "sanctions_screening": "OFAC/EU/UN listas específicas a verificar"
     }},
-    "ai_insights": {{
-        "market_trends": "tendencias de mercado para este tipo de activo",
-        "timing_analysis": "análisis del momento actual para tokenizar",
-        "competitive_advantages": "ventajas competitivas de este activo",
-        "gamification_tip": "tip gamificado con emoji 🎮"
+    
+    "tokenization_structure": {{
+        "recommended_token_type": "Security/Asset-backed con justificación legal",
+        "token_rights": ["Derechos legales específicos del token"],
+        "ownership_model": "Beneficial ownership/Direct ownership/Fractional",
+        "smart_contract_considerations": "Requerimientos legales del contrato",
+        "custody_requirements": "Requisitos de custodia según regulación"
+    }},
+    
+    "tax_implications": {{
+        "primary_tax_treatment": "Capital gains/Income/Property según jurisdicción",
+        "withholding_requirements": "Específicos si aplica",
+        "reporting_obligations": ["Form 1099/IRS filings/equivalente según país"],
+        "tax_optimization_notes": "Consideraciones de optimización legal"
+    }},
+    
+    "recommended_advisors": {{
+        "legal_counsel": "Tipo de firma recomendada (securities/blockchain specialist)",
+        "regulatory_consultant": "Si necesita consultant especializado",
+        "tax_advisor": "Especialización recomendada",
+        "estimated_professional_fees": "Rango de fees totales"
+    }},
+    
+    "timeline_estimate": {{
+        "minimum_timeline": "X meses con justificación",
+        "realistic_timeline": "X-Y meses",
+        "critical_path_items": ["Items que determinan el timeline"],
+        "fast_track_options": "Si hay opciones para acelerar legalmente"
+    }},
+    
+    "ai_legal_insights": {{
+        "precedent_cases": "Casos similares o precedentes relevantes",
+        "market_practice": "Práctica común del mercado para este tipo de activo",
+        "emerging_regulations": "Regulaciones en desarrollo que pueden afectar",
+        "strategic_recommendation": "Recomendación estratégica principal del asesor"
     }}
 }}
+
+**IMPORTANTE:**
+- SÉ MUY ESPECÍFICO con números de leyes, artículos, secciones
+- Menciona precedentes o casos relevantes si los hay
+- Da rangos de costos y timelines REALISTAS
+- Identifica TODOS los riesgos legales principales
+- Proporciona pasos ACCIONABLES que el usuario puede seguir HOY
 """
 
             # Crear chat usando Emergent LLM integration
             chat = LlmChat(
                 api_key=self.api_key,
-                session_id=f"ai-advisor-{asset_type}-{hash(description)}",
+                session_id=f"legal-advisor-{asset_type}-{hash(description)}",
                 system_message=self.system_message
             ).with_model(self.provider, self.model)
             
@@ -106,39 +190,39 @@ Responde con JSON en este formato exacto:
             user_message = UserMessage(text=user_prompt)
             response = await chat.send_message(user_message)
             
-            print(f"📥 Raw AI response type: {type(response)}")
-            print(f"📥 Raw AI response (first 200 chars): {str(response)[:200]}")
+            print(f"📥 AI Legal Analysis received (length: {len(response) if response else 0})")
             
-            # Parse JSON response
             if not response:
                 print("⚠️ Empty response from AI")
                 return self._get_fallback_analysis(asset_type, description, value_usd, location)
             
-            # Limpiar markdown si viene envuelto en ```json...```
+            # Limpiar markdown
             cleaned_response = response.strip()
             if cleaned_response.startswith("```json"):
-                cleaned_response = cleaned_response[7:]  # Remove ```json
+                cleaned_response = cleaned_response[7:]
             if cleaned_response.startswith("```"):
-                cleaned_response = cleaned_response[3:]  # Remove ```
+                cleaned_response = cleaned_response[3:]
             if cleaned_response.endswith("```"):
-                cleaned_response = cleaned_response[:-3]  # Remove trailing ```
+                cleaned_response = cleaned_response[:-3]
             cleaned_response = cleaned_response.strip()
             
             ai_analysis = json.loads(cleaned_response)
             
-            # Añadir metadata de AI
+            # Añadir metadata
             ai_analysis["metadata"] = {
                 "ai_powered": True,
                 "model": self.model,
-                "confidence": "high",
-                "provider": self.provider
+                "analysis_type": "professional_legal",
+                "provider": self.provider,
+                "disclaimer": "Este análisis es informativo. Consulta con abogado licenciado para decisiones legales finales."
             }
             
-            print(f"✅ AI Analysis completed successfully")
+            print(f"✅ Professional Legal Analysis completed")
             return ai_analysis
             
         except json.JSONDecodeError as e:
             print(f"JSON Parse Error: {e}")
+            print(f"Response preview: {cleaned_response[:500] if 'cleaned_response' in locals() else 'N/A'}")
             return self._get_fallback_analysis(asset_type, description, value_usd, location)
         except Exception as e:
             print(f"AI Advisor Error: {e}")
@@ -146,173 +230,150 @@ Responde con JSON en este formato exacto:
     
     def _get_fallback_analysis(self, asset_type: str, description: str, value_usd: float, location: str) -> Dict:
         """
-        Análisis de respaldo si falla la IA
+        Análisis de respaldo MEJORADO cuando falla la IA
         """
         return {
-            "asset_analysis": {
-                "type": asset_type,
-                "value_assessment": f"Asset valorado en ${value_usd:,} - Análisis básico disponible",
-                "location_analysis": f"Ubicado en {location}",
-                "market_insights": "Conectando con AI - análisis básico mostrado"
+            "executive_summary": {
+                "viability_score": "7/10 - Análisis básico disponible, se recomienda consulta legal completa",
+                "primary_legal_classification": "Requiere análisis detallado para determinar si es Security Token",
+                "key_insight": f"Activo tipo {asset_type} valorado en ${value_usd:,} requiere estructuración legal profesional",
+                "estimated_legal_costs": "$15,000 - $50,000 USD dependiendo de jurisdicción y complejidad"
             },
-            "legal_guidance": {
-                "requirements": [
-                    "📋 Documentación legal básica",
-                    "⚖️ Cumplimiento regulatorio local",
-                    "💰 Valuación profesional",
-                    "🔍 Due diligence completo"
+            "legal_analysis": {
+                "securities_classification": {
+                    "is_security": "Requiere Howey Test analysis - consulta abogado securities",
+                    "applicable_framework": f"Securities Act 1933 (USA), MiCA (EU), regulación local de {location}",
+                    "exemptions_available": ["Reg D 506(b)", "Reg D 506(c)", "Reg S (offshore)", "Reg A+"],
+                    "registration_requirements": "Depende de clasificación final y estrategia de distribución"
+                },
+                "jurisdictional_requirements": {
+                    "primary_jurisdiction": location,
+                    "applicable_laws": [
+                        "📋 Securities Act local",
+                        "💰 Anti-Money Laundering Act",
+                        "🔐 Data Protection Regulation (GDPR/equivalente)",
+                        "⚖️ Contract Law y Property Rights",
+                        "🏦 Financial Services Regulation",
+                        "🌐 Cross-border Investment Rules"
+                    ],
+                    "regulatory_bodies": ["SEC/CNMV/FCA", "Central Bank", "Tax Authority"],
+                    "cross_border_considerations": "Requiere análisis si habrá inversores internacionales"
+                },
+                "compliance_roadmap": {
+                    "phase_1_immediate": [
+                        "1️⃣ Retener abogado especializado en securities y blockchain",
+                        "2️⃣ Obtener valuación profesional certificada del activo",
+                        "3️⃣ Determinar clasificación legal del token (security/utility)",
+                        "4️⃣ Preparar documentación legal del activo (título, appraisals)"
+                    ],
+                    "phase_2_structuring": [
+                        "1️⃣ Estructurar SPV o vehículo legal apropiado",
+                        "2️⃣ Drafting: PPM, Subscription Agreement, Operating Agreement",
+                        "3️⃣ Establecer custodia y segregación de activos",
+                        "4️⃣ Implementar programa KYC/AML completo"
+                    ],
+                    "phase_3_ongoing": [
+                        "1️⃣ Filing Form D (USA) o equivalente en 15 días post-first sale",
+                        "2️⃣ Reporting periódico a inversores (trimestral/anual)",
+                        "3️⃣ Auditoría financiera anual independiente",
+                        "4️⃣ Monitoreo continuo AML y actualización KYC"
+                    ]
+                }
+            },
+            "risk_mitigation": {
+                "legal_risks": [
+                    {
+                        "risk": "Clasificación como security no registrada",
+                        "severity": "Critical",
+                        "mitigation": "Usar exemption registration (Reg D/S/A+) o registrar con SEC/equivalente"
+                    },
+                    {
+                        "risk": "Incumplimiento AML/KYC",
+                        "severity": "High",
+                        "mitigation": "Implementar programa KYC robusto con verificación de identidad de terceros"
+                    },
+                    {
+                        "risk": "Violación de leyes de oferta pública",
+                        "severity": "High",
+                        "mitigation": "Restringir marketing y usar safe harbors regulatorios"
+                    }
                 ],
-                "compliance_level": "Medium",
-                "jurisdictional_notes": f"Revisar regulaciones específicas de {location}",
-                "next_steps": [
-                    "1️⃣ Reunir documentación",
-                    "2️⃣ Obtener valuación",
-                    "3️⃣ Verificar compliance",
-                    "4️⃣ Estructurar tokens"
+                "regulatory_risks": [
+                    {
+                        "risk": "Cambios regulatorios en blockchain/crypto",
+                        "probability": "Medium",
+                        "action_plan": "Monitorear propuestas regulatorias y mantener flexibilidad en estructura"
+                    }
                 ]
             },
-            "tokenization_strategy": {
-                "recommended_tokens": "1,000 tokens para liquidez óptima",
-                "pricing_model": f"${value_usd/1000:,.2f} por token",
-                "liquidity_approach": "Marketplace público + incentivos",
-                "fractionalization_benefits": "Acceso democratizado a inversión"
-            },
-            "investment_recommendations": {
-                "potential": self._get_potential_by_type(asset_type),
-                "risk_level": self._get_risk_by_type(asset_type),
-                "strategies": [
-                    "💎 Hold para apreciación a largo plazo",
-                    "💰 Generar ingresos pasivos",
-                    "📈 Diversificar portafolio"
+            "kyc_aml_requirements": {
+                "investor_verification_level": "Enhanced - requerido para security tokens",
+                "required_documents": [
+                    "Government-issued ID (passport/driver's license)",
+                    "Proof of address (utility bill <3 months)",
+                    "Accredited investor verification (if Reg D 506(c))",
+                    "Source of funds documentation",
+                    "Beneficial ownership declaration"
                 ],
-                "timeline": "3-5 años recomendado",
-                "expected_returns": "Varía según mercado"
+                "ongoing_monitoring": "Transaction monitoring continuo + re-verification cada 2 años",
+                "sanctions_screening": "OFAC, EU Sanctions List, UN Consolidated List - verificación pre-investment"
             },
-            "ai_insights": {
-                "market_trends": f"{asset_type.title()} en tendencia positiva",
-                "timing_analysis": "Momento neutral para tokenización",
-                "competitive_advantages": "First-mover advantage en tokenización",
-                "gamification_tip": "🎮 ¡Completa tu análisis AI para ganar XP extra!"
+            "tokenization_structure": {
+                "recommended_token_type": "Security Token (asset-backed) sujeto a securities law",
+                "token_rights": [
+                    "Ownership rights proporcionales al activo subyacente",
+                    "Derecho a dividendos/distributions si genera ingresos",
+                    "Derechos de voto según estructura (si aplica)",
+                    "Exit rights y liquidation preferences"
+                ],
+                "ownership_model": "Beneficial ownership via SPV - tokens representan equity/debt del SPV",
+                "smart_contract_considerations": "Incluir transfer restrictions, accredited investor check, whitelist",
+                "custody_requirements": "Custodia calificada para activos de alto valor (>$1M)"
+            },
+            "tax_implications": {
+                "primary_tax_treatment": "Capital gains para inversores, income si hay distributions",
+                "withholding_requirements": "30% withholding para inversores extranjeros (USA) o según tratado",
+                "reporting_obligations": [
+                    "Form 1099-DIV para distributions (USA)",
+                    "Form 1099-B para sales (USA)",
+                    "Equivalent forms para otras jurisdicciones"
+                ],
+                "tax_optimization_notes": "Considerar estructura en jurisdicción tax-efficient (Delaware, Cayman, etc.)"
+            },
+            "recommended_advisors": {
+                "legal_counsel": "Securities attorney con experiencia en tokenization (buscar en blockchain legal networks)",
+                "regulatory_consultant": "Si multi-jurisdictional, considerar consultant regulatorio especializado",
+                "tax_advisor": "CPA/Tax attorney con experiencia en digital assets y international tax",
+                "estimated_professional_fees": "$30,000 - $150,000 total (legal $15-75k, tax $5-20k, regulatory $10-55k)"
+            },
+            "timeline_estimate": {
+                "minimum_timeline": "3-4 meses (estructuración agresiva con todos recursos)",
+                "realistic_timeline": "6-9 meses para tokenización completa y compliant",
+                "critical_path_items": [
+                    "Legal structure y drafting (2-3 meses)",
+                    "Regulatory filings y approvals (1-2 meses)",
+                    "KYC/AML platform setup (1 mes)",
+                    "Smart contract audit (3-4 semanas)"
+                ],
+                "fast_track_options": "Usar tokenization platform existente con legal/compliance incluido (reduce timeline 50%)"
+            },
+            "ai_legal_insights": {
+                "precedent_cases": "tZERO (securities), RealT (real estate), Blockchain Capital (VC fund) - casos exitosos de tokenización",
+                "market_practice": f"Para {asset_type}, mercado típicamente usa Reg D 506(c) + accredited investors only",
+                "emerging_regulations": "MiCA (EU 2024), stablecoin bills (USA), DLT pilot regime (varios países) en desarrollo",
+                "strategic_recommendation": "⚡ PRIORIDAD: Contratar securities attorney ANTES de cualquier marketing o token sale. Compliance desde día 1 es crítico."
             },
             "metadata": {
                 "ai_powered": False,
-                "model": "fallback",
-                "confidence": "basic",
-                "note": "AI analysis temporarily unavailable"
+                "analysis_type": "fallback_professional",
+                "disclaimer": "Este análisis es informativo y generalizado. DEBES consultar con abogado licenciado antes de proceder con tokenización."
             }
-        }
-    
-    async def get_gamification_tips(self, asset_id: str, user_stats: Optional[Dict] = None):
-        """
-        Tips gamificados usando AI para personalización
-        """
-        try:
-            user_prompt = f"""
-Genera tips de gamificación personalizados para un usuario de QuantPayChain.
-
-**CONTEXTO:**
-- Asset ID: {asset_id}
-- Stats del usuario: {user_stats or 'Usuario nuevo'}
-
-Responde con JSON exacto:
-{{
-    "achievements": [
-        {{
-            "id": "achievement_id",
-            "name": "🏆 Nombre con emoji",
-            "description": "Descripción motivadora",
-            "unlocked": true/false,
-            "progress": "1/3" (si aplica),
-            "reward": "+XP puntos"
-        }}
-    ],
-    "next_actions": [
-        {{
-            "action": "🎯 Acción específica con emoji",
-            "xp": number,
-            "difficulty": "Fácil|Medio|Difícil"
-        }}
-    ],
-    "daily_challenge": {{
-        "challenge": "🎲 Desafío específico con emoji",
-        "reward": "+XP",
-        "expires_in": "tiempo restante"
-    }},
-    "leaderboard_position": {{
-        "rank": number,
-        "total_users": number,
-        "message": "🚀 Mensaje motivacional"
-    }},
-    "ai_motivation": "Mensaje personalizado motivacional de 1-2 líneas"
-}}
-
-Haz que sea específico y motivacional.
-"""
-
-            response = await self.client.chat_completion_async(
-                messages=[
-                    {"role": "system", "content": "Eres un experto en gamificación y engagement de usuarios. Crea experiencias motivadoras y personalizadas."},
-                    {"role": "user", "content": user_prompt}
-                ]
-            )
-            
-            ai_tips = json.loads(response.choices[0].message.content)
-            return ai_tips
-            
-        except Exception as e:
-            print(f"Gamification AI Error: {e}")
-            return self._get_fallback_gamification(asset_id)
-    
-    def _get_fallback_gamification(self, asset_id: str) -> Dict:
-        """
-        Gamificación de respaldo
-        """
-        return {
-            "achievements": [
-                {
-                    "id": "first_asset",
-                    "name": "🌟 Primer Asset", 
-                    "description": "Tokeniza tu primer activo",
-                    "unlocked": True,
-                    "reward": "+100 XP"
-                },
-                {
-                    "id": "diversifier",
-                    "name": "🎯 Diversificador",
-                    "description": "Crea assets en 3 categorías diferentes", 
-                    "unlocked": False,
-                    "progress": "1/3"
-                }
-            ],
-            "next_actions": [
-                {
-                    "action": "💰 Completa tu primer análisis AI",
-                    "xp": 150,
-                    "difficulty": "Fácil"
-                },
-                {
-                    "action": "📈 Alcanza $10k en valor total", 
-                    "xp": 300,
-                    "difficulty": "Medio"
-                }
-            ],
-            "daily_challenge": {
-                "challenge": "🎲 Explora 3 assets en el marketplace",
-                "reward": "+75 XP",
-                "expires_in": "23h 45m"
-            },
-            "leaderboard_position": {
-                "rank": 42,
-                "total_users": 156, 
-                "message": "🚀 ¡Escalando en el ranking!"
-            },
-            "ai_motivation": "🤖 Sigue tokenizando para desbloquear análisis AI más avanzados"
         }
     
     def _get_potential_by_type(self, asset_type: str) -> str:
         potential_map = {
             "real_estate": "Alto",
-            "art": "Medio-Alto", 
+            "art": "Medio-Alto",
             "commodity": "Medio",
             "bond": "Bajo-Medio",
             "equity": "Alto"
@@ -322,7 +383,7 @@ Haz que sea específico y motivacional.
     def _get_risk_by_type(self, asset_type: str) -> str:
         risk_map = {
             "bond": "Bajo",
-            "real_estate": "Medio", 
+            "real_estate": "Medio",
             "commodity": "Medio",
             "art": "Medio-Alto",
             "equity": "Alto"
