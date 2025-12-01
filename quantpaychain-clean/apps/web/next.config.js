@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  // Disable SSR to avoid indexedDB errors during build
+  output: 'export',
+  distDir: '.next',
   images: {
+    unoptimized: true, // Required for static export
     domains: ['via.placeholder.com', 'avatars.githubusercontent.com'],
   },
   experimental: {
