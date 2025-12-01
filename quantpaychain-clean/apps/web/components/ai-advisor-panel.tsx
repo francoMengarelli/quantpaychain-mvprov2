@@ -118,36 +118,46 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
             {/* Quick Summary */}
             <div className="bg-slate-900/50 rounded-lg p-4 border border-purple-500/20">
               <div className="flex items-start justify-between mb-3">
-                <div>
+                <div className="flex-1">
                   <h4 className="text-white font-semibold mb-1">Análisis Rápido</h4>
-                  <p className="text-sm text-gray-400">{advice.asset_analysis.value_assessment}</p>
+                  <p className="text-sm text-gray-400">
+                    {advice.executive_summary?.key_insight || 
+                     advice.asset_analysis?.value_assessment || 
+                     "Análisis completado"}
+                  </p>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setExpanded(!expanded)}
-                  className="text-purple-400"
+                  className="text-purple-400 flex-shrink-0"
                 >
                   {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </Button>
               </div>
               
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="outline" className="border-purple-500/30 text-purple-300">
-                  <TrendingUp className="mr-1 h-3 w-3" />
-                  {advice.investment_recommendations.potential}
-                </Badge>
-                <Badge variant="outline" className="border-blue-500/30 text-blue-300">
-                  <Shield className="mr-1 h-3 w-3" />
-                  {advice.investment_recommendations.risk_level}
-                </Badge>
+                {advice.investment_recommendations?.potential && (
+                  <Badge variant="outline" className="border-purple-500/30 text-purple-300">
+                    <TrendingUp className="mr-1 h-3 w-3" />
+                    {advice.investment_recommendations.potential}
+                  </Badge>
+                )}
+                {advice.investment_recommendations?.risk_level && (
+                  <Badge variant="outline" className="border-blue-500/30 text-blue-300">
+                    <Shield className="mr-1 h-3 w-3" />
+                    Riesgo: {advice.investment_recommendations.risk_level}
+                  </Badge>
+                )}
               </div>
             </div>
 
             {/* Gamification Tip */}
-            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-3 border border-purple-500/20">
-              <p className="text-sm text-purple-200">{advice.ai_insights.gamification_tip}</p>
-            </div>
+            {advice.ai_insights?.gamification_tip && (
+              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-3 border border-purple-500/20">
+                <p className="text-sm text-purple-200">{advice.ai_insights.gamification_tip}</p>
+              </div>
+            )}
 
             {expanded && advice.legal_guidance && (
               <div className="space-y-4 animate-in fade-in duration-300">
