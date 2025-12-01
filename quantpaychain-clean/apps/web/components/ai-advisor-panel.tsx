@@ -77,14 +77,24 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
             AI Legal Advisor
           </CardTitle>
           <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-            Beta
+            Powered by AI
           </Badge>
         </div>
         <p className="text-sm text-gray-400 mt-2">
-          Obtén análisis legal, estrategia de tokenización y recomendaciones de inversión
+          Análisis legal profesional, estrategia de tokenización y recomendaciones de inversión
         </p>
       </CardHeader>
       <CardContent>
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 text-red-400 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-red-200">
+              <p className="font-semibold">Error al obtener análisis</p>
+              <p className="text-xs mt-1">{error}</p>
+            </div>
+          </div>
+        )}
+        
         {!advice ? (
           <Button
             onClick={getAIAdvice}
@@ -99,7 +109,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
             ) : (
               <>
                 <Sparkles className="mr-2 h-4 w-4" />
-                Obtener Análisis de IA
+                Obtener Análisis Legal AI
               </>
             )}
           </Button>
