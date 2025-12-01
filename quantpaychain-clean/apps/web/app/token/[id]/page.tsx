@@ -14,6 +14,12 @@ import { useAuth } from "@/hooks/useAuth";
 
 // Force dynamic rendering to avoid indexedDB errors during build
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
+// Return empty array to prevent static generation
+export async function generateStaticParams() {
+  return [];
+}
 
 interface Token {
   id: string;
