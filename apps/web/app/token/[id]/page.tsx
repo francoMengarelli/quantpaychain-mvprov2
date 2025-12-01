@@ -16,11 +16,6 @@ import { useAuth } from "@/hooks/useAuth";
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
-// Return empty array to prevent static generation
-export async function generateStaticParams() {
-  return [];
-}
-
 interface Token {
   id: string;
   asset_id: string;

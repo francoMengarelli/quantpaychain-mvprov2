@@ -8,6 +8,9 @@ const nextConfig = {
   experimental: {
     esmExternals: 'loose',
   },
+  // Force all pages to render dynamically to avoid SSR issues with Web3/Supabase
+  output: 'standalone',
+  
   webpack: (config, { isServer }) => {
     // Ignore optional peer dependencies and problematic modules
     config.externals.push({
