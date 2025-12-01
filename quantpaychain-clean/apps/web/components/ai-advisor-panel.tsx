@@ -149,61 +149,83 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
               <p className="text-sm text-purple-200">{advice.ai_insights.gamification_tip}</p>
             </div>
 
-            {expanded && (
+            {expanded && advice.legal_guidance && (
               <div className="space-y-4 animate-in fade-in duration-300">
                 {/* Legal Requirements */}
-                <div>
-                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400" />
-                    Requisitos Legales
-                  </h4>
-                  <ul className="space-y-2">
-                    {advice.legal_guidance.requirements.map((req: string, idx: number) => (
-                      <li key={idx} className="text-sm text-gray-300 flex items-start gap-2">
-                        <span className="text-purple-400">•</span>
-                        {req}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {advice.legal_guidance.requirements && Array.isArray(advice.legal_guidance.requirements) && (
+                  <div>
+                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-400" />
+                      Requisitos Legales
+                    </h4>
+                    <ul className="space-y-2">
+                      {advice.legal_guidance.requirements.map((req: string, idx: number) => (
+                        <li key={`req-${idx}-${req.substring(0, 10)}`} className="text-sm text-gray-300 flex items-start gap-2">
+                          <span className="text-purple-400">•</span>
+                          <span>{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Tokenization Strategy */}
-                <div className="bg-slate-900/50 rounded-lg p-3 border border-blue-500/20">
-                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <Lightbulb className="h-4 w-4 text-yellow-400" />
-                    Estrategia de Tokenización
-                  </h4>
-                  <p className="text-sm text-gray-300">{advice.tokenization_strategy}</p>
-                </div>
+                {advice.tokenization_strategy && (
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-blue-500/20">
+                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                      <Lightbulb className="h-4 w-4 text-yellow-400" />
+                      Estrategia de Tokenización
+                    </h4>
+                    <p className="text-sm text-gray-300">
+                      {typeof advice.tokenization_strategy === 'string' 
+                        ? advice.tokenization_strategy 
+                        : JSON.stringify(advice.tokenization_strategy)}
+                    </p>
+                  </div>
+                )}
 
                 {/* Investment Recommendations */}
-                <div>
-                  <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-emerald-400" />
-                    Recomendaciones de Inversión
-                  </h4>
-                  <ul className="space-y-2">
-                    {advice.investment_recommendations.strategies.map((strategy: string, idx: number) => (
-                      <li key={idx} className="text-sm text-gray-300">{strategy}</li>
-                    ))}
-                  </ul>
-                </div>
+                {advice.investment_recommendations?.strategies && Array.isArray(advice.investment_recommendations.strategies) && (
+                  <div>
+                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-emerald-400" />
+                      Recomendaciones de Inversión
+                    </h4>
+                    <ul className="space-y-2">
+                      {advice.investment_recommendations.strategies.map((strategy: string, idx: number) => (
+                        <li key={`strat-${idx}-${strategy.substring(0, 10)}`} className="text-sm text-gray-300">
+                          {strategy}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Next Steps */}
-                <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-3 border border-blue-500/20">
-                  <h4 className="text-white font-semibold mb-2">Próximos Pasos</h4>
-                  <ol className="space-y-1">
-                    {advice.legal_guidance.next_steps.map((step: string, idx: number) => (
-                      <li key={idx} className="text-sm text-gray-300">{step}</li>
-                    ))}
-                  </ol>
-                </div>
+                {advice.legal_guidance.next_steps && Array.isArray(advice.legal_guidance.next_steps) && (
+                  <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-3 border border-blue-500/20">
+                    <h4 className="text-white font-semibold mb-2">Próximos Pasos</h4>
+                    <ol className="space-y-1">
+                      {advice.legal_guidance.next_steps.map((step: string, idx: number) => (
+                        <li key={`step-${idx}-${step.substring(0, 10)}`} className="text-sm text-gray-300">
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
 
                 {/* Market Insights */}
-                <div className="bg-slate-900/50 rounded-lg p-3 border border-purple-500/20">
-                  <p className="text-sm text-purple-200">{advice.ai_insights.market_trends}</p>
-                  <p className="text-sm text-blue-200 mt-1">{advice.ai_insights.timing}</p>
-                </div>
+                {advice.ai_insights && (
+                  <div className="bg-slate-900/50 rounded-lg p-3 border border-purple-500/20">
+                    {advice.ai_insights.market_trends && (
+                      <p className="text-sm text-purple-200">{advice.ai_insights.market_trends}</p>
+                    )}
+                    {advice.ai_insights.timing && (
+                      <p className="text-sm text-blue-200 mt-1">{advice.ai_insights.timing}</p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
