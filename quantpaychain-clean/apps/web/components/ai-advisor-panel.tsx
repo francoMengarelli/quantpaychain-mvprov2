@@ -4,8 +4,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Sparkles, CheckCircle2, TrendingUp, Shield, Lightbulb, ChevronDown, ChevronUp, Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://quantpaychain-api.onrender.com';
 
 interface AIAdvisorPanelProps {
   assetType: string;
@@ -18,6 +20,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
   const [advice, setAdvice] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getAIAdvice = async () => {
     if (!assetType || !description || !valueUsd || !location) {
@@ -26,55 +29,40 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
     }
 
     setLoading(true);
+    setError(null);
+    
     try {
-      // TODO: Conectar con backend API real cuando esté deployado
-      // const response = await fetch('/api/ai/advisor', { ... });
+      console.log('🤖 Solicitando análisis AI al backend:', API_BASE_URL);
       
-      // Mock data por ahora
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await fetch(`${API_BASE_URL}/api/ai/advisor`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          asset_type: assetType,
+          description: description,
+          value_usd: parseFloat(valueUsd),
+          location: location,
+          user_context: null
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: 'Error desconocido' }));
+        throw new Error(errorData.detail || `Error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Análisis AI recibido:', data);
       
-      const mockAdvice = {
-        asset_analysis: {
-          type: assetType,
-          value_assessment: parseFloat(valueUsd) > 1000000 ? "High-value asset" : "Mid-range asset",
-          location_analysis: `Ubicación estratégica en ${location}`
-        },
-        legal_guidance: {
-          requirements: [
-            "🏛️ Verificar título de propiedad",
-            "📋 Avalúo profesional reciente",
-            "⚖️ Verificar zonificación y permisos",
-            "🔍 Due diligence completo"
-          ],
-          next_steps: [
-            "1️⃣ Reunir documentación legal",
-            "2️⃣ Obtener valuación profesional",
-            "3️⃣ Verificar cumplimiento regulatorio",
-            "4️⃣ Configurar estructura de tokens"
-          ]
-        },
-        tokenization_strategy: "Fraccionamiento ideal: 1,000-10,000 tokens para liquidez óptima",
-        investment_recommendations: {
-          potential: "Alto",
-          strategies: [
-            "💡 Considera alquilar para generar ingresos pasivos",
-            "📈 Revalorización promedio: 5-8% anual",
-            "🎯 Ideal para diversificar portafolio"
-          ],
-          risk_level: "Medio"
-        },
-        ai_insights: {
-          market_trends: `📊 ${assetType} muestra tendencia positiva en ${location}`,
-          timing: "⏰ Momento favorable para tokenizar",
-          gamification_tip: "🎮 ¡Completa tu primer asset para desbloquear badge 'Tokenizador Novato'!"
-        }
-      };
-      
-      setAdvice(mockAdvice);
+      setAdvice(data);
       setExpanded(true);
-      toast.success("Análisis de IA completado");
-    } catch (error) {
-      toast.error("Error al obtener consejos de IA");
+      toast.success("Análisis legal completado exitosamente");
+    } catch (error: any) {
+      console.error('❌ Error al obtener análisis AI:', error);
+      setError(error.message || "Error al conectar con el servicio de IA");
+      toast.error("Error al obtener análisis. Verifica tu conexión.");
     } finally {
       setLoading(false);
     }
