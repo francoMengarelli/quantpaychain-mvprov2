@@ -158,11 +158,21 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                 <p className="text-sm text-purple-200">{advice.ai_insights.gamification_tip}</p>
               </div>
             )}
+            
+            {/* Debug Info - Remove in production */}
+            {process.env.NODE_ENV === 'development' && (
+              <details className="text-xs text-gray-500 mt-2">
+                <summary className="cursor-pointer hover:text-gray-300">Ver estructura de respuesta (debug)</summary>
+                <pre className="mt-2 p-2 bg-slate-900/50 rounded overflow-auto max-h-40">
+                  {JSON.stringify(advice, null, 2)}
+                </pre>
+              </details>
+            )}
 
-            {expanded && advice.legal_guidance && (
+            {expanded && (
               <div className="space-y-4 animate-in fade-in duration-300">
                 {/* Legal Requirements */}
-                {advice.legal_guidance.requirements && Array.isArray(advice.legal_guidance.requirements) && (
+                {advice.legal_guidance?.requirements && Array.isArray(advice.legal_guidance.requirements) && advice.legal_guidance.requirements.length > 0 && (
                   <div>
                     <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-400" />
@@ -170,7 +180,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                     </h4>
                     <ul className="space-y-2">
                       {advice.legal_guidance.requirements.map((req: string, idx: number) => (
-                        <li key={`req-${idx}-${req.substring(0, 10)}`} className="text-sm text-gray-300 flex items-start gap-2">
+                        <li key={`req-${idx}-${String(req).substring(0, 10)}`} className="text-sm text-gray-300 flex items-start gap-2">
                           <span className="text-purple-400">•</span>
                           <span>{req}</span>
                         </li>
@@ -195,7 +205,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                 )}
 
                 {/* Investment Recommendations */}
-                {advice.investment_recommendations?.strategies && Array.isArray(advice.investment_recommendations.strategies) && (
+                {advice.investment_recommendations?.strategies && Array.isArray(advice.investment_recommendations.strategies) && advice.investment_recommendations.strategies.length > 0 && (
                   <div>
                     <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
                       <TrendingUp className="h-4 w-4 text-emerald-400" />
@@ -203,7 +213,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                     </h4>
                     <ul className="space-y-2">
                       {advice.investment_recommendations.strategies.map((strategy: string, idx: number) => (
-                        <li key={`strat-${idx}-${strategy.substring(0, 10)}`} className="text-sm text-gray-300">
+                        <li key={`strat-${idx}-${String(strategy).substring(0, 10)}`} className="text-sm text-gray-300">
                           {strategy}
                         </li>
                       ))}
@@ -212,12 +222,12 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                 )}
 
                 {/* Next Steps */}
-                {advice.legal_guidance.next_steps && Array.isArray(advice.legal_guidance.next_steps) && (
+                {advice.legal_guidance?.next_steps && Array.isArray(advice.legal_guidance.next_steps) && advice.legal_guidance.next_steps.length > 0 && (
                   <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-3 border border-blue-500/20">
                     <h4 className="text-white font-semibold mb-2">Próximos Pasos</h4>
                     <ol className="space-y-1">
                       {advice.legal_guidance.next_steps.map((step: string, idx: number) => (
-                        <li key={`step-${idx}-${step.substring(0, 10)}`} className="text-sm text-gray-300">
+                        <li key={`step-${idx}-${String(step).substring(0, 10)}`} className="text-sm text-gray-300">
                           {step}
                         </li>
                       ))}
