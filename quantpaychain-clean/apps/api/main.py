@@ -377,34 +377,6 @@ async def debug_environment():
         "timestamp": datetime.utcnow().isoformat()
     }
 
-# PQC Endpoints
-@app.post("/api/pqc/generate-keypair")
-async def generate_pqc_keypair(user_id: str):
-    """
-    Genera par de llaves post-quantum para el usuario
-    Algoritmos: Dilithium, SPHINCS+, Kyber
-    """
-    try:
-        keypair = pqc_service.generate_keypair(user_id)
-        return {
-            "public_key": keypair['public_key'],
-            "algorithm": keypair['algorithm'],
-            "created_at": datetime.utcnow().isoformat()
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/pqc/encrypt")
-async def encrypt_data(data: str, public_key: str):
-    """
-    Encripta datos con criptografía post-quantum
-    """
-    try:
-        encrypted = pqc_service.encrypt(data, public_key)
-        return {"encrypted_data": encrypted}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
 # ============================================================================
 # POST-QUANTUM CRYPTOGRAPHY (PQC) ENDPOINTS
 # ============================================================================
