@@ -273,7 +273,6 @@ class ISO20022Service:
         
         document = etree.Element(
             "Document",
-            xmlns=self.namespace_camt053,
             nsmap={None: self.namespace_camt053}
         )
         
