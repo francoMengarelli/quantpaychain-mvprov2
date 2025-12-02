@@ -280,7 +280,7 @@ agent_communication:
 # QUANTPAYCHAIN RENDER API TESTING - NEW REVIEW REQUEST
 #====================================================================================================
 
-user_problem_statement: "Backend API Testing - QuantPayChain (Render) - Testing specific test endpoints for health check, AI services status, AI legal advisor, and environment debug"
+user_problem_statement: "QuantPayChain API Backend Testing - PQC & ISO 20022 Services - Comprehensive testing of new Post-Quantum Cryptography and ISO 20022 financial messaging services on production deployment"
 
 backend:
   - task: "Health Check Endpoint"
