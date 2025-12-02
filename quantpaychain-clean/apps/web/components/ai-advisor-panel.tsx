@@ -212,12 +212,12 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                 )}
 
                 {/* Next Steps */}
-                {advice.legal_guidance.next_steps && Array.isArray(advice.legal_guidance.next_steps) && (
+                {advice.legal_guidance?.next_steps && Array.isArray(advice.legal_guidance.next_steps) && advice.legal_guidance.next_steps.length > 0 && (
                   <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-3 border border-blue-500/20">
                     <h4 className="text-white font-semibold mb-2">Próximos Pasos</h4>
                     <ol className="space-y-1">
                       {advice.legal_guidance.next_steps.map((step: string, idx: number) => (
-                        <li key={`step-${idx}-${step.substring(0, 10)}`} className="text-sm text-gray-300">
+                        <li key={`step-${idx}-${String(step).substring(0, 10)}`} className="text-sm text-gray-300">
                           {step}
                         </li>
                       ))}
