@@ -159,10 +159,10 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
               </div>
             )}
 
-            {expanded && advice.legal_guidance && (
+            {expanded && (
               <div className="space-y-4 animate-in fade-in duration-300">
                 {/* Legal Requirements */}
-                {advice.legal_guidance.requirements && Array.isArray(advice.legal_guidance.requirements) && (
+                {advice.legal_guidance?.requirements && Array.isArray(advice.legal_guidance.requirements) && advice.legal_guidance.requirements.length > 0 && (
                   <div>
                     <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-400" />
@@ -170,7 +170,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                     </h4>
                     <ul className="space-y-2">
                       {advice.legal_guidance.requirements.map((req: string, idx: number) => (
-                        <li key={`req-${idx}-${req.substring(0, 10)}`} className="text-sm text-gray-300 flex items-start gap-2">
+                        <li key={`req-${idx}-${String(req).substring(0, 10)}`} className="text-sm text-gray-300 flex items-start gap-2">
                           <span className="text-purple-400">•</span>
                           <span>{req}</span>
                         </li>
