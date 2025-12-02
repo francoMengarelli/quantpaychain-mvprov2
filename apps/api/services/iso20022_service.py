@@ -53,7 +53,6 @@ class ISO20022Service:
         # Create XML structure
         document = etree.Element(
             "Document",
-            xmlns=self.namespace_pain001,
             nsmap={None: self.namespace_pain001}
         )
         
@@ -192,7 +191,6 @@ class ISO20022Service:
         
         document = etree.Element(
             "Document",
-            xmlns=self.namespace_pain002,
             nsmap={None: self.namespace_pain002}
         )
         
@@ -275,7 +273,6 @@ class ISO20022Service:
         
         document = etree.Element(
             "Document",
-            xmlns=self.namespace_camt053,
             nsmap={None: self.namespace_camt053}
         )
         
