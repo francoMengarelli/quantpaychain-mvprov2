@@ -405,21 +405,250 @@ async def encrypt_data(data: str, public_key: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# ISO 20022 Endpoints
-@app.get("/api/iso20022/generate-report/{transaction_id}")
-async def generate_iso_report(transaction_id: str):
+# ============================================================================
+# POST-QUANTUM CRYPTOGRAPHY (PQC) ENDPOINTS
+# ============================================================================
+
+class PQCTransactionRequest(BaseModel):
+    transaction_data: dict
+    private_key: Optional[str] = None
+
+class PQCVerifyRequest(BaseModel):
+    transaction_data: dict
+    signature: str
+    public_key: str
+
+@app.post("/api/pqc/generate-keypair")
+async def generate_pqc_keypair(algorithm: Optional[str] = None):
     """
-    Genera reporte compatible con ISO 20022
-    - pain.001 (Payment Initiation)
-    - camt.053 (Bank Statement)
+    Generate post-quantum cryptographic keypair
+    
+    Algorithms:
+    - ML-DSA-44, ML-DSA-65, ML-DSA-87 (signatures)
+    - ML-KEM-512, ML-KEM-768, ML-KEM-1024 (encryption)
     """
     try:
-        transaction = await supabase_service.get_transaction(transaction_id)
-        if not transaction:
-            raise HTTPException(status_code=404, detail="Transaction not found")
+        keypair = pqc_service.generate_keypair(algorithm)
+        return keypair
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/pqc/sign-transaction")
+async def sign_transaction_pqc(request: PQCTransactionRequest):
+    """
+    Sign transaction with post-quantum signature (ML-DSA)
+    Provides quantum-resistant transaction authentication
+    """
+    try:
+        if not request.private_key:
+            raise HTTPException(status_code=400, detail="Private key required")
         
-        report = iso_service.generate_full_report(transaction)
-        return report
+        signature_result = pqc_service.sign_transaction(
+            transaction_data=request.transaction_data,
+            private_key=request.private_key
+        )
+        return signature_result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/pqc/verify-signature")
+async def verify_pqc_signature(request: PQCVerifyRequest):
+    """
+    Verify post-quantum signature
+    Ensures transaction integrity and authenticity
+    """
+    try:
+        verification_result = pqc_service.verify_signature(
+            transaction_data=request.transaction_data,
+            signature=request.signature,
+            public_key=request.public_key
+        )
+        return verification_result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/pqc/service-info")
+async def get_pqc_service_info():
+    """
+    Get PQC service information and availability
+    """
+    try:
+        info = pqc_service.get_service_info()
+        return info
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# ISO 20022 COMPLIANT MESSAGING ENDPOINTS
+# ============================================================================
+
+class PaymentInitiationRequest(BaseModel):
+    debtor_name: str
+    debtor_account: str  # IBAN
+    debtor_bic: str
+    creditor_name: str
+    creditor_account: str  # IBAN
+    creditor_bic: str
+    amount: float
+    currency: str = "EUR"
+    reference: str
+    remittance_info: Optional[str] = None
+
+class PaymentStatusRequest(BaseModel):
+    original_message_id: str
+    payment_info_id: str
+    status_code: str  # ACCP, ACSC, RJCT, PDNG
+    status_reason: Optional[str] = None
+
+class BankStatementRequest(BaseModel):
+    account_iban: str
+    account_name: str
+    statement_date: str  # YYYY-MM-DD format
+    opening_balance: float
+    closing_balance: float
+    transactions: List[dict]
+    currency: str = "EUR"
+
+@app.post("/api/iso20022/payment-initiation")
+async def create_payment_initiation(request: PaymentInitiationRequest):
+    """
+    Generate ISO 20022 pain.001 payment initiation message
+    
+    Compliant with SEPA and international payment standards
+    Returns XML message ready for banking system submission
+    """
+    try:
+        message = iso_service.generate_payment_initiation(
+            debtor_name=request.debtor_name,
+            debtor_account=request.debtor_account,
+            debtor_bic=request.debtor_bic,
+            creditor_name=request.creditor_name,
+            creditor_account=request.creditor_account,
+            creditor_bic=request.creditor_bic,
+            amount=request.amount,
+            currency=request.currency,
+            reference=request.reference,
+            remittance_info=request.remittance_info
+        )
+        return message
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/iso20022/payment-status")
+async def create_payment_status_report(request: PaymentStatusRequest):
+    """
+    Generate ISO 20022 pain.002 payment status report
+    
+    Status codes:
+    - ACCP: Accepted Customer Profile
+    - ACSC: Accepted Settlement Completed
+    - RJCT: Rejected
+    - PDNG: Pending
+    """
+    try:
+        message = iso_service.generate_payment_status_report(
+            original_message_id=request.original_message_id,
+            payment_info_id=request.payment_info_id,
+            status_code=request.status_code,
+            status_reason=request.status_reason
+        )
+        return message
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/iso20022/bank-statement")
+async def create_bank_statement(request: BankStatementRequest):
+    """
+    Generate ISO 20022 camt.053 bank statement
+    
+    Provides end-of-day account statement with all transactions
+    Compliant with regulatory reporting requirements
+    """
+    try:
+        from datetime import datetime
+        statement_date = datetime.strptime(request.statement_date, "%Y-%m-%d").date()
+        
+        message = iso_service.generate_bank_statement(
+            account_iban=request.account_iban,
+            account_name=request.account_name,
+            statement_date=statement_date,
+            opening_balance=request.opening_balance,
+            closing_balance=request.closing_balance,
+            transactions=request.transactions,
+            currency=request.currency
+        )
+        return message
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/iso20022/service-info")
+async def get_iso20022_service_info():
+    """
+    Get ISO 20022 service information and supported message types
+    """
+    try:
+        info = iso_service.get_service_info()
+        return info
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# COMBINED PQC + ISO 20022 ENDPOINT
+# ============================================================================
+
+@app.post("/api/secure-payment/initiate")
+async def initiate_secure_payment(request: PaymentInitiationRequest):
+    """
+    🔐 QUANTUM-SAFE PAYMENT FLOW
+    
+    1. Generate ISO 20022 pain.001 message
+    2. Sign with post-quantum cryptography
+    3. Return both for blockchain submission
+    
+    This endpoint combines:
+    - ISO 20022 compliance for banking systems
+    - Post-quantum signatures for long-term security
+    """
+    try:
+        # Generate ISO 20022 message
+        iso_message = iso_service.generate_payment_initiation(
+            debtor_name=request.debtor_name,
+            debtor_account=request.debtor_account,
+            debtor_bic=request.debtor_bic,
+            creditor_name=request.creditor_name,
+            creditor_account=request.creditor_account,
+            creditor_bic=request.creditor_bic,
+            amount=request.amount,
+            currency=request.currency,
+            reference=request.reference,
+            remittance_info=request.remittance_info
+        )
+        
+        # Generate PQC keypair (in production, use stored keys)
+        keypair = pqc_service.generate_keypair()
+        
+        # Sign the ISO message with PQC
+        transaction_data = {
+            "message_id": iso_message["message_id"],
+            "amount": iso_message["amount"],
+            "currency": iso_message["currency"],
+            "debtor": iso_message["debtor"],
+            "creditor": iso_message["creditor"]
+        }
+        
+        signature = pqc_service.sign_transaction(
+            transaction_data=transaction_data,
+            private_key=keypair["private_key"]
+        )
+        
+        return {
+            "iso20022_message": iso_message,
+            "pqc_signature": signature,
+            "public_key": keypair["public_key"],
+            "security_level": "NIST Level 3 (192-bit quantum resistance)",
+            "compliance": "ISO 20022 Universal Financial Industry Message Scheme",
+            "message": "Payment secured with post-quantum cryptography"
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
