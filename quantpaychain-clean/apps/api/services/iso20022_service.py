@@ -53,7 +53,6 @@ class ISO20022Service:
         # Create XML structure
         document = etree.Element(
             "Document",
-            xmlns=self.namespace_pain001,
             nsmap={None: self.namespace_pain001}
         )
         
