@@ -11,3 +11,5 @@ emergentintegrations==0.1.0
 # PQC libraries (to be added when needed)
 # liboqs-python==0.8.0
 # pqcrypto==0.3.0
+defusedxml==0.7.1
+lxml==6.0.2
