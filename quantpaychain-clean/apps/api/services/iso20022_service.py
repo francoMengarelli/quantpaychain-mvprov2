@@ -191,7 +191,6 @@ class ISO20022Service:
         
         document = etree.Element(
             "Document",
-            xmlns=self.namespace_pain002,
             nsmap={None: self.namespace_pain002}
         )
         
