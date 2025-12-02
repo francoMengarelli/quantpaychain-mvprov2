@@ -429,20 +429,25 @@ backend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.2"
-  test_sequence: 3
+  version: "1.3"
+  test_sequence: 4
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Health Check Endpoint"
+    - "PQC Generate Keypair"
+    - "ISO 20022 Payment Initiation"
+    - "ISO 20022 Bank Statement"
     - "AI Services Status Check"
-    - "AI Legal Advisor Functionality"
-    - "Environment Debug Check"
-  stuck_tasks: []
+  stuck_tasks:
+    - "PQC Generate Keypair"
+    - "ISO 20022 Payment Initiation"
+    - "ISO 20022 Bank Statement"
   test_all: true
   test_priority: "high_first"
 
 agent_communication:
     - agent: "testing"
       message: "✅ QUANTPAYCHAIN RENDER API TESTING COMPLETE: All 4 test endpoints are working correctly. Health check shows operational status, AI services are properly configured with real models (gpt-4 and gpt-4o), AI legal advisor returns comprehensive analysis, and environment debug confirms all necessary keys and variables are configured. The API at https://quantpaychain-api.onrender.com is fully functional with no critical issues found."
+    - agent: "testing"
+      message: "🔍 QUANTPAYCHAIN PQC & ISO 20022 TESTING RESULTS: Mixed results from comprehensive testing. ✅ WORKING: Service info endpoints, PQC service info (simulation mode), ISO 20022 service info, and secure payment flow (combined PQC+ISO). ❌ ISSUES FOUND: 1) PQC keypair generation requires undocumented user_id parameter (422 error), 2) ISO 20022 XML generation produces malformed XML despite correct response structure, 3) AI services return 502 Bad Gateway. Core functionality is implemented but needs fixes for production readiness."
