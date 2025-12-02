@@ -267,16 +267,598 @@ def test_env_debug():
         print(f"❌ Environment Debug FAILED - Request error: {e}")
         return False
 
+def test_service_info():
+    """Test GET / - should return service info with version 2.0.0"""
+    print("\n=== Testing Service Info ===")
+    try:
+        response = requests.get(f"{BASE_URL}/", timeout=30)
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text}")
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check version
+                if data.get("version") == "2.0.0":
+                    print("✅ Version 2.0.0 confirmed")
+                else:
+                    print(f"❌ Expected version 2.0.0, got: {data.get('version')}")
+                    success = False
+                
+                # Check service name
+                if "QuantPayChain" in str(data.get("service", "")):
+                    print("✅ Service name contains QuantPayChain")
+                else:
+                    print(f"❌ Service name issue: {data.get('service')}")
+                    success = False
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ Service Info FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ Service Info FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Service Info FAILED - Request error: {e}")
+        return False
+
+def test_pqc_service_info():
+    """Test GET /api/pqc/service-info - should return PQC service status"""
+    print("\n=== Testing PQC Service Info ===")
+    try:
+        response = requests.get(f"{BASE_URL}/api/pqc/service-info", timeout=30)
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text}")
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check for PQC service information
+                if "service" in data and "pqc" in str(data["service"]).lower():
+                    print("✅ PQC service info found")
+                else:
+                    print(f"❌ PQC service info missing: {data}")
+                    success = False
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ PQC Service Info FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ PQC Service Info FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ PQC Service Info FAILED - Request error: {e}")
+        return False
+
+def test_iso20022_service_info():
+    """Test GET /api/iso20022/service-info - should return ISO 20022 supported messages"""
+    print("\n=== Testing ISO 20022 Service Info ===")
+    try:
+        response = requests.get(f"{BASE_URL}/api/iso20022/service-info", timeout=30)
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text}")
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check for ISO 20022 service information
+                if "supported_messages" in data or "iso20022" in str(data).lower():
+                    print("✅ ISO 20022 service info found")
+                else:
+                    print(f"❌ ISO 20022 service info missing: {data}")
+                    success = False
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ ISO 20022 Service Info FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ ISO 20022 Service Info FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ ISO 20022 Service Info FAILED - Request error: {e}")
+        return False
+
+def test_pqc_generate_keypair():
+    """Test POST /api/pqc/generate-keypair - generate quantum-resistant keypair"""
+    global test_keypair
+    print("\n=== Testing PQC Generate Keypair ===")
+    try:
+        # Test without algorithm parameter (should use default ML-DSA-65)
+        response = requests.post(
+            f"{BASE_URL}/api/pqc/generate-keypair",
+            json={},
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text[:500]}...")  # Truncate long responses
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check required fields
+                required_fields = ["algorithm", "public_key", "private_key", "generated_at"]
+                for field in required_fields:
+                    if field in data:
+                        print(f"✅ Found {field}")
+                    else:
+                        print(f"❌ Missing {field}")
+                        success = False
+                
+                # Check default algorithm
+                if data.get("algorithm") == "ML-DSA-65":
+                    print("✅ Default algorithm ML-DSA-65 used")
+                else:
+                    print(f"❌ Expected ML-DSA-65, got: {data.get('algorithm')}")
+                    success = False
+                
+                # Store keypair for later tests
+                if success:
+                    test_keypair = {
+                        "public_key": data.get("public_key"),
+                        "private_key": data.get("private_key"),
+                        "algorithm": data.get("algorithm")
+                    }
+                    print("✅ Keypair stored for signature tests")
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ PQC Generate Keypair FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ PQC Generate Keypair FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ PQC Generate Keypair FAILED - Request error: {e}")
+        return False
+
+def test_pqc_sign_transaction():
+    """Test POST /api/pqc/sign-transaction - sign a transaction"""
+    global test_signature_data
+    print("\n=== Testing PQC Sign Transaction ===")
+    
+    if not test_keypair.get("private_key"):
+        print("❌ Cannot test signing - no keypair available from previous test")
+        return False
+    
+    try:
+        # Create test transaction data
+        transaction_data = {
+            "asset_id": "TEST001",
+            "amount": 1000,
+            "from": "user1",
+            "to": "user2"
+        }
+        
+        request_data = {
+            "transaction_data": transaction_data,
+            "private_key": test_keypair["private_key"]
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/api/pqc/sign-transaction",
+            json=request_data,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text[:500]}...")  # Truncate long responses
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check required fields
+                required_fields = ["signature", "algorithm", "transaction_hash", "signed_at"]
+                for field in required_fields:
+                    if field in data:
+                        print(f"✅ Found {field}")
+                    else:
+                        print(f"❌ Missing {field}")
+                        success = False
+                
+                # Store signature data for verification test
+                if success:
+                    test_signature_data = {
+                        "signature": data.get("signature"),
+                        "transaction_hash": data.get("transaction_hash"),
+                        "transaction_data": transaction_data
+                    }
+                    print("✅ Signature data stored for verification test")
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ PQC Sign Transaction FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ PQC Sign Transaction FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ PQC Sign Transaction FAILED - Request error: {e}")
+        return False
+
+def test_pqc_verify_signature():
+    """Test POST /api/pqc/verify-signature - verify signature"""
+    print("\n=== Testing PQC Verify Signature ===")
+    
+    if not test_signature_data.get("signature") or not test_keypair.get("public_key"):
+        print("❌ Cannot test verification - no signature or public key available")
+        return False
+    
+    try:
+        request_data = {
+            "transaction_data": test_signature_data["transaction_data"],
+            "signature": test_signature_data["signature"],
+            "public_key": test_keypair["public_key"]
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/api/pqc/verify-signature",
+            json=request_data,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text}")
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                
+                # Check if signature is valid
+                if data.get("valid") == True:
+                    print("✅ Signature verification PASSED - valid: true")
+                    return True
+                else:
+                    print(f"❌ Signature verification FAILED - valid: {data.get('valid')}")
+                    return False
+                
+            except json.JSONDecodeError:
+                print(f"❌ PQC Verify Signature FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ PQC Verify Signature FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ PQC Verify Signature FAILED - Request error: {e}")
+        return False
+
+def test_iso20022_payment_initiation():
+    """Test POST /api/iso20022/payment-initiation - generate pain.001 message"""
+    global test_payment_message_id
+    print("\n=== Testing ISO 20022 Payment Initiation ===")
+    try:
+        # Sample payment data
+        payment_data = {
+            "debtor_name": "Test Company Ltd",
+            "debtor_account": "DE89370400440532013000",
+            "debtor_bic": "COBADEFF",
+            "creditor_name": "Recipient Corp",
+            "creditor_account": "FR7630006000011234567890189",
+            "creditor_bic": "BNPAFRPP",
+            "amount": 1500.50,
+            "currency": "EUR",
+            "reference": "TEST-INV-001",
+            "remittance_info": "Test payment for services"
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/api/iso20022/payment-initiation",
+            json=payment_data,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text[:500]}...")  # Truncate long responses
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check required fields
+                required_fields = ["message_id", "message_type", "xml_content"]
+                for field in required_fields:
+                    if field in data:
+                        print(f"✅ Found {field}")
+                    else:
+                        print(f"❌ Missing {field}")
+                        success = False
+                
+                # Check message type
+                if data.get("message_type") == "pain.001.001.08":
+                    print("✅ Correct message type pain.001.001.08")
+                else:
+                    print(f"❌ Expected pain.001.001.08, got: {data.get('message_type')}")
+                    success = False
+                
+                # Validate XML structure
+                if data.get("xml_content"):
+                    try:
+                        ET.fromstring(data["xml_content"])
+                        print("✅ XML content is well-formed")
+                    except ET.ParseError:
+                        print("❌ XML content is not well-formed")
+                        success = False
+                
+                # Store message ID for status test
+                if success:
+                    test_payment_message_id = data.get("message_id")
+                    print(f"✅ Message ID stored: {test_payment_message_id}")
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ ISO 20022 Payment Initiation FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ ISO 20022 Payment Initiation FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ ISO 20022 Payment Initiation FAILED - Request error: {e}")
+        return False
+
+def test_iso20022_payment_status():
+    """Test POST /api/iso20022/payment-status - generate pain.002 message"""
+    print("\n=== Testing ISO 20022 Payment Status ===")
+    
+    if not test_payment_message_id:
+        print("❌ Cannot test payment status - no message ID from previous test")
+        return False
+    
+    try:
+        request_data = {
+            "message_id": test_payment_message_id,
+            "status_code": "ACCP"  # Accepted
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/api/iso20022/payment-status",
+            json=request_data,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text[:500]}...")  # Truncate long responses
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check for XML content with status report
+                if "xml_content" in data:
+                    print("✅ Found XML content")
+                    
+                    # Validate XML structure
+                    try:
+                        ET.fromstring(data["xml_content"])
+                        print("✅ XML content is well-formed")
+                    except ET.ParseError:
+                        print("❌ XML content is not well-formed")
+                        success = False
+                else:
+                    print("❌ Missing xml_content")
+                    success = False
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ ISO 20022 Payment Status FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ ISO 20022 Payment Status FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ ISO 20022 Payment Status FAILED - Request error: {e}")
+        return False
+
+def test_iso20022_bank_statement():
+    """Test POST /api/iso20022/bank-statement - generate camt.053 statement"""
+    print("\n=== Testing ISO 20022 Bank Statement ===")
+    try:
+        # Sample statement data
+        statement_data = {
+            "account_iban": "DE89370400440532013000",
+            "account_name": "Test Account",
+            "statement_date": "2025-01-15",
+            "opening_balance": 10000.00,
+            "closing_balance": 11500.50,
+            "currency": "EUR",
+            "transactions": [
+                {
+                    "amount": 1500.50,
+                    "credit_debit": "CRDT",
+                    "booking_date": "2025-01-15",
+                    "description": "Test transaction"
+                }
+            ]
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/api/iso20022/bank-statement",
+            json=statement_data,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text[:500]}...")  # Truncate long responses
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check for statement content
+                if "xml_content" in data or "statement" in data:
+                    print("✅ Found statement content")
+                    
+                    # If XML, validate structure
+                    if "xml_content" in data:
+                        try:
+                            ET.fromstring(data["xml_content"])
+                            print("✅ XML content is well-formed")
+                        except ET.ParseError:
+                            print("❌ XML content is not well-formed")
+                            success = False
+                else:
+                    print("❌ Missing statement content")
+                    success = False
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ ISO 20022 Bank Statement FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ ISO 20022 Bank Statement FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ ISO 20022 Bank Statement FAILED - Request error: {e}")
+        return False
+
+def test_secure_payment_flow():
+    """Test POST /api/secure-payment/initiate - combined PQC + ISO 20022"""
+    print("\n=== Testing Secure Payment Flow ===")
+    try:
+        # Same payment data as ISO test
+        payment_data = {
+            "debtor_name": "Test Company Ltd",
+            "debtor_account": "DE89370400440532013000",
+            "debtor_bic": "COBADEFF",
+            "creditor_name": "Recipient Corp",
+            "creditor_account": "FR7630006000011234567890189",
+            "creditor_bic": "BNPAFRPP",
+            "amount": 1500.50,
+            "currency": "EUR",
+            "reference": "TEST-INV-001",
+            "remittance_info": "Test payment for services"
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/api/secure-payment/initiate",
+            json=payment_data,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text[:500]}...")  # Truncate long responses
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                success = True
+                
+                # Check for both ISO 20022 and PQC components
+                if "iso20022_message" in data:
+                    print("✅ Found ISO 20022 message")
+                    
+                    # Check for pain.001 XML
+                    iso_msg = data["iso20022_message"]
+                    if "xml_content" in iso_msg:
+                        print("✅ Found pain.001 XML content")
+                    else:
+                        print("❌ Missing pain.001 XML content")
+                        success = False
+                else:
+                    print("❌ Missing iso20022_message")
+                    success = False
+                
+                if "pqc_signature" in data:
+                    print("✅ Found PQC signature")
+                    
+                    # Check signature components
+                    pqc_sig = data["pqc_signature"]
+                    if "signature" in pqc_sig:
+                        print("✅ Found quantum-resistant signature")
+                    else:
+                        print("❌ Missing quantum-resistant signature")
+                        success = False
+                else:
+                    print("❌ Missing pqc_signature")
+                    success = False
+                
+                if "public_key" in data:
+                    print("✅ Found public key for verification")
+                else:
+                    print("❌ Missing public key")
+                    success = False
+                
+                # Check security level
+                if "security_level" in data and "NIST Level 3" in str(data["security_level"]):
+                    print("✅ NIST Level 3 security confirmed")
+                else:
+                    print(f"❌ Security level issue: {data.get('security_level')}")
+                    success = False
+                
+                return success
+                
+            except json.JSONDecodeError:
+                print(f"❌ Secure Payment Flow FAILED - Response is not valid JSON: {response.text}")
+                return False
+        else:
+            print(f"❌ Secure Payment Flow FAILED - Expected 200, got {response.status_code}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Secure Payment Flow FAILED - Request error: {e}")
+        return False
+
 def main():
     """Run all backend tests"""
-    print("=" * 60)
-    print("QUANTPAYCHAIN BACKEND API TESTING")
+    print("=" * 80)
+    print("QUANTPAYCHAIN API BACKEND TESTING - PQC & ISO 20022 SERVICES")
     print(f"Base URL: {BASE_URL}")
     print(f"Test Time: {datetime.now().isoformat()}")
-    print("=" * 60)
+    print("=" * 80)
     
-    # Run all tests
+    # Run all tests in order
     tests = [
+        # Health & Service Info
+        ("Service Info (Version 2.0.0)", test_service_info),
+        ("PQC Service Info", test_pqc_service_info),
+        ("ISO 20022 Service Info", test_iso20022_service_info),
+        
+        # PQC Service Testing
+        ("PQC Generate Keypair", test_pqc_generate_keypair),
+        ("PQC Sign Transaction", test_pqc_sign_transaction),
+        ("PQC Verify Signature", test_pqc_verify_signature),
+        
+        # ISO 20022 Service Testing
+        ("ISO 20022 Payment Initiation", test_iso20022_payment_initiation),
+        ("ISO 20022 Payment Status", test_iso20022_payment_status),
+        ("ISO 20022 Bank Statement", test_iso20022_bank_statement),
+        
+        # Combined Secure Payment Flow
+        ("Secure Payment Flow (PQC + ISO)", test_secure_payment_flow),
+        
+        # Existing AI Services
         ("Health Check", test_health_check),
         ("AI Services Status", test_ai_services_status),
         ("AI Legal Advisor", test_ai_legal_advisor),
@@ -293,26 +875,38 @@ def main():
             results[test_name] = False
     
     # Summary
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 80)
     print("TEST SUMMARY")
-    print("=" * 60)
+    print("=" * 80)
     
     passed = 0
     total = len(results)
     
-    for test_name, result in results.items():
-        status = "✅ PASSED" if result else "❌ FAILED"
-        print(f"{test_name}: {status}")
-        if result:
-            passed += 1
+    # Group results by category
+    categories = {
+        "Service Info": ["Service Info (Version 2.0.0)", "PQC Service Info", "ISO 20022 Service Info"],
+        "PQC Services": ["PQC Generate Keypair", "PQC Sign Transaction", "PQC Verify Signature"],
+        "ISO 20022 Services": ["ISO 20022 Payment Initiation", "ISO 20022 Payment Status", "ISO 20022 Bank Statement"],
+        "Combined Services": ["Secure Payment Flow (PQC + ISO)"],
+        "AI Services": ["Health Check", "AI Services Status", "AI Legal Advisor", "Environment Debug"]
+    }
+    
+    for category, test_names in categories.items():
+        print(f"\n{category}:")
+        for test_name in test_names:
+            if test_name in results:
+                status = "✅ PASSED" if results[test_name] else "❌ FAILED"
+                print(f"  {test_name}: {status}")
+                if results[test_name]:
+                    passed += 1
     
     print(f"\nOverall: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 ALL TESTS PASSED - Backend API is working correctly!")
+        print("🎉 ALL TESTS PASSED - QuantPayChain API is fully functional!")
         return True
     else:
-        print("⚠️  SOME TESTS FAILED - Backend API has issues")
+        print("⚠️  SOME TESTS FAILED - Check individual test results above")
         return False
 
 if __name__ == "__main__":
