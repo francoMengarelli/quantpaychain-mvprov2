@@ -195,7 +195,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                 )}
 
                 {/* Investment Recommendations */}
-                {advice.investment_recommendations?.strategies && Array.isArray(advice.investment_recommendations.strategies) && (
+                {advice.investment_recommendations?.strategies && Array.isArray(advice.investment_recommendations.strategies) && advice.investment_recommendations.strategies.length > 0 && (
                   <div>
                     <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
                       <TrendingUp className="h-4 w-4 text-emerald-400" />
@@ -203,7 +203,7 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                     </h4>
                     <ul className="space-y-2">
                       {advice.investment_recommendations.strategies.map((strategy: string, idx: number) => (
-                        <li key={`strat-${idx}-${strategy.substring(0, 10)}`} className="text-sm text-gray-300">
+                        <li key={`strat-${idx}-${String(strategy).substring(0, 10)}`} className="text-sm text-gray-300">
                           {strategy}
                         </li>
                       ))}
