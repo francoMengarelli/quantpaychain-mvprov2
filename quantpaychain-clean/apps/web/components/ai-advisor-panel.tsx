@@ -158,6 +158,16 @@ export function AIAdvisorPanel({ assetType, description, valueUsd, location }: A
                 <p className="text-sm text-purple-200">{advice.ai_insights.gamification_tip}</p>
               </div>
             )}
+            
+            {/* Debug Info - Remove in production */}
+            {process.env.NODE_ENV === 'development' && (
+              <details className="text-xs text-gray-500 mt-2">
+                <summary className="cursor-pointer hover:text-gray-300">Ver estructura de respuesta (debug)</summary>
+                <pre className="mt-2 p-2 bg-slate-900/50 rounded overflow-auto max-h-40">
+                  {JSON.stringify(advice, null, 2)}
+                </pre>
+              </details>
+            )}
 
             {expanded && (
               <div className="space-y-4 animate-in fade-in duration-300">
