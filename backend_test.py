@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for QuantPayChain (Render Deployment)
-Testing the specific endpoints mentioned in the review request
+Testing PQC and ISO 20022 services as requested in the review
 """
 
 import requests
 import json
 import sys
+import xml.etree.ElementTree as ET
 from datetime import datetime
 
 # Base URL for the deployed API
 BASE_URL = "https://quantpaychain-api.onrender.com"
+
+# Global variables to store test data between tests
+test_keypair = {}
+test_signature_data = {}
+test_payment_message_id = None
 
 def test_health_check():
     """Test GET / - should return 200 with status 'operational'"""
