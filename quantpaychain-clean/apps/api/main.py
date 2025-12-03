@@ -643,7 +643,7 @@ class PortfolioMonitoringRequest(BaseModel):
 
 @app.post("/api/risk/analyze-transaction")
 async def analyze_transaction_risk(request: TransactionRiskRequest):
-    \"\"\"
+    """
     🔍 REAL-TIME TRANSACTION RISK ANALYSIS (KYT)
     
     Know Your Transaction - AI-powered fraud detection and AML monitoring
@@ -656,7 +656,7 @@ async def analyze_transaction_risk(request: TransactionRiskRequest):
     - Actionable recommendations
     
     Use Case: Run before processing high-value RWA token transfers
-    \"\"\"
+    """
     try:
         analysis = await risk_analytics.analyze_transaction_risk(
             transaction_data=request.transaction_data,
