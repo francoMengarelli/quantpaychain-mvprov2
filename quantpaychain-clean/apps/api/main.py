@@ -716,9 +716,9 @@ async def monitor_portfolio_risk(request: PortfolioMonitoringRequest):
 
 @app.get("/api/risk/service-info")
 async def get_risk_analytics_info():
-    \"\"\"
+    """
     Get Risk Analytics Service information and capabilities
-    \"\"\"
+    """
     return {
         "service": "AI-Powered Risk Analytics & Monitoring",
         "status": "operational",
