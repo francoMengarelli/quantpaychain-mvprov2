@@ -692,7 +692,7 @@ async def validate_asset_with_ai(request: AssetValidationRequest):
 
 @app.post("/api/risk/monitor-portfolio")
 async def monitor_portfolio_risk(request: PortfolioMonitoringRequest):
-    \"\"\"
+    """
     📊 CONTINUOUS PORTFOLIO RISK MONITORING
     
     Analyzes:
@@ -703,7 +703,7 @@ async def monitor_portfolio_risk(request: PortfolioMonitoringRequest):
     - Optimization recommendations
     
     Use Case: Regular portfolio health checks for institutional clients
-    \"\"\"
+    """
     try:
         monitoring = await risk_analytics.monitor_portfolio_risk(
             user_id=request.user_id,
