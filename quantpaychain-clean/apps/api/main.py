@@ -669,7 +669,7 @@ async def analyze_transaction_risk(request: TransactionRiskRequest):
 
 @app.post("/api/risk/validate-asset")
 async def validate_asset_with_ai(request: AssetValidationRequest):
-    \"\"\"
+    """
     ✅ AI-POWERED ASSET VALIDATION
     
     Deep asset validation using:
@@ -679,7 +679,7 @@ async def validate_asset_with_ai(request: AssetValidationRequest):
     - Ownership and authenticity checks
     
     Returns comprehensive validation report with confidence score
-    \"\"\"
+    """
     try:
         validation = await risk_analytics.validate_asset_with_ai(
             asset_data=request.asset_data,
