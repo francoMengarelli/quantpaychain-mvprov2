@@ -643,7 +643,7 @@ class PortfolioMonitoringRequest(BaseModel):
 
 @app.post("/api/risk/analyze-transaction")
 async def analyze_transaction_risk(request: TransactionRiskRequest):
-    \"\"\"
+    """
     🔍 REAL-TIME TRANSACTION RISK ANALYSIS (KYT)
     
     Know Your Transaction - AI-powered fraud detection and AML monitoring
@@ -656,7 +656,7 @@ async def analyze_transaction_risk(request: TransactionRiskRequest):
     - Actionable recommendations
     
     Use Case: Run before processing high-value RWA token transfers
-    \"\"\"
+    """
     try:
         analysis = await risk_analytics.analyze_transaction_risk(
             transaction_data=request.transaction_data,
@@ -669,7 +669,7 @@ async def analyze_transaction_risk(request: TransactionRiskRequest):
 
 @app.post("/api/risk/validate-asset")
 async def validate_asset_with_ai(request: AssetValidationRequest):
-    \"\"\"
+    """
     ✅ AI-POWERED ASSET VALIDATION
     
     Deep asset validation using:
@@ -679,7 +679,7 @@ async def validate_asset_with_ai(request: AssetValidationRequest):
     - Ownership and authenticity checks
     
     Returns comprehensive validation report with confidence score
-    \"\"\"
+    """
     try:
         validation = await risk_analytics.validate_asset_with_ai(
             asset_data=request.asset_data,
@@ -692,7 +692,7 @@ async def validate_asset_with_ai(request: AssetValidationRequest):
 
 @app.post("/api/risk/monitor-portfolio")
 async def monitor_portfolio_risk(request: PortfolioMonitoringRequest):
-    \"\"\"
+    """
     📊 CONTINUOUS PORTFOLIO RISK MONITORING
     
     Analyzes:
@@ -703,7 +703,7 @@ async def monitor_portfolio_risk(request: PortfolioMonitoringRequest):
     - Optimization recommendations
     
     Use Case: Regular portfolio health checks for institutional clients
-    \"\"\"
+    """
     try:
         monitoring = await risk_analytics.monitor_portfolio_risk(
             user_id=request.user_id,
@@ -716,9 +716,9 @@ async def monitor_portfolio_risk(request: PortfolioMonitoringRequest):
 
 @app.get("/api/risk/service-info")
 async def get_risk_analytics_info():
-    \"\"\"
+    """
     Get Risk Analytics Service information and capabilities
-    \"\"\"
+    """
     return {
         "service": "AI-Powered Risk Analytics & Monitoring",
         "status": "operational",
