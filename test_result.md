@@ -194,7 +194,7 @@ frontend:
     status_history:
         - working: false
           agent: "testing"
-          comment: "ROUTE NOT FOUND: The /create-asset-v2 route does not exist in the current deployment. Navigation to https://rwatokenizer.preview.emergentagent.com/create-asset-v2 redirects to home page. Only /create-asset route exists, which uses Radix UI components (not HTML native as expected for V2)."
+          comment: "ROUTE NOT FOUND: The /create-asset-v2 route does not exist in the current deployment. Navigation to https://quantum-finance-14.preview.emergentagent.com/create-asset-v2 redirects to home page. Only /create-asset route exists, which uses Radix UI components (not HTML native as expected for V2)."
 
   - task: "Authentication Flow Integration"
     implemented: true
