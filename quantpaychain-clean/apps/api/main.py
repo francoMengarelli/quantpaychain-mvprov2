@@ -30,6 +30,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include advanced QPC routes (TypeScript qpc-v2-core integration)
+app.include_router(qpc_router)
+
 # Initialize services
 supabase_service = SupabaseService()
 stripe_service = StripeService()
