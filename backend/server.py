@@ -688,46 +688,46 @@ async def distribute_dividends(asset_id: str, request: Request):
     """Distribute dividends to token holders"""
     user = await get_current_user(request)
     if not user:
-        raise HTTPException(status_code=401, detail=\"Not authenticated\")
+        raise HTTPException(status_code=401, detail="Not authenticated")
     
     # Verify user owns the asset
-    asset = await db.rwa_assets.find_one({\"id\": asset_id, \"owner_id\": user.id})
+    asset = await db.rwa_assets.find_one({"id": asset_id, "owner_id": user.id})
     if not asset:
-        raise HTTPException(status_code=404, detail=\"Asset not found or not owned\")
+        raise HTTPException(status_code=404, detail="Asset not found or not owned")
     
     body = await request.json()
-    period = body.get(\"period\", datetime.now(timezone.utc).strftime(\"%Y-%m\"))
+    period = body.get("period", datetime.now(timezone.utc).strftime("%Y-%m"))
     
     result = await earnings_service.distribute_dividends(asset_id, period)
     return result
 
-@api_router.get(\"/earnings/asset/{asset_id}/performance\")
+@api_router.get("/earnings/asset/{asset_id}/performance")
 async def get_asset_performance(asset_id: str):
-    \"\"\"Get performance metrics for an asset\"\"\"
+    """Get performance metrics for an asset"""
     performance = await earnings_service.get_asset_performance(asset_id)
     return performance
 
-@api_router.get(\"/earnings/portfolio\")
+@api_router.get("/earnings/portfolio")
 async def get_portfolio(request: Request):
-    \"\"\"Get user's complete portfolio with ROI\"\"\"
+    """Get user's complete portfolio with ROI"""
     user = await get_current_user(request)
     if not user:
-        raise HTTPException(status_code=401, detail=\"Not authenticated\")
+        raise HTTPException(status_code=401, detail="Not authenticated")
     
     portfolio = await earnings_service.get_user_portfolio(user.id)
     return portfolio
 
-@api_router.get(\"/earnings/dividends\")
+@api_router.get("/earnings/dividends")
 async def get_my_dividends(request: Request):
-    \"\"\"Get user's dividend history\"\"\"
+    """Get user's dividend history"""
     user = await get_current_user(request)
     if not user:
-        raise HTTPException(status_code=401, detail=\"Not authenticated\")
+        raise HTTPException(status_code=401, detail="Not authenticated")
     
     dividends = await db.dividend_distributions.find(
-        {\"user_id\": user.id},
-        {\"_id\": 0}
-    ).sort(\"distribution_date\", -1).to_list(1000)
+        {"user_id": user.id},
+        {"_id": 0}
+    ).sort("distribution_date", -1).to_list(1000)
     
     for div in dividends:
         if isinstance(div.get('distribution_date'), str):
@@ -735,47 +735,47 @@ async def get_my_dividends(request: Request):
     
     return dividends
 
-@api_router.get(\"/earnings/platform-stats\")
+@api_router.get("/earnings/platform-stats")
 async def get_platform_stats(request: Request):
-    \"\"\"Get platform earnings statistics (admin only)\"\"\"
+    """Get platform earnings statistics (admin only)"""
     user = await get_current_user(request)
-    if not user or user.role != \"admin\":
-        raise HTTPException(status_code=403, detail=\"Admin access required\")
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
     
     stats = await earnings_service.get_platform_earnings()
     return stats
 
 # ============ ENHANCED TRANSACTIONS (with portfolio tracking) ============
 
-@api_router.post(\"/transactions/complete-purchase\")
+@api_router.post("/transactions/complete-purchase")
 async def complete_purchase(request: Request):
-    \"\"\"Complete token purchase and update portfolio\"\"\"
+    """Complete token purchase and update portfolio"""
     user = await get_current_user(request)
     if not user:
-        raise HTTPException(status_code=401, detail=\"Not authenticated\")
+        raise HTTPException(status_code=401, detail="Not authenticated")
     
     body = await request.json()
-    token_id = body.get(\"token_id\")
-    quantity = body.get(\"quantity\")
+    token_id = body.get("token_id")
+    quantity = body.get("quantity")
     
     # Get token
-    token = await db.tokens.find_one({\"id\": token_id})
-    if not token or token[\"available_supply\"] < quantity:
-        raise HTTPException(status_code=400, detail=\"Insufficient tokens available\")
+    token = await db.tokens.find_one({"id": token_id})
+    if not token or token["available_supply"] < quantity:
+        raise HTTPException(status_code=400, detail="Insufficient tokens available")
     
     # Calculate price with platform fee
-    base_price = token[\"price_per_token\"] * quantity
+    base_price = token["price_per_token"] * quantity
     platform_fee = base_price * 0.05
     total_price = base_price + platform_fee
     
     # Create transaction
     transaction = Transaction(
-        transaction_type=\"buy\",
+        transaction_type="buy",
         buyer_id=user.id,
         token_id=token_id,
         quantity=quantity,
         total_amount=total_price,
-        status=\"completed\"
+        status="completed"
     )
     
     trans_dict = transaction.model_dump()
@@ -784,23 +784,23 @@ async def complete_purchase(request: Request):
     
     # Update token supply
     await db.tokens.update_one(
-        {\"id\": token_id},
-        {\"$inc\": {\"available_supply\": -quantity}}
+        {"id": token_id},
+        {"$inc": {"available_supply": -quantity}}
     )
     
     # Update/create portfolio holding
     holding = await earnings_service.create_or_update_holding(
         user_id=user.id,
         token_id=token_id,
-        asset_id=token[\"asset_id\"],
+        asset_id=token["asset_id"],
         quantity=quantity,
-        price_per_token=token[\"price_per_token\"]
+        price_per_token=token["price_per_token"]
     )
     
     return {
-        \"success\": True,
-        \"transaction\": transaction.model_dump(),
-        \"holding\": holding.model_dump()
+        "success": True,
+        "transaction": transaction.model_dump(),
+        "holding": holding.model_dump()
     }
 
 # Include router
