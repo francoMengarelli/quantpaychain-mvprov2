@@ -54,6 +54,12 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/earnings" element={
+              <ProtectedRoute>
+                <EarningsTracker />
+              </ProtectedRoute>
+            } />
+            
             <Route path="/reports" element={
               <ProtectedRoute>
                 <Reports />
