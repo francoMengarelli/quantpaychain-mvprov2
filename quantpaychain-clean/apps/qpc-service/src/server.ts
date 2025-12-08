@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { PQCLayer } from '../../../packages/qpc-core/core/pqc-layer';
-import { ISO20022Gateway } from '../../../packages/qpc-core/core/iso20022-gateway';
-import { AIKYCAMLEngine } from '../../../packages/qpc-core/core/ai-kyc-aml';
+// Import from compiled dist
+const { PQCLayer } = require('../../../packages/qpc-core/dist/core/pqc-layer');
+const { ISO20022Gateway } = require('../../../packages/qpc-core/dist/core/iso20022-gateway');
+const { AIKYCAMLEngine } = require('../../../packages/qpc-core/dist/core/ai-kyc-aml');
 import { createLogger, format, transports } from 'winston';
 
 const app = express();
