@@ -52,8 +52,8 @@ export default function EarningsTracker() {
 
   if (loading) {
     return (
-      <div className=\"min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center\">
-        <div className=\"text-white text-xl\">Cargando portafolio...</div>
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-xl">Cargando portafolio...</div>
       </div>
     );
   }
