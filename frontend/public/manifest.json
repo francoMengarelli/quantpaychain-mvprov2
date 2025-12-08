@@ -1,0 +1,40 @@
+{
+  "short_name": "QuantPayChain",
+  "name": "QuantPayChain - RWA Tokenization Platform",
+  "description": "Plataforma de tokenización de activos del mundo real con PQC e ISO 20022",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192?text=QPC",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512?text=QPC",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#7c3aed",
+  "background_color": "#1e1b4b",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["finance", "business", "productivity"],
+  "screenshots": [
+    {
+      "src": "https://via.placeholder.com/540x720?text=Dashboard",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://via.placeholder.com/1280x720?text=Desktop",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
