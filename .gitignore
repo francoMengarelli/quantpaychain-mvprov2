@@ -117,3 +117,7 @@ quantpaychain-clean/apps/web/.next/cache/webpack/client-production/0.pack
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
