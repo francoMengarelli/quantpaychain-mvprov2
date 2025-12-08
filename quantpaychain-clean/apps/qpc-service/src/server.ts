@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { PQCLayer } from '../../.../packages/qpc-core/core/pqc-layer';
+import { PQCLayer } from '../../../packages/qpc-core/core/pqc-layer';
 import { ISO20022Gateway } from '../../../packages/qpc-core/core/iso20022-gateway';
 import { AIKYCAMLEngine } from '../../../packages/qpc-core/core/ai-kyc-aml';
 import { createLogger, format, transports } from 'winston';
