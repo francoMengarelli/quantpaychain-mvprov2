@@ -12,6 +12,9 @@ from services.pqc_service import PQCService
 from services.iso20022_service import ISO20022Service
 from services.kyc_aml_service import KYCAMLService
 
+# Import advanced QPC routes
+from routes.qpc_advanced import router as qpc_router
+
 app = FastAPI(
     title="QuantPayChain API",
     description="Post-Quantum RWA Tokenization Platform with AI Advisor",
