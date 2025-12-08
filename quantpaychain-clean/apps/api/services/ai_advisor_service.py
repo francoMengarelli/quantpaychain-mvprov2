@@ -43,7 +43,12 @@ Responde siempre en formato JSON estructurado con análisis legal profundo."""
     
     async def analyze_asset(self, asset_type: str, description: str, value_usd: float, location: str, user_context: Optional[Dict] = None):
         """
-        Análisis legal REAL Y PROFUNDO del activo para tokenización
+        Análisis legal OPTIMIZADO con guía práctica de tokenización
+        
+        Cambios:
+        - Análisis más conciso (10-15s vs 30-60s)
+        - Enfoque en pasos accionables
+        - Guía práctica de tokenización paso a paso
         """
         if not self.api_key:
             print("⚠️ No API key available - using fallback")
