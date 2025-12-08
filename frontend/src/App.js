@@ -9,6 +9,7 @@ import CreateAsset from '@/pages/CreateAsset';
 import Portfolio from '@/pages/Portfolio';
 import Reports from '@/pages/Reports';
 import PaymentSuccess from '@/pages/PaymentSuccess';
+import EarningsTracker from '@/pages/EarningsTracker';
 import AuthCallback from '@/pages/AuthCallback';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { AuthProvider } from '@/context/AuthContext';
