@@ -28,6 +28,9 @@ db = client[os.environ['DB_NAME']]
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
+# Initialize Earnings Service
+earnings_service = EarningsService(db)
+
 # ============ MODELS ============
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
