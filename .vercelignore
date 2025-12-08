@@ -1,0 +1,8 @@
+# Vercel ignore - solo deployar frontend
+backend/
+quantpaychain-clean/
+quantpaychain-old/
+*.md
+.git/
+node_modules/
+.env
