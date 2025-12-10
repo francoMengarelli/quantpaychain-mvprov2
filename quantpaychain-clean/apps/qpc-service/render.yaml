@@ -1,0 +1,44 @@
+# Render.com Configuration para QPC Microservice
+
+services:
+  - type: web
+    name: quantpaychain-qpc-service
+    env: node
+    region: oregon
+    plan: starter  # $7/mes recomendado
+    
+    # Build
+    buildCommand: npm install && npm run build
+    startCommand: node dist/server.js
+    
+    # Salud
+    healthCheckPath: /health
+    
+    # Auto-deploy
+    autoDeploy: true
+    
+    # Variables
+    envVars:
+      - key: NODE_VERSION
+        value: 20.x
+      
+      - key: QPC_SERVICE_PORT
+        value: 3001
+      
+      - key: NODE_ENV
+        value: production
+      
+      - key: ALLOWED_ORIGINS
+        value: https://quantpaychain-api2.onrender.com,https://www.quantpaychain.com
+      
+      - key: LOG_LEVEL
+        value: info
+      
+      - key: ENABLE_PQC_KEY_ROTATION
+        value: true
+      
+      - key: ENABLE_ISO20022_VALIDATION
+        value: true
+      
+      - key: ENABLE_KYC_AML_CHECKS
+        value: true
