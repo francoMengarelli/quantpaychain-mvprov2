@@ -15,12 +15,6 @@ const PaymentSuccess = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
   const API = BACKEND_URL.endsWith('/api') ? BACKEND_URL : `${BACKEND_URL}/api`;
 
-  useEffect(() => {
-    if (sessionId) {
-      pollPaymentStatus();
-    }
-  }, [sessionId]);
-
   const pollPaymentStatus = async (attempts = 0) => {
     const maxAttempts = 5;
     
@@ -50,6 +44,12 @@ const PaymentSuccess = () => {
       setStatus('error');
     }
   };
+
+  useEffect(() => {
+    if (sessionId) {
+      pollPaymentStatus();
+    }
+  }, [sessionId]);
 
   return (
     <div className="min-h-screen" data-testid="payment-success-page">
