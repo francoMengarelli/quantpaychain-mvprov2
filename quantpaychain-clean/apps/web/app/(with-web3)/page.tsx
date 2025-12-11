@@ -193,25 +193,25 @@ export default function HomePage() {
             <CardContent className="p-12 text-center">
               <div className="max-w-3xl mx-auto">
                 <h2 className="text-4xl md:text-5xl font-bold mb-6 font-[family-name:var(--font-space-grotesk)]">
-                  <span className="text-white">Ready to </span>
-                  <span className="qpc-gradient-text">Transform</span>
-                  <span className="text-white"> Finance?</span>
+                  <span className="text-white">¿Listo para </span>
+                  <span className="qpc-gradient-text">Transformar</span>
+                  <span className="text-white"> las Finanzas?</span>
                 </h2>
                 
                 <p className="text-xl text-gray-300 mb-8">
-                  Join leading institutions building the future of asset tokenization with quantum-resistant security.
+                  Únete a las instituciones líderes que construyen el futuro de la tokenización de activos con seguridad cuántica resistente.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/dashboard">
                     <Button size="lg" className="qpc-gradient text-white px-8 py-6 text-lg">
-                      Get Started
+                      Comenzar Ahora
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                   </Link>
                   <Link href="/docs">
                     <Button size="lg" variant="outline" className="border-purple-500/30 text-white hover:bg-purple-500/10 px-8 py-6 text-lg">
-                      Read Whitepaper
+                      Leer Whitepaper
                     </Button>
                   </Link>
                 </div>
@@ -225,8 +225,8 @@ export default function HomePage() {
       <footer className="relative border-t border-gray-800 py-12">
         <div className="container mx-auto px-4">
           <div className="text-center text-gray-500">
-            <p className="mb-2">&copy; 2025 QuantPay Chain. All rights reserved.</p>
-            <p className="text-sm">Built with 💜 by Franco Mengarelli • Powered by Emergent AI</p>
+            <p className="mb-2">&copy; 2025 QuantPay Chain. Todos los derechos reservados.</p>
+            <p className="text-sm">Construido con 💜 por Franco Mengarelli • Powered by Emergent AI</p>
           </div>
         </div>
       </footer>
