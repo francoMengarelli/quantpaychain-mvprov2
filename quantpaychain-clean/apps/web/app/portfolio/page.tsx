@@ -48,9 +48,7 @@ export default function PortfolioPage() {
   const fetchPortfolio = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/earnings/portfolio`, {
-        credentials: 'include',
-      });
+      const response = await fetch(`${API_URL}/api/earnings/portfolio`);
 
       if (response.ok) {
         const data = await response.json();
