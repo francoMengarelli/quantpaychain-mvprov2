@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, CheckCircle2, AlertTriangle, Lightbulb, FileText, Shield, TrendingUp, Clock, DollarSign, Scale, ChevronRight, Info } from "lucide-react";
 import { toast } from "sonner";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://quantpaychain-api.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://quantpaychain-api2.onrender.com';
 
 interface AIAdvisorPanelProps {
   assetType: string;
