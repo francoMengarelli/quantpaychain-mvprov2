@@ -113,6 +113,9 @@ function NavbarComponent({ showWalletButton = false }: NavbarProps) {
             <Link href="/earnings" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
               Ganancias
             </Link>
+            <Link href="/reports" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
+              Reportes
+            </Link>
             <Link href="/docs" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
               Documentos
             </Link>
