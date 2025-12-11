@@ -100,13 +100,16 @@ function NavbarComponent({ showWalletButton = false }: NavbarProps) {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-800 py-4 space-y-2">
             <Link href="/marketplace" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
-              Marketplace
+              Mercado
             </Link>
             <Link href="/dashboard" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
-              Dashboard
+              Panel
+            </Link>
+            <Link href="/earnings" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
+              Ganancias
             </Link>
             <Link href="/docs" className="block px-4 py-2 text-gray-300 hover:bg-purple-500/10 rounded">
-              Docs
+              Documentos
             </Link>
             
             {isAuthenticated ? (
