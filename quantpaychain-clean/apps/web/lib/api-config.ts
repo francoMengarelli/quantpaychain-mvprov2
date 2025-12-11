@@ -1,10 +1,10 @@
 /**
  * API Configuration for QuantPayChain Backend
- * Backend deployed on Render: https://quantpaychain-api.onrender.com
+ * Backend deployed on Render: https://quantpaychain-api2.onrender.com
  */
 
 export const API_CONFIG = {
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://quantpaychain-api2.onrender.com',
   endpoints: {
     // AI Services
     aiAdvisor: '/api/ai/advisor',
