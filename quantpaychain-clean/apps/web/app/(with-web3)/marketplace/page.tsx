@@ -141,29 +141,40 @@ export default function MarketplacePage() {
     loadTokens();
   }, []);
 
+  const [isUsingMockData, setIsUsingMockData] = useState(false);
+
   const loadTokens = async () => {
     try {
       setLoading(true);
+      setIsUsingMockData(false);
       
-      // Try to fetch from API first
-      const response = await fetch(`${API_URL}/api/tokens`);
+      // Try to fetch from API first with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(`${API_URL}/api/tokens`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
       
       if (response.ok) {
         const data = await response.json();
-        if (data && data.length > 0) {
+        if (data && Array.isArray(data) && data.length > 0) {
           setTokens(data);
           return;
         }
       }
       
       // Fallback to mock data for demo
-      console.log('Using mock data for marketplace demo');
+      console.log('API unavailable, using demo data for marketplace');
       setTokens(MOCK_TOKENS);
+      setIsUsingMockData(true);
       
     } catch (error: any) {
       console.error('Error loading tokens:', error);
       // Use mock data on error
       setTokens(MOCK_TOKENS);
+      setIsUsingMockData(true);
     } finally {
       setLoading(false);
     }
