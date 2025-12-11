@@ -9,27 +9,19 @@
     "build": "turbo run build",
     "start": "turbo run start",
     "lint": "turbo run lint",
-    "clean": "turbo run clean",
-    "db:generate": "cd packages/database && npx prisma generate",
-    "db:push": "cd packages/database && npx prisma db push",
-    "db:studio": "cd packages/database && npx prisma studio"
+    "clean": "turbo run clean"
   },
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/web",
+    "packages/qpc-core"
   ],
   "devDependencies": {
     "turbo": "^2.0.0",
     "typescript": "^5.3.3"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=18.0.0"
   },
   "author": "Franco Mengarelli",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/francoMengarelli/quantpaychain-mvpro.git"
-  }
+  "license": "MIT"
 }
