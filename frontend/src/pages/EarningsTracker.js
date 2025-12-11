@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { TrendingUp, DollarSign, PieChart, Award, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+const API_URL = BACKEND_URL.endsWith('/api') ? BACKEND_URL : `${BACKEND_URL}/api`;
 
 export default function EarningsTracker() {
   const [portfolio, setPortfolio] = useState(null);
