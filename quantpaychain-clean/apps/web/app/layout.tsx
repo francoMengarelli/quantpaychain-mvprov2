@@ -27,28 +27,57 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "QuantPay Chain - Tokenización de Activos Post-Cuántica",
-  description: "Plataforma empresarial para tokenización de activos del mundo real con seguridad post-cuántica",
-  keywords: ["blockchain", "tokenización", "RWA", "post-quantum", "ISO 20022", "DeFi", "dividendos"],
-  authors: [{ name: "Franco Mengarelli" }],
+  title: "QuantPay Chain - Tokenización de Activos del Mundo Real",
+  description: "Plataforma empresarial líder para tokenización de activos del mundo real (RWA) con seguridad post-cuántica, cumplimiento ISO 20022 y dividendos automáticos.",
+  keywords: ["blockchain", "tokenización", "RWA", "real world assets", "post-quantum", "ISO 20022", "DeFi", "dividendos", "inversión", "criptomonedas", "seguridad cuántica"],
+  authors: [{ name: "QuantPayChain" }],
+  creator: "QuantPayChain",
+  publisher: "QuantPayChain",
   manifest: "/manifest.json",
+  metadataBase: new URL("https://www.quantpaychain.com"),
+  alternates: {
+    canonical: "https://www.quantpaychain.com",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "QuantPayChain",
   },
   openGraph: {
-    title: "QuantPay Chain",
-    description: "Plataforma de Tokenización de Activos Post-Cuántica",
-    url: "https://quantpaychain.com",
+    title: "QuantPay Chain - Tokenización de Activos del Mundo Real",
+    description: "Plataforma empresarial líder para tokenización de activos con seguridad post-cuántica y cumplimiento ISO 20022.",
+    url: "https://www.quantpaychain.com",
     siteName: "QuantPay Chain",
     locale: "es_ES",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "QuantPay Chain - El Futuro de la Tokenización",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QuantPay Chain",
-    description: "Plataforma de Tokenización de Activos Post-Cuántica",
+    title: "QuantPay Chain - Tokenización Post-Cuántica",
+    description: "Plataforma empresarial para tokenización de activos del mundo real con seguridad post-cuántica.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "tu-codigo-de-verificacion-google",
   },
 };
 
