@@ -3,9 +3,5 @@
   "framework": "nextjs",
   "buildCommand": "yarn install && yarn build",
   "outputDirectory": ".next",
-  "installCommand": "yarn install",
-  "public": true,
-  "github": {
-    "silent": true
-  }
+  "installCommand": "yarn install"
 }
