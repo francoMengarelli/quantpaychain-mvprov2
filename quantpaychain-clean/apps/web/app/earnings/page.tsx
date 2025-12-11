@@ -97,9 +97,7 @@ export default function EarningsPage() {
 
   const fetchDividends = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/earnings/dividends`, {
-        credentials: 'include',
-      });
+      const response = await fetch(`${API_URL}/api/earnings/dividends`);
 
       if (!response.ok) throw new Error('Failed to fetch dividends');
 
