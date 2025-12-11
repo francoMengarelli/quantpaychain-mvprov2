@@ -1,8 +1,13 @@
-# Vercel ignore - solo deployar frontend
+# Vercel ignore - excluir archivos innecesarios
 backend/
-quantpaychain-clean/
 quantpaychain-old/
 *.md
+!README.md
 .git/
-node_modules/
-.env
+__pycache__/
+*.pyc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+tests/
