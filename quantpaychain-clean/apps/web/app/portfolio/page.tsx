@@ -40,74 +40,88 @@ export default function PortfolioPage() {
   const [totalValue, setTotalValue] = useState(0);
   const [totalInvested, setTotalInvested] = useState(0);
   const [totalROI, setTotalROI] = useState(0);
+  const [isUsingMockData, setIsUsingMockData] = useState(false);
 
   useEffect(() => {
     fetchPortfolio();
   }, []);
 
+  const setMockData = () => {
+    const mockHoldings: TokenHolding[] = [
+      {
+        id: '1',
+        token_symbol: 'TREFORMA',
+        asset_name: 'Torre Reforma',
+        quantity: 150,
+        purchase_price: 100,
+        current_price: 125,
+        total_invested: 15000,
+        current_value: 18750,
+        roi_percentage: 25,
+        asset_type: 'Real Estate'
+      },
+      {
+        id: '2',
+        token_symbol: 'LOGCTR',
+        asset_name: 'Centro Logístico CDMX',
+        quantity: 80,
+        purchase_price: 250,
+        current_price: 275,
+        total_invested: 20000,
+        current_value: 22000,
+        roi_percentage: 10,
+        asset_type: 'Industrial'
+      },
+      {
+        id: '3',
+        token_symbol: 'ARTSOL',
+        asset_name: 'Colección Arte Solar',
+        quantity: 25,
+        purchase_price: 500,
+        current_price: 480,
+        total_invested: 12500,
+        current_value: 12000,
+        roi_percentage: -4,
+        asset_type: 'Art & Collectibles'
+      }
+    ];
+    setHoldings(mockHoldings);
+    const totInvested = mockHoldings.reduce((acc, h) => acc + h.total_invested, 0);
+    const totValue = mockHoldings.reduce((acc, h) => acc + h.current_value, 0);
+    setTotalInvested(totInvested);
+    setTotalValue(totValue);
+    setTotalROI(((totValue - totInvested) / totInvested) * 100);
+    setIsUsingMockData(true);
+  };
+
   const fetchPortfolio = async () => {
     setLoading(true);
+    setIsUsingMockData(false);
     try {
-      const response = await fetch(`${API_URL}/api/earnings/portfolio`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(`${API_URL}/api/earnings/portfolio`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
-        if (data.holdings) {
+        if (data.holdings && data.holdings.length > 0) {
           setHoldings(data.holdings);
           setTotalValue(data.summary?.current_value || 0);
           setTotalInvested(data.summary?.total_invested || 0);
           setTotalROI(data.summary?.roi_percentage || 0);
+          return;
         }
-      } else {
-        // Mock data for demo
-        const mockHoldings: TokenHolding[] = [
-          {
-            id: '1',
-            token_symbol: 'TREFORMA',
-            asset_name: 'Torre Reforma',
-            quantity: 150,
-            purchase_price: 100,
-            current_price: 125,
-            total_invested: 15000,
-            current_value: 18750,
-            roi_percentage: 25,
-            asset_type: 'Real Estate'
-          },
-          {
-            id: '2',
-            token_symbol: 'LOGCTR',
-            asset_name: 'Centro Logístico CDMX',
-            quantity: 80,
-            purchase_price: 250,
-            current_price: 275,
-            total_invested: 20000,
-            current_value: 22000,
-            roi_percentage: 10,
-            asset_type: 'Industrial'
-          },
-          {
-            id: '3',
-            token_symbol: 'ARTSOL',
-            asset_name: 'Colección Arte Solar',
-            quantity: 25,
-            purchase_price: 500,
-            current_price: 480,
-            total_invested: 12500,
-            current_value: 12000,
-            roi_percentage: -4,
-            asset_type: 'Art & Collectibles'
-          }
-        ];
-        setHoldings(mockHoldings);
-        const totInvested = mockHoldings.reduce((acc, h) => acc + h.total_invested, 0);
-        const totValue = mockHoldings.reduce((acc, h) => acc + h.current_value, 0);
-        setTotalInvested(totInvested);
-        setTotalValue(totValue);
-        setTotalROI(((totValue - totInvested) / totInvested) * 100);
       }
+      // Fallback to mock data
+      console.log('API unavailable, using demo data for portfolio');
+      setMockData();
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Error al cargar el portafolio');
+      setMockData();
     } finally {
       setLoading(false);
     }
