@@ -161,6 +161,16 @@ export default function PortfolioPage() {
             </Button>
           </div>
 
+          {/* Demo Mode Banner */}
+          {isUsingMockData && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <p className="text-amber-300 text-sm">
+                <strong>Modo Demo:</strong> Mostrando datos de ejemplo. El servidor de datos no está disponible temporalmente.
+              </p>
+            </div>
+          )}
+
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card className="glass-effect border-purple-500/20">
