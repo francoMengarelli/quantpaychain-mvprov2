@@ -63,6 +63,7 @@ export default function EarningsPage() {
   const [portfolio, setPortfolio] = useState<{ summary: PortfolioSummary; holdings: Holding[] } | null>(null);
   const [dividends, setDividends] = useState<Dividend[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isUsingMockData, setIsUsingMockData] = useState(false);
 
   useEffect(() => {
     fetchPortfolioData();
@@ -71,7 +72,13 @@ export default function EarningsPage() {
 
   const fetchPortfolioData = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/earnings/portfolio`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(`${API_URL}/api/earnings/portfolio`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
 
       if (!response.ok) throw new Error('Failed to fetch portfolio');
 
@@ -90,6 +97,7 @@ export default function EarningsPage() {
         },
         holdings: []
       });
+      setIsUsingMockData(true);
     } finally {
       setLoading(false);
     }
@@ -97,7 +105,13 @@ export default function EarningsPage() {
 
   const fetchDividends = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/earnings/dividends`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      const response = await fetch(`${API_URL}/api/earnings/dividends`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
 
       if (!response.ok) throw new Error('Failed to fetch dividends');
 
@@ -111,11 +125,13 @@ export default function EarningsPage() {
         { id: '2', amount: 875, distribution_date: '2024-11-01', period: '2024-10', tokens_held: 350, status: 'completed', asset_name: 'Centro Logístico' },
         { id: '3', amount: 1625, distribution_date: '2024-10-01', period: '2024-09', tokens_held: 650, status: 'completed', asset_name: 'Complejo Industrial' },
       ]);
+      setIsUsingMockData(true);
     }
   };
 
   const handleRefresh = () => {
     setLoading(true);
+    setIsUsingMockData(false);
     fetchPortfolioData();
     fetchDividends();
     toast.success('Datos actualizados');
