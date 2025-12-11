@@ -806,10 +806,21 @@ async def complete_purchase(request: Request):
 # Include router
 app.include_router(api_router)
 
+# CORS configuration - handle credentials properly
+cors_origins_env = os.environ.get('CORS_ORIGINS', '*')
+if cors_origins_env == '*':
+    # For development/testing - allow all origins but without credentials
+    cors_origins = ["*"]
+    cors_allow_credentials = False
+else:
+    # For production - specific origins with credentials
+    cors_origins = [origin.strip() for origin in cors_origins_env.split(',')]
+    cors_allow_credentials = True
+
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_credentials=cors_allow_credentials,
+    allow_origins=cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
