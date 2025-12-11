@@ -12,8 +12,8 @@ const PaymentSuccess = () => {
   const [status, setStatus] = useState('checking');
   const [paymentData, setPaymentData] = useState(null);
   const sessionId = searchParams.get('session_id');
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const API = `${BACKEND_URL}/api`;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+  const API = BACKEND_URL.endsWith('/api') ? BACKEND_URL : `${BACKEND_URL}/api`;
 
   useEffect(() => {
     if (sessionId) {

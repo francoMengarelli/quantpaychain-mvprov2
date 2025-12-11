@@ -14,8 +14,9 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const API = `${BACKEND_URL}/api`;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+  // Evitar doble /api - si BACKEND_URL ya termina en /api, no agregar otro
+  const API = BACKEND_URL.endsWith('/api') ? BACKEND_URL : `${BACKEND_URL}/api`;
 
   useEffect(() => {
     checkAuth();

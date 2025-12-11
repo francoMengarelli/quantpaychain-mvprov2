@@ -8,8 +8,8 @@ import { toast } from 'sonner';
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const API = `${BACKEND_URL}/api`;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+  const API = BACKEND_URL.endsWith('/api') ? BACKEND_URL : `${BACKEND_URL}/api`;
 
   useEffect(() => {
     fetchStats();
