@@ -55,6 +55,11 @@ function NavbarComponent({ showWalletButton = false }: NavbarProps) {
                 Ganancias
               </Button>
             </Link>
+            <Link href="/reports">
+              <Button variant="ghost" className="text-gray-300 hover:text-white">
+                Reportes
+              </Button>
+            </Link>
             <Link href="/docs">
               <Button variant="ghost" className="text-gray-300 hover:text-white">
                 Documentos
