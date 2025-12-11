@@ -21,58 +21,58 @@ export default function HomePage() {
   const coreFeatures = [
     {
       icon: Atom,
-      title: "Post-Quantum Security",
-      description: "NIST-approved cryptography resistant to quantum computing attacks, utilizing CRYSTALS-Dilithium and SPHINCS+ algorithms.",
+      title: "Seguridad Post-Cuántica",
+      description: "Criptografía aprobada por NIST resistente a ataques de computación cuántica, utilizando algoritmos CRYSTALS-Dilithium y SPHINCS+.",
       gradient: "from-violet-500 to-purple-600",
       stat: "NIST PQC",
-      statLabel: "Quantum-Resistant"
+      statLabel: "Resistente a Cuántica"
     },
     {
       icon: Building2,
-      title: "RWA Tokenization",
-      description: "Transform real-world assets into digital securities with fractional ownership and automated distributions.",
+      title: "Tokenización de RWA",
+      description: "Transforma activos del mundo real en valores digitales con propiedad fraccionada y distribuciones automatizadas.",
       gradient: "from-blue-500 to-cyan-600",
-      stat: "Active",
-      statLabel: "Live Platform"
+      stat: "Activo",
+      statLabel: "Plataforma Live"
     },
     {
       icon: Coins,
-      title: "Multi-Currency Payments",
-      description: "Cross-border transaction infrastructure for multiple fiat currencies and cryptocurrencies with instant settlement.",
+      title: "Pagos Multi-Divisa",
+      description: "Infraestructura de transacciones transfronterizas para múltiples monedas fiduciarias y criptomonedas con liquidación instantánea.",
       gradient: "from-emerald-500 to-teal-600",
       stat: "6+",
       statLabel: "Blockchains"
     },
     {
       icon: Network,
-      title: "ISO 20022 Standard",
-      description: "Integration with global financial messaging infrastructure for traditional finance connectivity.",
+      title: "Estándar ISO 20022",
+      description: "Integración con la infraestructura de mensajería financiera global para conectividad con finanzas tradicionales.",
       gradient: "from-pink-500 to-rose-600",
       stat: "Gateway",
-      statLabel: "Compliant"
+      statLabel: "Cumplimiento"
     },
     {
       icon: Globe,
-      title: "Cross-Chain Protocol",
-      description: "Interoperable bridge to connect with Ethereum, Polygon, Avalanche, and other major blockchain networks.",
+      title: "Protocolo Cross-Chain",
+      description: "Puente interoperable para conectar con Ethereum, Polygon, Avalanche y otras redes blockchain principales.",
       gradient: "from-indigo-500 to-blue-600",
       stat: "Multi-Chain",
-      statLabel: "Supported"
+      statLabel: "Soportado"
     },
     {
       icon: Sparkles,
-      title: "AI-Powered Analytics",
-      description: "GPT-4 powered analysis for asset validation, risk assessment, and automated reporting.",
+      title: "Análisis con IA",
+      description: "Análisis impulsado por GPT-4 para validación de activos, evaluación de riesgos e informes automatizados.",
       gradient: "from-orange-500 to-red-600",
       stat: "GPT-4",
-      statLabel: "AI Engine"
+      statLabel: "Motor IA"
     }
   ];
 
   const stats = [
-    { value: "$24B+", label: "RWA Market 2025" },
-    { value: "10K+", label: "TPS Capacity" },
-    { value: "99.99%", label: "Uptime SLA" },
+    { value: "$24B+", label: "Mercado RWA 2025" },
+    { value: "10K+", label: "Capacidad TPS" },
+    { value: "99.99%", label: "SLA de Uptime" },
     { value: "6+", label: "Blockchains" }
   ];
 
