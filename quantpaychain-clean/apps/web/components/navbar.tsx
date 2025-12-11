@@ -42,17 +42,22 @@ function NavbarComponent({ showWalletButton = false }: NavbarProps) {
           <div className="hidden md:flex items-center space-x-6">
             <Link href="/marketplace">
               <Button variant="ghost" className="text-gray-300 hover:text-white">
-                Marketplace
+                Mercado
               </Button>
             </Link>
             <Link href="/dashboard">
               <Button variant="ghost" className="text-gray-300 hover:text-white">
-                Dashboard
+                Panel
+              </Button>
+            </Link>
+            <Link href="/earnings">
+              <Button variant="ghost" className="text-gray-300 hover:text-white">
+                Ganancias
               </Button>
             </Link>
             <Link href="/docs">
               <Button variant="ghost" className="text-gray-300 hover:text-white">
-                Docs
+                Documentos
               </Button>
             </Link>
             
