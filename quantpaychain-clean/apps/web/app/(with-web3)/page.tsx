@@ -96,21 +96,21 @@ export default function HomePage() {
           <div className="text-center max-w-5xl mx-auto">
             <Badge className="mb-6 bg-purple-500/10 text-purple-300 border-purple-500/20 text-sm px-4 py-2">
               <Atom className="w-4 h-4 mr-2 inline" />
-              Post-Quantum Security • ISO 20022 Compliant
+              Seguridad Post-Cuántica • Cumple ISO 20022
             </Badge>
 
             <h1 className="text-5xl md:text-7xl font-bold mb-6 font-[family-name:var(--font-space-grotesk)]">
               <span className="qpc-gradient-text">
-                The Future of
+                El Futuro de la
               </span>
               <br />
               <span className="text-white">
-                Asset Tokenization
+                Tokenización de Activos
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
-              Enterprise platform combining <span className="text-purple-400 font-semibold">post-quantum cryptography</span> with real-world asset tokenization for institutional finance.
+              Plataforma empresarial que combina <span className="text-purple-400 font-semibold">criptografía post-cuántica</span> con tokenización de activos del mundo real para finanzas institucionales.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -148,11 +148,11 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 font-[family-name:var(--font-space-grotesk)]">
-              <span className="text-white">Core </span>
-              <span className="qpc-gradient-text">Capabilities</span>
+              <span className="text-white">Capacidades </span>
+              <span className="qpc-gradient-text">Principales</span>
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Enterprise-grade infrastructure for the next generation of digital finance
+              Infraestructura de nivel empresarial para la próxima generación de finanzas digitales
             </p>
           </div>
 
