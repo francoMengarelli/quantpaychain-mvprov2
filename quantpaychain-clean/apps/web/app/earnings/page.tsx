@@ -71,9 +71,7 @@ export default function EarningsPage() {
 
   const fetchPortfolioData = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/earnings/portfolio`, {
-        credentials: 'include',
-      });
+      const response = await fetch(`${API_URL}/api/earnings/portfolio`);
 
       if (!response.ok) throw new Error('Failed to fetch portfolio');
 
