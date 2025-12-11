@@ -242,6 +242,16 @@ export default function MarketplacePage() {
             </Button>
           </div>
 
+          {/* Demo Mode Banner */}
+          {isUsingMockData && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <p className="text-amber-300 text-sm">
+                <strong>Modo Demo:</strong> Mostrando datos de ejemplo. El servidor de datos no está disponible temporalmente.
+              </p>
+            </div>
+          )}
+
           {/* Filters */}
           <div className="glass-effect rounded-xl p-6 mb-8 border border-purple-500/20">
             <div className="flex flex-col md:flex-row gap-4">
