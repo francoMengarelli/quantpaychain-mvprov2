@@ -84,10 +84,23 @@ export function PQCSecurityPanel() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ algorithm }),
       });
+      
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+      
       const data = await response.json();
+      
+      if (!data || !data.public_key) {
+        throw new Error("Respuesta inválida del servidor");
+      }
+      
       setKeyPair(data);
-    } catch (err) {
-      setError("Error generando llaves");
+    } catch (err: any) {
+      console.error("PQC Generate Error:", err);
+      setError(err.message?.includes("404") 
+        ? "Servicio PQC no disponible. El backend necesita ser actualizado." 
+        : "Error generando llaves. Verifica la conexión al servidor.");
     } finally {
       setLoading(false);
     }
