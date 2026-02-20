@@ -120,10 +120,16 @@ export function PQCSecurityPanel() {
           algorithm: keyPair.algorithm,
         }),
       });
+      
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+      
       const data = await response.json();
       setSignatureResult(data);
-    } catch (err) {
-      setError("Error firmando mensaje");
+    } catch (err: any) {
+      console.error("PQC Sign Error:", err);
+      setError("Error firmando mensaje. Verifica la conexión al servidor.");
     } finally {
       setLoading(false);
     }
