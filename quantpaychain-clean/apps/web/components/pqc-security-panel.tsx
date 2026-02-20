@@ -151,10 +151,16 @@ export function PQCSecurityPanel() {
           binding_hash: verifyBindingHash || undefined,
         }),
       });
+      
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+      
       const data = await response.json();
       setVerifyResult(data);
-    } catch (err) {
-      setError("Error verificando firma");
+    } catch (err: any) {
+      console.error("PQC Verify Error:", err);
+      setError("Error verificando firma. Verifica la conexión al servidor.");
     } finally {
       setLoading(false);
     }
