@@ -1,0 +1,126 @@
+
+name: Security Audit
+
+on:
+  schedule:
+    - cron: '0 2 * * 1' # Every Monday at 2 AM
+  workflow_dispatch:
+
+jobs:
+  dependency-audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        directory: ['frontend/app', 'contracts']
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ -f "yarn.lock" ]; then
+            yarn install --frozen-lockfile
+          else
+            npm ci
+          fi
+
+      - name: Run Security Audit
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ -f "yarn.lock" ]; then
+            yarn audit --audit-level moderate
+          else
+            npm audit --audit-level moderate
+          fi
+
+      - name: Generate Security Report
+        if: failure()
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ -f "yarn.lock" ]; then
+            yarn audit --json > security-report.json
+          else
+            npm audit --json > security-report.json
+          fi
+
+      - name: Upload Security Report
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report-${{ matrix.directory }}
+          path: ${{ matrix.directory }}/security-report.json
+
+  contract-security:
+    name: Smart Contract Security
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        working-directory: contracts
+        run: npm ci
+
+      - name: Compile Contracts
+        working-directory: contracts
+        run: npx hardhat compile
+
+      - name: Run Slither Analysis
+        uses: crytic/slither-action@v0.3.0
+        with:
+          target: 'contracts/'
+          ignore-compile: true
+          fail-on: none
+        continue-on-error: true
+
+      - name: Run Mythril Analysis
+        run: |
+          pip install mythril
+          myth analyze contracts/contracts/DocumentRegistry.sol --max-depth 10
+        continue-on-error: true
+
+  code-quality:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        working-directory: frontend/app
+        run: yarn install --frozen-lockfile
+
+      - name: Run ESLint Security Rules
+        working-directory: frontend/app
+        run: |
+          yarn add -D eslint-plugin-security
+          yarn lint --ext .js,.jsx,.ts,.tsx --rule "security/detect-object-injection:error"
+
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2

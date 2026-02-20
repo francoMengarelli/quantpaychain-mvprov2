@@ -1,0 +1,13 @@
+# Vercel ignore - excluir archivos innecesarios
+backend/
+quantpaychain-old/
+*.md
+!README.md
+.git/
+__pycache__/
+*.pyc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+tests/

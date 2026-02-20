@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd qpc-v2-core && npm ci && npm run build && cd .. && npm run build",
+  "devCommand": "cd quantpaychain-mvp/frontend/app && npm run dev",
+  "installCommand": "cd qpc-v2-core && npm install && cd ../../quantpaychain-mvp/frontend/app && npm install",
+  "framework": "nextjs",
+  "outputDirectory": "quantpaychain-mvp/frontend/app/.next"
+}
+

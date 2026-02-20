@@ -1,0 +1,8 @@
+# Render ignore - solo deployar backend
+frontend/
+quantpaychain-clean/
+quantpaychain-old/
+*.md
+.git/
+node_modules/
+.env

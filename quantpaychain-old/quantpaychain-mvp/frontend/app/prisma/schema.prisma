@@ -1,0 +1,577 @@
+// QuantPayChain - Prisma Schema
+// Post-Quantum Protocol for Real Estate Tokenization
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTHENTICATION & USER MANAGEMENT
+// ============================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  firstName     String?
+  lastName      String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  walletAddress String?   @unique
+  phoneNumber   String?
+  country       String?
+  kycVerified   Boolean   @default(false)
+  kycLevel      String    @default("none") // none, basic, full
+  plan          String    @default("free")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  documents     Document[]
+  signatures    Signature[]
+  investments   Investment[]
+  payments      Payment[]
+  contracts     Contract[]
+  notifications Notification[]
+
+  @@index([email])
+  @@index([walletAddress])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// REAL ESTATE PROPERTIES & TOKENIZATION
+// ============================================
+
+enum PropertyStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  FUNDING
+  FUNDED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PropertyType {
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+  LAND
+  MIXED_USE
+}
+
+model Property {
+  id              String         @id @default(cuid())
+  title           String
+  description     String         @db.Text
+  propertyType    PropertyType
+  status          PropertyStatus @default(DRAFT)
+  
+  // Location
+  address         String
+  city            String
+  state           String
+  country         String
+  zipCode         String
+  coordinates     Json? // {lat, lng}
+  
+  // Financial Details
+  totalValue      Decimal        @db.Decimal(18, 2)
+  minimumInvestment Decimal      @db.Decimal(18, 2)
+  targetAmount    Decimal        @db.Decimal(18, 2)
+  raisedAmount    Decimal        @default(0) @db.Decimal(18, 2)
+  tokenPrice      Decimal        @db.Decimal(18, 2)
+  totalTokens     Int
+  availableTokens Int
+  
+  // Property Details
+  area            Decimal?       @db.Decimal(10, 2) // in sqm
+  bedrooms        Int?
+  bathrooms       Int?
+  yearBuilt       Int?
+  
+  // Investment Terms
+  expectedReturn  Decimal        @db.Decimal(5, 2) // annual percentage
+  investmentPeriod Int           // in months
+  rentalYield     Decimal?       @db.Decimal(5, 2)
+  
+  // Media
+  images          Json           // array of image URLs
+  documents       Json?          // array of document URLs
+  virtualTourUrl  String?
+  
+  // Blockchain
+  blockchainId    String?        @unique
+  tokenAddress    String?        @unique
+  
+  // Timestamps
+  fundingDeadline DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  
+  investments     Investment[]
+  contracts       Contract[]
+  
+  @@index([status])
+  @@index([propertyType])
+  @@index([city])
+  @@index([createdAt])
+}
+
+// ============================================
+// INVESTMENTS & OWNERSHIP
+// ============================================
+
+enum InvestmentStatus {
+  PENDING
+  PROCESSING
+  CONFIRMED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+model Investment {
+  id                String           @id @default(cuid())
+  
+  // Investor & Property
+  userId            String
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId        String
+  property          Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  // Investment Details
+  amount            Decimal          @db.Decimal(18, 2)
+  tokensOwned       Int
+  ownership         Decimal          @db.Decimal(10, 6) // percentage
+  status            InvestmentStatus @default(PENDING)
+  
+  // Payment
+  paymentId         String?          @unique
+  payment           Payment?         @relation(fields: [paymentId], references: [id])
+  
+  // Blockchain
+  blockchainTxHash  String?          @unique
+  nftTokenId        String?
+  
+  // Contract
+  contractId        String?          @unique
+  contract          Contract?        @relation(fields: [contractId], references: [id])
+  
+  // Timestamps
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  confirmedAt       DateTime?
+  
+  @@index([userId])
+  @@index([propertyId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ============================================
+// PAYMENTS & TRANSACTIONS
+// ============================================
+
+enum PaymentMethod {
+  STRIPE
+  CRYPTO_ETH
+  CRYPTO_USDC
+  CRYPTO_DAI
+  CRYPTO_BTC
+  WIRE_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  
+  // User
+  userId            String
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Payment Details
+  amount            Decimal       @db.Decimal(18, 2)
+  currency          String        @default("USD")
+  method            PaymentMethod
+  status            PaymentStatus @default(PENDING)
+  
+  // Provider Details
+  stripePaymentIntentId String?   @unique
+  stripeClientSecret    String?
+  cryptoAddress         String?
+  cryptoTxHash          String?
+  cryptoNetwork         String?
+  
+  // Metadata
+  description       String?
+  metadata          Json?
+  
+  // Investment Link
+  investment        Investment?
+  
+  // Timestamps
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  completedAt       DateTime?
+  
+  @@index([userId])
+  @@index([status])
+  @@index([method])
+  @@index([createdAt])
+}
+
+// ============================================
+// SMART CONTRACTS & LEGAL DOCUMENTS
+// ============================================
+
+enum ContractStatus {
+  DRAFT
+  PENDING_SIGNATURE
+  SIGNED
+  ACTIVE
+  COMPLETED
+  TERMINATED
+  DISPUTED
+}
+
+enum ContractType {
+  INVESTMENT_AGREEMENT
+  TOKEN_PURCHASE
+  SHAREHOLDER_AGREEMENT
+  RENTAL_AGREEMENT
+  PROPERTY_DEED
+  NDA
+  OTHER
+}
+
+model Contract {
+  id                String         @id @default(cuid())
+  
+  // Parties
+  userId            String
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Contract Details
+  title             String
+  description       String?        @db.Text
+  type              ContractType
+  status            ContractStatus @default(DRAFT)
+  
+  // Content
+  templateId        String?
+  content           String         @db.Text // HTML or Markdown
+  pdfUrl            String?
+  
+  // Legal
+  jurisdiction      String?
+  governingLaw      String?
+  
+  // Property Link
+  propertyId        String?
+  property          Property?      @relation(fields: [propertyId], references: [id])
+  
+  // Investment Link
+  investment        Investment?
+  
+  // Blockchain & PQC
+  ipfsHash          String?        @unique
+  blockchainId      String?        @unique
+  pqcSignature      String?        @db.Text
+  pqcPublicKey      String?        @db.Text
+  pqcAlgorithm      String?        @default("dilithium3")
+  
+  // Signatures
+  requiresMultiSig  Boolean        @default(false)
+  signatures        ContractSignature[]
+  
+  // Timestamps
+  effectiveDate     DateTime?
+  expirationDate    DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  signedAt          DateTime?
+  
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([propertyId])
+  @@index([createdAt])
+}
+
+enum SignatureStatus {
+  PENDING
+  SIGNED
+  REJECTED
+  EXPIRED
+}
+
+model ContractSignature {
+  id                String          @id @default(cuid())
+  
+  // Contract
+  contractId        String
+  contract          Contract        @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  
+  // Signer
+  signerEmail       String
+  signerName        String?
+  signerRole        String?         @default("party")
+  
+  // Signature Data
+  status            SignatureStatus @default(PENDING)
+  signatureData     String?         @db.Text
+  pqcSignature      String?         @db.Text
+  ipAddress         String?
+  userAgent         String?
+  
+  // Blockchain
+  transactionHash   String?
+  blockNumber       Int?
+  
+  // Timestamps
+  createdAt         DateTime        @default(now())
+  signedAt          DateTime?
+  expiresAt         DateTime?
+  
+  @@index([contractId])
+  @@index([status])
+  @@index([signerEmail])
+}
+
+// ============================================
+// LEGACY DOCUMENT SYSTEM (Compatibility)
+// ============================================
+
+enum DocumentStatus {
+  DRAFT
+  PENDING
+  SIGNED
+  COMPLETED
+  REJECTED
+  EXPIRED
+  REVOKED
+}
+
+model Document {
+  id             String         @id @default(cuid())
+  title          String
+  description    String?
+  fileName       String
+  fileSize       Int
+  fileType       String
+  ipfsHash       String
+  blockchainId   String?        @unique
+  status         DocumentStatus @default(PENDING)
+  requiresMultiSig Boolean      @default(false)
+  expiresAt      DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creator    User        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId  String
+  signatures Signature[]
+
+  @@index([creatorId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Signature {
+  id             String          @id @default(cuid())
+  status         SignatureStatus @default(PENDING)
+  signedAt       DateTime?
+  signerAddress  String
+  transactionHash String?
+  ipfsHash       String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId String
+  signer     User?    @relation(fields: [signerId], references: [id])
+  signerId   String?
+
+  @@index([documentId])
+  @@index([status])
+  @@index([signerAddress])
+}
+
+// ============================================
+// AI AUDITOR & ANALYTICS
+// ============================================
+
+enum AuditStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model AIAudit {
+  id              String      @id @default(cuid())
+  
+  // Contract Reference
+  contractId      String
+  
+  // Audit Details
+  status          AuditStatus @default(PENDING)
+  riskLevel       RiskLevel?
+  complianceScore Decimal?    @db.Decimal(5, 2)
+  
+  // Analysis Results
+  analysis        Json        // Full AI analysis
+  issues          Json?       // Array of identified issues
+  recommendations Json?       // Array of recommendations
+  
+  // AI Model Info
+  modelUsed       String?
+  modelVersion    String?
+  
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  completedAt     DateTime?
+  
+  @@index([contractId])
+  @@index([status])
+  @@index([riskLevel])
+}
+
+// ============================================
+// NOTIFICATIONS & COMMUNICATIONS
+// ============================================
+
+enum NotificationType {
+  INVESTMENT_CONFIRMED
+  PAYMENT_RECEIVED
+  CONTRACT_READY
+  SIGNATURE_REQUIRED
+  PROPERTY_FUNDED
+  DIVIDEND_PAID
+  SYSTEM_ALERT
+  KYC_UPDATE
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type        NotificationType
+  title       String
+  message     String           @db.Text
+  read        Boolean          @default(false)
+  actionUrl   String?
+  
+  metadata    Json?
+  
+  createdAt   DateTime         @default(now())
+  readAt      DateTime?
+  
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+// ============================================
+// SYSTEM & UTILITIES
+// ============================================
+
+model UsageLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // 'document_upload', 'investment_created', etc.
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  key       String   @unique
+  isActive  Boolean  @default(true)
+  lastUsed  DateTime?
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  @@index([userId])
+  @@index([key])
+}
+
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+  
+  @@index([key])
+}

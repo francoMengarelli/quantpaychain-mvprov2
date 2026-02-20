@@ -1,0 +1,14 @@
+
+{
+  "demo.title": "Prueba interactiva — demo simulada",
+  "demo.disclaimer": "Esta demostración es una simulación. No requiere claves ni fondos reales.",
+  "demo.step1": "1. Generar wallet efímera",
+  "demo.step2": "2. Enviar pago simulado",
+  "demo.step3": "3. Confirmación",
+  "demo.button_create": "Generar wallet",
+  "demo.send": "Enviar {{amount}} QPC (simulado)",
+  "demo.sending": "Enviando...",
+  "demo.txhash": "Hash:",
+  "demo.ledger": "Mini-ledger",
+  "Demo": "Demo"
+}

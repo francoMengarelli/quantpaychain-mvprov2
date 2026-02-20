@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark theme by default for QuantPayChain */
+    --background: 270 50% 3%;
+    --foreground: 0 0% 98%;
+    --card: 270 40% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 270 40% 6%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 270 30% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 270 30% 12%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 270 30% 15%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 270 30% 15%;
+    --input: 270 30% 15%;
+    --ring: 263 70% 50%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 270 50% 3%;
+    --foreground: 0 0% 98%;
+    --card: 270 40% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 270 40% 6%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 270 30% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 270 30% 12%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 270 30% 15%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 270 30% 15%;
+    --input: 270 30% 15%;
+    --ring: 263 70% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    background-color: #0a0118;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    background: linear-gradient(135deg, #0a0118 0%, #1a0a2e 50%, #0a0118 100%);
+    min-height: 100vh;
+  }
+}
+
+/* Custom QuantPay Chain Styles */
+.qpc-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #a855f7 100%);
+}
+
+.qpc-gradient-text {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glow-effect {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}

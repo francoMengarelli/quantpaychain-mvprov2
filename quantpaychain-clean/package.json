@@ -1,0 +1,30 @@
+{
+  "name": "quantpaychain",
+  "version": "2.0.0",
+  "private": true,
+  "description": "QuantPay Chain - Post-Quantum RWA Tokenization Platform",
+  "packageManager": "yarn@1.22.19",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean"
+  },
+  "workspaces": [
+    "apps/web",
+    "packages/qpc-core"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Franco Mengarelli",
+  "license": "MIT"
+}

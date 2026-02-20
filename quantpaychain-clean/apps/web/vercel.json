@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "yarn install && yarn build",
+  "outputDirectory": ".next",
+  "installCommand": "yarn install"
+}

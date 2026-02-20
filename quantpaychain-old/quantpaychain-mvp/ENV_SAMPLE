@@ -1,0 +1,46 @@
+
+# QuantPayChain MVP - Environment Variables Sample
+# Copy this file to .env and fill in your actual values
+
+# ============================================
+# FRONTEND ENVIRONMENT VARIABLES
+# ============================================
+
+# Next.js Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+
+# ============================================
+# SMART CONTRACTS ENVIRONMENT VARIABLES
+# ============================================
+
+# Sepolia Testnet Configuration
+SEPOLIA_RPC_URL=https://eth-sepolia.public.blastapi.io
+PRIVATE_KEY_DEPLOY=your_private_key_here_without_0x_prefix
+
+# Mainnet Configuration (DO NOT USE without proper audits)
+# MAINNET_RPC_URL=https://eth-mainnet.public.blastapi.io
+# PRIVATE_KEY_MAINNET=your_mainnet_private_key_here
+
+# Etherscan API Key (for contract verification)
+# ETHERSCAN_API_KEY=your_etherscan_api_key_here
+
+# ============================================
+# DEPLOYMENT NOTES
+# ============================================
+
+# 1. NEVER commit your .env file to version control
+# 2. Use Sepolia testnet for testing and development
+# 3. DO NOT deploy to mainnet without proper security audits
+# 4. Keep your private keys secure and never share them
+# 5. Use environment-specific .env files (.env.local, .env.production)
+
+# ============================================
+# SECURITY WARNINGS
+# ============================================
+
+# ⚠️ CRITICAL: Never expose private keys in code or logs
+# ⚠️ Use hardware wallets for mainnet deployments
+# ⚠️ Rotate keys regularly
+# ⚠️ Use separate keys for different environments
+# ⚠️ Enable 2FA on all accounts with access to keys

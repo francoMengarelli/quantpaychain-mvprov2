@@ -1,0 +1,15 @@
+
+{
+  "note": "NOTE: This English version was automatically generated. Please review translations for legal and technical accuracy. AUTOMATIC TRANSLATION — REVIEW REQUIRED",
+  "demo.title": "Interactive Demo — Simulated",
+  "demo.disclaimer": "This demonstration is simulated. No real keys or funds required.",
+  "demo.step1": "1. Generate ephemeral wallet",
+  "demo.step2": "2. Send simulated payment",
+  "demo.step3": "3. Confirmation",
+  "demo.button_create": "Generate wallet",
+  "demo.send": "Send {{amount}} QPC (simulated)",
+  "demo.sending": "Sending...",
+  "demo.txhash": "Hash:",
+  "demo.ledger": "Mini-ledger",
+  "Demo": "Demo"
+}
